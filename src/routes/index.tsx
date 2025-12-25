@@ -9,25 +9,28 @@ import { Badge } from '@/components/ui/badge'
 import { LogOut, Mail, User, Clock, Shield, Key } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
+  beforeLoad: async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      throw redirect({
+        to: '/signin',
+      })
+    }
+  },
   component: HomePage,
 })
 
 function HomePage() {
   const navigate = useNavigate()
-  const { user, session, loading } = useAuth()
+  const { user, session, loading, signOut } = useAuth()
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    await signOut()
     navigate({ to: '/signin' })
   }
 
-  // Redirect to signin if not authenticated
-  if (!loading && !user) {
-    navigate({ to: '/signin' })
-    return null
-  }
-
-  if (loading) {
+  // Show loading state while AuthProvider initializes
+  if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">

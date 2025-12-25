@@ -1,7 +1,8 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
+import { supabase } from '@/lib/supabase'
 import { performPostLoginRedirect } from '@/lib/redirect'
 import { TURNSTILE_SITE_KEY } from '@/lib/turnstile'
 import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/TurnstileWidget'
@@ -18,11 +19,24 @@ export const Route = createFileRoute('/verify-otp')({
       email: search.email as string | undefined,
     }
   },
+  beforeLoad: async ({ search }) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      throw redirect({
+        to: '/',
+      })
+    }
+    if (!search.email) {
+      throw redirect({
+        to: '/signin',
+      })
+    }
+  },
 })
 
 function VerifyOtpPage() {
   const navigate = useNavigate()
-  const { verifyOtp, user } = useAuth()
+  const { verifyOtp } = useAuth()
   const { email } = Route.useSearch()
   const turnstileRef = useRef<TurnstileWidgetRef>(null)
   const [otp, setOtp] = useState('')
@@ -34,17 +48,7 @@ function VerifyOtpPage() {
     navigate({ to: '/signin' })
   }
 
-  // If already logged in, redirect to destination
-  if (user) {
-    performPostLoginRedirect(navigate)
-    return null
-  }
-
-  // If no email provided, go back to sign in
-  if (!email) {
-    handleBackToSignIn()
-    return null
-  }
+  // Guards are handled in beforeLoad
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,7 +62,7 @@ function VerifyOtpPage() {
     setError('')
 
     const { error: verifyError } = await verifyOtp(
-      email,
+      email!, // Non-null assertion safe due to beforeLoad
       otp,
       turnstileToken || undefined,
     )
