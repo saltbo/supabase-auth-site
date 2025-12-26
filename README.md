@@ -68,8 +68,8 @@ Click the **Fork** button at the top right of this page to create your own copy 
 
 Connect your forked repository to your preferred hosting provider.
 
-#### Cloudflare Pages (Recommended)
-1. Go to **Cloudflare Dashboard** > **Pages** > **Connect to Git**.
+#### [Cloudflare Pages](https://dash.cloudflare.com/) (Recommended)
+1. Go to **[Cloudflare Dashboard](https://dash.cloudflare.com/)** > **Pages** > **Connect to Git**.
 2. Select your forked repository.
 3. **Build Settings**:
    - **Framework Preset**: Vite
