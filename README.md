@@ -2,28 +2,6 @@
 
 A generic, fully configurable authentication site powered by Supabase. Deploy your own branded auth pages in minutes with zero code changes required.
 
-<p align="center">
-  <img src="https://github.com/saltbo/supabase-auth-site/actions/workflows/deploy.yml/badge.svg" alt="Deploy to GitHub Pages">
-</p>
-
-<p align="center">
-  <a href="https://dash.cloudflare.com/" target="_blank">
-    <img src="https://img.shields.io/badge/Cloudflare%20Pages-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Deploy to Cloudflare Pages" height="30">
-  </a>
-  &nbsp;
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaltbo%2Fsupabase-auth-site" target="_blank">
-    <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Deploy with Vercel" height="30">
-  </a>
-  &nbsp;
-  <a href="https://app.netlify.com/start/deploy?repository=https://github.com/saltbo/supabase-auth-site" target="_blank">
-    <img src="https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" alt="Deploy to Netlify" height="30">
-  </a>
-  &nbsp;
-  <a href="https://render.com/deploy?repo=https://github.com/saltbo/supabase-auth-site" target="_blank">
-    <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Deploy to Render" height="30">
-  </a>
-</p>
-
 ## Features
 
 - **Multiple Auth Methods**
