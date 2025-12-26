@@ -1,129 +1,136 @@
-# Supabase Auth Site
+<div align="center">
+  <a href="https://github.com/saltbo/supabase-auth-site">
+    <img src="public/tanstack-word-logo-white.svg" alt="Logo" width="80" height="80">
+  </a>
 
-A generic, fully configurable authentication site powered by Supabase. Deploy your own branded auth pages in minutes with zero code changes required.
+  <h1 align="center">Supabase Auth Site</h1>
 
-## Features
+  <p align="center">
+    <strong>A production-ready, fully configurable authentication portal powered by Supabase.</strong>
+    <br />
+    Deploy your own branded login pages in minutes. Zero code changes required.
+    <br />
+    <br />
+    <a href="https://github.com/saltbo/supabase-auth-site/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/saltbo/supabase-auth-site/issues">Request Feature</a>
+  </p>
 
-- **Multiple Auth Methods**
-  - Email/Password authentication
-  - OAuth providers (Google, GitHub)
-  - Email OTP (Magic Link)
-  - OAuth authorization consent flow
+  <p align="center">
+    <img src="https://img.shields.io/github/license/saltbo/supabase-auth-site?style=flat-square" alt="License">
+    <img src="https://img.shields.io/github/v/release/saltbo/supabase-auth-site?style=flat-square" alt="Release">
+    <img src="https://img.shields.io/github/stars/saltbo/supabase-auth-site?style=flat-square" alt="Stars">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome">
+  </p>
+</div>
 
-- **Fully Customizable**
-  - **Web-based Configuration**: Configure everything directly from the admin panel (`/admin`).
-  - Custom branding (logo, colors, slogan)
-  - Theme customization with gradient support
-  - Toggle features on/off via configuration
+---
 
-- **Modern Tech Stack**
-  - React 19 + TypeScript
-  - TanStack Router (file-based routing)
-  - Tailwind CSS 4 + shadcn/ui components
-  - Supabase Auth (PKCE flow)
-  - Vite build tool
+## 🚀 Overview
 
-- **Cross-Domain SSO**
-  - Cookie-based session sharing across subdomains
-  - Automatic JWT extraction for backend APIs
-  - Works seamlessly with auth.example.com, console.example.com, etc.
-  - See [CROSS_DOMAIN_AUTH.md](./docs/CROSS_DOMAIN_AUTH.md) for details
+**Supabase Auth Site** is a modern, drop-in authentication solution for your Supabase projects. It solves the problem of building and maintaining custom auth pages (Sign In, Sign Up, Forgot Password, OAuth) by providing a pre-built, highly polished application that you can deploy and configure instantly.
 
-## Quick Start
+Unlike other templates, **you don't need to touch the code**. Every aspect of the site—from branding and colors to auth providers and security settings—is managed through a built-in **Admin Panel**.
 
-### 1. Deployment (Recommended Strategy)
+## ✨ Key Features
 
-**We strongly recommend Forking this repository first.** This allows you to easily update your site in the future by clicking "Sync fork" on GitHub.
+| Feature | Description |
+| ------- | ----------- |
+| **🎨 No-Code Styling** | Customize logo, colors, fonts, and gradients directly via the Admin UI. |
+| **🔐 Multi-Auth Support** | Email/Password, Magic Link (OTP), Google, GitHub, and more out of the box. |
+| **⚙️ Admin Dashboard** | A secure `/admin` route to manage your site configuration in real-time. |
+| **🌐 Cross-Domain SSO** | Seamlessly share sessions between `auth.yourdomain.com` and `app.yourdomain.com`. |
+| **📱 Mobile Responsive** | Carefully crafted UI that looks perfect on desktop, tablet, and mobile. |
+| **🛡️ Enterprise Ready** | Built-in support for Cloudflare Turnstile CAPTCHA and PKCE security flow. |
 
-1. **Fork** this repository to your GitHub account.
-2. Choose your deployment platform below:
+## 🛠 Tech Stack
 
-**Cloudflare Pages:**
-1. Go to Cloudflare Dashboard > Pages > Connect to Git.
+Built with the latest and greatest web technologies for performance and developer experience.
+
+*   ![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+*   ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+*   ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+*   ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+*   ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+*   ![TanStack Router](https://img.shields.io/badge/TanStack_Router-FF4154?style=for-the-badge&logo=react-router&logoColor=white)
+
+---
+
+## 🏁 Getting Started
+
+We strictly recommend the **Fork & Deploy** strategy. This keeps your deployment linked to the upstream repository, allowing you to pull updates easily.
+
+### 1. Fork the Repository
+
+Click the **Fork** button at the top right of this page to create your own copy of the repository.
+
+### 2. Deploy
+
+Connect your forked repository to your preferred hosting provider.
+
+#### Cloudflare Pages (Recommended)
+1. Go to **Cloudflare Dashboard** > **Pages** > **Connect to Git**.
 2. Select your forked repository.
-3. Use Build Command: `npm run build` and Output Directory: `dist`.
+3. **Build Settings**:
+   - **Framework Preset**: Vite
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
 
-**Vercel / Netlify / Render:**
-1. Click the "New Project" button in your platform's dashboard.
-2. Import your forked repository.
-3. The build settings should auto-detect (Vite / dist).
+#### Vercel / Netlify
+1. Import your forked repository as a new project.
+2. The platform should auto-detect the Vite settings.
 
-*(Alternatively, use the deploy buttons above for a quick start, but updates will require manual git operations.)*
+### 3. Configure Environment Variables
 
-### 2. Configure Environment
+Add the following environment variables in your deployment platform settings:
 
-You need to provide the following environment variables to your deployment platform:
+| Variable | Description |
+| :--- | :--- |
+| `VITE_SUPABASE_URL` | Your Supabase Project URL (e.g., `https://xyz.supabase.co`) |
+| `VITE_SUPABASE_ANON_KEY` | Your Supabase Anon / Public Key |
+| `VITE_ADMIN_EMAILS` | Comma-separated list of emails allowed to access the Admin Panel |
+| `VITE_COOKIE_DOMAIN` | *(Optional)* Set to `.yourdomain.com` for SSO support |
 
-```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
-VITE_ADMIN_EMAILS=admin@example.com,dev@example.com
-```
+### 4. Supabase Configuration
 
-- `VITE_ADMIN_EMAILS`: Comma-separated list of email addresses that can access the Admin Panel.
+1. **Site URL**: In Supabase Dashboard > Authentication > URL Configuration, set **Site URL** to your deployed domain (e.g., `https://auth.yourdomain.com`).
+2. **Redirects**: Add `https://auth.yourdomain.com/**` to the **Redirect URLs** allowlist.
+3. **Storage**: Create a new public bucket named `auth-site` (if not auto-created) to store your configuration.
 
-**Optional for SSO:**
-```env
-VITE_COOKIE_DOMAIN=.example.com
-```
+---
 
-### 3. Supabase Setup
+## 🎨 Configuration & Customization
 
-1. **Create Project**: Sign up at [supabase.com](https://supabase.com) and create a new project.
-2. **Get Credentials**: Go to Project Settings -> API to find your URL and Anon Key.
-3. **Configure Auth**:
-   - Go to Authentication -> Providers.
-   - Enable Email/Password, Google, GitHub etc.
-   - Set the **Site URL** in Supabase to your deployed URL (e.g., `https://your-app.pages.dev`).
-   - Add redirect URLs (e.g., `https://your-app.pages.dev/callback`).
+Once deployed, you don't need to commit code to change the look and feel.
 
-### 4. Customization
+1.  Navigate to `https://your-deployed-site.com/admin`
+2.  Login with an email address you added to `VITE_ADMIN_EMAILS`.
+3.  **Initialize**: Click the button to create your first config file.
+4.  **Edit**: Use the visual editor to update:
+    *   **Branding**: Upload your logo and favicon.
+    *   **Theme**: Pick your brand color and sidebar gradients.
+    *   **Content**: Update the slogan, description, and footer.
+    *   **Features**: Toggle specific auth providers or sidebar content.
 
-You can customize the site directly from the web interface.
+> Changes are saved to your Supabase Storage and propagate immediately to all users.
 
-1. **Access Admin Panel**:
-   - Navigate to `/admin` (e.g., `https://your-app.pages.dev/admin`).
-   - Sign in with an email address listed in `VITE_ADMIN_EMAILS`.
+---
 
-2. **Initialize Configuration**:
-   - If this is your first time, you will be prompted to initialize the configuration.
-   - This will create a config file in your Supabase Storage.
+## 🔄 Updates & Maintenance
 
-3. **Edit Settings**:
-   - Use the visual editor to change:
-     - Site Info (Name, Slogan, Description)
-     - Branding (Logo, Favicon)
-     - Theme (Colors, Gradients)
-     - Authentication Providers
-     - Sidebar Features
-   - Changes are saved immediately and reflected on the site.
+To update your site with the latest features and security patches:
 
-## Updates & Maintenance
+1.  Navigate to your forked repository on GitHub.
+2.  Click **"Sync fork"** under the repository header.
+3.  Your deployment platform will automatically trigger a new build.
 
-### How to Update
+---
 
-If you **Forked** the repository:
-1. Go to your repository on GitHub.
-2. Click the **"Sync fork"** button under the header.
-3. Your deployment platform (Vercel/Netlify/Cloudflare) will automatically detect the change and redeploy the new version.
+## 📚 Documentation
 
-If you used a **Deploy Button** (without forking):
-You will need to manually pull changes from the original repository:
-```bash
-git remote add upstream https://github.com/saltbo/supabase-auth-site.git
-git fetch upstream
-git merge upstream/main
-git push origin main
-```
+*   [Cross-Domain SSO Guide](./docs/CROSS_DOMAIN_AUTH.md) - Learn how to share sessions across subdomains.
+*   [Contributing Guidelines](./CONTRIBUTING.md) - Want to help improve the project?
 
-## Documentation
+## 📄 License
 
-- [Cross-Domain SSO](./docs/CROSS_DOMAIN_AUTH.md)
-
-## Contributing
-
-Want to modify the code or contribute features? See [CONTRIBUTING.md](./CONTRIBUTING.md).
-
-## License
-
-MIT
+Distributed under the MIT License. See `LICENSE` for more information.
