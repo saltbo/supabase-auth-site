@@ -11,7 +11,7 @@ A generic, fully configurable authentication site powered by Supabase. Deploy yo
   - OAuth authorization consent flow
 
 - **Fully Customizable**
-  - No code changes needed - just update `site.config.ts`
+  - **Web-based Configuration**: Configure everything directly from the admin panel (`/admin`).
   - Custom branding (logo, colors, slogan)
   - Theme customization with gradient support
   - Toggle features on/off via configuration
@@ -57,7 +57,10 @@ You need to provide the following environment variables to your deployment platf
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key-here
+VITE_ADMIN_EMAILS=admin@example.com,dev@example.com
 ```
+
+- `VITE_ADMIN_EMAILS`: Comma-separated list of email addresses that can access the Admin Panel.
 
 **Optional for SSO:**
 ```env
@@ -76,22 +79,24 @@ VITE_COOKIE_DOMAIN=.example.com
 
 ### 4. Customization
 
-You can customize the site **without changing code** by editing `site.config.ts` in your repository.
+You can customize the site directly from the web interface.
 
-```typescript
-export const siteConfig: SiteConfig = {
-  site: {
-    name: 'My App',
-    slogan: 'Welcome to My App',
-  },
-  theme: {
-    brandColor: '#10b981',
-  },
-  // ...
-}
-```
+1. **Access Admin Panel**:
+   - Navigate to `/admin` (e.g., `https://your-app.pages.dev/admin`).
+   - Sign in with an email address listed in `VITE_ADMIN_EMAILS`.
 
-See [CONFIG.md](./docs/CONFIG.md) for the full configuration guide.
+2. **Initialize Configuration**:
+   - If this is your first time, you will be prompted to initialize the configuration.
+   - This will create a config file in your Supabase Storage.
+
+3. **Edit Settings**:
+   - Use the visual editor to change:
+     - Site Info (Name, Slogan, Description)
+     - Branding (Logo, Favicon)
+     - Theme (Colors, Gradients)
+     - Authentication Providers
+     - Sidebar Features
+   - Changes are saved immediately and reflected on the site.
 
 ## Updates & Maintenance
 
@@ -113,7 +118,6 @@ git push origin main
 
 ## Documentation
 
-- [Configuration Guide](./docs/CONFIG.md)
 - [Cross-Domain SSO](./docs/CROSS_DOMAIN_AUTH.md)
 
 ## Contributing
