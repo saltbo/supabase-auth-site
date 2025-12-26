@@ -41,7 +41,36 @@ export function useSiteConfig(): SiteConfig {
     return defaultConfig
   }
 
-  return storageConfig
+  // Merge storage config with default config to ensure all fields exist
+  // This handles partial configs or missing fields (e.g. after update)
+  return {
+    ...defaultConfig,
+    ...storageConfig,
+    site: {
+      ...defaultConfig.site,
+      ...storageConfig.site,
+    },
+    branding: {
+      ...defaultConfig.branding,
+      ...storageConfig.branding,
+      logo: {
+        ...defaultConfig.branding.logo,
+        ...(storageConfig.branding?.logo || {}),
+      },
+    },
+    theme: {
+      ...defaultConfig.theme,
+      ...storageConfig.theme,
+    },
+    auth: {
+      ...defaultConfig.auth,
+      ...storageConfig.auth,
+      turnstile: {
+        ...defaultConfig.auth.turnstile,
+        ...(storageConfig.auth?.turnstile || {}),
+      },
+    },
+  }
 }
 
 /**
