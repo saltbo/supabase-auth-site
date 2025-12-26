@@ -3,10 +3,6 @@
 A generic, fully configurable authentication site powered by Supabase. Deploy your own branded auth pages in minutes with zero code changes required.
 
 <p align="center">
-  <img src="https://github.com/saltbo/supabase-auth-site/actions/workflows/deploy.yml/badge.svg" alt="Deploy to GitHub Pages">
-</p>
-
-<p align="center">
   <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/saltbo/supabase-auth-site">
     <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Pages" height="32">
   </a>
