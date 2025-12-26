@@ -3,20 +3,24 @@
 A generic, fully configurable authentication site powered by Supabase. Deploy your own branded auth pages in minutes with zero code changes required.
 
 <p align="center">
-  <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/saltbo/supabase-auth-site">
-    <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Pages" height="32">
+  <img src="https://github.com/saltbo/supabase-auth-site/actions/workflows/deploy.yml/badge.svg" alt="Deploy to GitHub Pages">
+</p>
+
+<p align="center">
+  <a href="https://dash.cloudflare.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Cloudflare%20Pages-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Deploy to Cloudflare Pages" height="30">
   </a>
   &nbsp;
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaltbo%2Fsupabase-auth-site">
-    <img src="https://vercel.com/button" alt="Deploy with Vercel" height="32">
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsaltbo%2Fsupabase-auth-site" target="_blank">
+    <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Deploy with Vercel" height="30">
   </a>
   &nbsp;
-  <a href="https://app.netlify.com/start/deploy?repository=https://github.com/saltbo/supabase-auth-site">
-    <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" height="32">
+  <a href="https://app.netlify.com/start/deploy?repository=https://github.com/saltbo/supabase-auth-site" target="_blank">
+    <img src="https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" alt="Deploy to Netlify" height="30">
   </a>
   &nbsp;
-  <a href="https://render.com/deploy?repo=https://github.com/saltbo/supabase-auth-site">
-    <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render" height="32">
+  <a href="https://render.com/deploy?repo=https://github.com/saltbo/supabase-auth-site" target="_blank">
+    <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Deploy to Render" height="30">
   </a>
 </p>
 
@@ -49,15 +53,24 @@ A generic, fully configurable authentication site powered by Supabase. Deploy yo
 
 ## Quick Start
 
-### 1. Deployment
+### 1. Deployment (Recommended Strategy)
 
-Click one of the buttons above to deploy to your preferred platform.
+**We strongly recommend Forking this repository first.** This allows you to easily update your site in the future by clicking "Sync fork" on GitHub.
 
-**Cloudflare Pages (Recommended):**
-1. Click the "Deploy to Cloudflare Pages" button.
-2. Connect your GitHub account.
-3. Allow Cloudflare to access your repository.
-4. Add the required environment variables during setup (see below).
+1. **Fork** this repository to your GitHub account.
+2. Choose your deployment platform below:
+
+**Cloudflare Pages:**
+1. Go to Cloudflare Dashboard > Pages > Connect to Git.
+2. Select your forked repository.
+3. Use Build Command: `npm run build` and Output Directory: `dist`.
+
+**Vercel / Netlify / Render:**
+1. Click the "New Project" button in your platform's dashboard.
+2. Import your forked repository.
+3. The build settings should auto-detect (Vite / dist).
+
+*(Alternatively, use the deploy buttons above for a quick start, but updates will require manual git operations.)*
 
 ### 2. Configure Environment
 
@@ -102,47 +115,22 @@ export const siteConfig: SiteConfig = {
 
 See [CONFIG.md](./docs/CONFIG.md) for the full configuration guide.
 
-## Deployment Platforms
+## Updates & Maintenance
 
-### Cloudflare Pages
+### How to Update
 
-1. Fork this repo.
-2. Log in to Cloudflare Dashboard > Pages.
-3. Connect to Git and select your fork.
-4. **Build Settings:**
-   - Framework preset: `Vite`
-   - Build command: `npm run build`
-   - Output directory: `dist`
-5. **Environment Variables:** Add your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+If you **Forked** the repository:
+1. Go to your repository on GitHub.
+2. Click the **"Sync fork"** button under the header.
+3. Your deployment platform (Vercel/Netlify/Cloudflare) will automatically detect the change and redeploy the new version.
 
-### Vercel / Netlify / Render
-
-Click the deploy buttons above for the easiest setup.
-Alternatively, connect your repository manually and use these settings:
-- **Build Command:** `npm run build`
-- **Output Directory:** `dist`
-- **Environment Variables:** Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
-
-### GitHub Pages
-
-This project includes a GitHub Action for automated deployment.
-
-1. Go to your repository **Settings** -> **Pages**.
-2. Under "Build and deployment", set **Source** to **GitHub Actions**.
-3. Go to **Settings** -> **Secrets and variables** -> **Actions**.
-4. Add repository secrets: `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
-5. Push to `main` to trigger deployment.
-
-### Docker
-
-Build and run locally:
-
+If you used a **Deploy Button** (without forking):
+You will need to manually pull changes from the original repository:
 ```bash
-docker build -t supabase-auth-site .
-docker run -p 8080:80 \
-  -e VITE_SUPABASE_URL=your-url \
-  -e VITE_SUPABASE_ANON_KEY=your-key \
-  supabase-auth-site
+git remote add upstream https://github.com/saltbo/supabase-auth-site.git
+git fetch upstream
+git merge upstream/main
+git push origin main
 ```
 
 ## Documentation
