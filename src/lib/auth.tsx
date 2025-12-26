@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase'
 import type { AuthError, Session, User, Provider } from '@supabase/supabase-js'
-import { getEnabledProviders as getConfiguredProviders, getProviderConfig } from './config'
+import { useSiteConfig, getEnabledProviders as getConfiguredProviders, getProviderConfig } from './config'
 
 export type { Provider }
 
@@ -41,6 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const config = useSiteConfig()
 
   useEffect(() => {
     // 获取初始会话
@@ -111,10 +112,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithOtp = async (email: string, captchaToken?: string) => {
+    // Respect allowSignup config - only create new users if allowed
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: true,
+        shouldCreateUser: config.auth?.allowSignup ?? true,
         captchaToken,
       },
     })
@@ -138,8 +140,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const getEnabledProviders = async (): Promise<Array<Provider>> => {
-    // Import config dynamically to avoid circular dependency
-    return (getConfiguredProviders() as Provider[])
+    // Get enabled providers from config
+    return (getConfiguredProviders(config) as Provider[])
   }
 
   const value = {

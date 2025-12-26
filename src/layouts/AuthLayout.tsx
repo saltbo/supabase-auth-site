@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useSiteConfig } from '@/lib/config'
+import { injectThemeColors } from '@/lib/theme'
 import { Logo } from '@/components/Logo'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -9,6 +10,11 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   const config = useSiteConfig()
+
+  // Inject theme colors when config changes
+  useEffect(() => {
+    injectThemeColors(config.theme)
+  }, [config.theme])
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950/80 relative">
@@ -25,9 +31,18 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         <Card className="w-full max-w-md shadow-xl">
           <CardContent className="pt-8 pb-8 px-6 sm:px-8">
             {/* Logo - small and centered */}
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-6">
               <Logo className="h-8 sm:h-10" />
             </div>
+
+            {/* Slogan */}
+            {config.site.slogan && (
+              <div className="text-center mb-8">
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  {config.site.slogan}
+                </p>
+              </div>
+            )}
 
             {/* Main content */}
             {children}

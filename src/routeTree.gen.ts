@@ -13,6 +13,7 @@ import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as OauthSessionEndedRouteImport } from './routes/oauth/session-ended'
 import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
 
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OauthSessionEndedRoute = OauthSessionEndedRouteImport.update({
   id: '/oauth/session-ended',
   path: '/oauth/session-ended',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/verify-otp': typeof VerifyOtpRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/verify-otp': typeof VerifyOtpRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/verify-otp': typeof VerifyOtpRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/oauth/consent'
     | '/oauth/session-ended'
+    | '/admin'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/oauth/consent'
     | '/oauth/session-ended'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/verify-otp'
     | '/oauth/consent'
     | '/oauth/session-ended'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   VerifyOtpRoute: typeof VerifyOtpRoute
   OauthConsentRoute: typeof OauthConsentRoute
   OauthSessionEndedRoute: typeof OauthSessionEndedRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/oauth/session-ended': {
       id: '/oauth/session-ended'
       path: '/oauth/session-ended'
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyOtpRoute: VerifyOtpRoute,
   OauthConsentRoute: OauthConsentRoute,
   OauthSessionEndedRoute: OauthSessionEndedRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

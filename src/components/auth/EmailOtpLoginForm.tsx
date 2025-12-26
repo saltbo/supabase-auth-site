@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/lib/auth'
-import { TURNSTILE_SITE_KEY } from '@/lib/turnstile'
+import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
 import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/TurnstileWidget'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,7 @@ export function EmailOtpLoginForm({
   onBack,
 }: EmailOtpLoginFormProps) {
   const navigate = useNavigate()
+  const config = useSiteConfig()
   const { signInWithOtp } = useAuth()
   const turnstileRef = useRef<TurnstileWidgetRef>(null)
   const [email, setEmail] = useState('')
@@ -26,7 +27,7 @@ export function EmailOtpLoginForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+    if (isTurnstileEnabled(config) && !turnstileToken) {
       setError('Please complete the verification')
       return
     }
@@ -91,7 +92,7 @@ export function EmailOtpLoginForm({
         <Button
           type="submit"
           className="w-full"
-          disabled={loading || (TURNSTILE_SITE_KEY && !turnstileToken)}
+          disabled={loading || (isTurnstileEnabled(config) && !turnstileToken)}
         >
           {loading ? (
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />

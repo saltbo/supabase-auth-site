@@ -66,15 +66,10 @@ const DEFAULT_PROVIDER_ICONS: Record<string, IconComponent> = {
  * Falls back to a default key icon if no specific icon is found
  */
 function getProviderIcon(provider: string): IconComponent {
-  const config = getProviderConfig(provider)
+  const metadata = getProviderConfig(provider)
 
-  // If custom icon name is specified in config, try to use it
-  if (config?.icon && DEFAULT_PROVIDER_ICONS[config.icon.toLowerCase()]) {
-    return DEFAULT_PROVIDER_ICONS[config.icon.toLowerCase()]
-  }
-
-  // Try to find icon by provider name
-  return DEFAULT_PROVIDER_ICONS[provider.toLowerCase()] || KeyRound
+  // The provider metadata already includes the icon component
+  return metadata?.icon || KeyRound
 }
 
 interface SocialLoginButtonsProps {

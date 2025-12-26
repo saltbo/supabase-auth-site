@@ -3,8 +3,8 @@ import { useRef, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
+import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
 import { performPostLoginRedirect } from '@/lib/redirect'
-import { TURNSTILE_SITE_KEY } from '@/lib/turnstile'
 import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/TurnstileWidget'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import { AuthLayout } from '@/layouts/AuthLayout'
@@ -36,6 +36,7 @@ export const Route = createFileRoute('/verify-otp')({
 
 function VerifyOtpPage() {
   const navigate = useNavigate()
+  const config = useSiteConfig()
   const { verifyOtp } = useAuth()
   const { email } = Route.useSearch()
   const turnstileRef = useRef<TurnstileWidgetRef>(null)
@@ -53,7 +54,7 @@ function VerifyOtpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+    if (isTurnstileEnabled(config) && !turnstileToken) {
       setError('Please complete the verification')
       return
     }
@@ -123,7 +124,7 @@ function VerifyOtpPage() {
             <Button
               type="submit"
               className="w-full h-11"
-              disabled={loading || (TURNSTILE_SITE_KEY && !turnstileToken)}
+              disabled={loading || (isTurnstileEnabled(config) && !turnstileToken)}
             >
               {loading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />

@@ -184,7 +184,8 @@ Cloudflare Turnstile CAPTCHA configuration.
 - **Description**: Enable/disable Cloudflare Turnstile CAPTCHA
 - **Default**: `false`
 - **Prerequisites**:
-  - Set `VITE_TURNSTILE_SITE_KEY` in `.env`
+  - Enable Turnstile in Admin Panel -> Authentication
+- Set `Site Key` in Admin Panel
   - Sign up at https://www.cloudflare.com/products/turnstile/
 - **Usage**: When enabled, shows CAPTCHA on login forms to prevent bot attacks
 
@@ -341,7 +342,8 @@ export const siteConfig: SiteConfig = {
 
 Don't forget to set in `.env`:
 ```env
-VITE_TURNSTILE_SITE_KEY=your-site-key-here
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
 ### Minimal UI (No Sidebar)

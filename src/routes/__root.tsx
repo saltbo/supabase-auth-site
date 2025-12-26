@@ -2,8 +2,10 @@ import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Loader2 } from 'lucide-react'
 import { AuthLayout } from '@/layouts/AuthLayout'
+import { PageHead } from '@/components/PageHead'
+import { useSiteConfigQuery } from '@/lib/config'
 
 // Generic error component for route-level errors
 function DefaultErrorComponent({ error }: { error: Error }) {
@@ -20,9 +22,20 @@ function DefaultErrorComponent({ error }: { error: Error }) {
   )
 }
 
-export const Route = createRootRoute({
-  component: () => (
+function RootComponent() {
+  const { isLoading } = useSiteConfigQuery()
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  return (
     <>
+      <PageHead />
       <Outlet />
       {/* Dev tools only in development */}
       {import.meta.env.DEV && (
@@ -39,6 +52,10 @@ export const Route = createRootRoute({
         />
       )}
     </>
-  ),
+  )
+}
+
+export const Route = createRootRoute({
+  component: RootComponent,
   errorComponent: DefaultErrorComponent,
 })

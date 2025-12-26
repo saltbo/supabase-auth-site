@@ -39,77 +39,20 @@ export const defaultConfig: SiteConfig = {
 
   // Authentication configuration
   auth: {
-    // OAuth providers (requires Supabase setup)
-    // You can add any Supabase-supported OAuth provider here
-    providers: {
-      google: {
-        enabled: true,
-        // displayName: 'Google',  // Optional: defaults to 'Google'
-        // icon: 'google',         // Optional: icon identifier
-        // scopes: undefined,      // Optional: custom OAuth scopes
-      },
-      github: {
-        enabled: true,
-        displayName: 'GitHub',    // Optional custom display name
-        scopes: 'read:user user:email',  // GitHub-specific scopes
-      },
-      // Add more providers as needed:
-      // gitlab: {
-      //   enabled: false,
-      //   displayName: 'GitLab',
-      //   icon: 'gitlab',
-      // },
-      // bitbucket: {
-      //   enabled: false,
-      //   displayName: 'Bitbucket',
-      // },
-      // azure: {
-      //   enabled: false,
-      //   displayName: 'Microsoft',
-      // },
-      // facebook: {
-      //   enabled: false,
-      // },
-      // twitter: {
-      //   enabled: false,
-      // },
-    },
-    // Cloudflare Turnstile CAPTCHA (optional)
+    // List of enabled OAuth providers
+    // Provider metadata (icons, scopes, display names) are defined in src/lib/auth-providers.ts
+    enabledProviders: ['google', 'github'],
+
+    // Allow new user registration
+    allowSignup: true,
+
+    // Allow email/password authentication
+    allowPassword: true,
+
+    // Turnstile CAPTCHA configuration
     turnstile: {
-      enabled: false,  // Set to true if VITE_TURNSTILE_SITE_KEY is configured
+      enabled: false,
+      siteKey: '',
     },
-    // Session cookie configuration
-    cookieOptions: {
-      expires: 365,
-      sameSite: 'Lax',
-    },
-  },
-
-  // Feature toggles
-  features: {
-    // Sidebar (desktop only) - shows branding and feature highlights
-    sidebar: {
-      enabled: true,
-      features: [
-        {
-          title: 'Secure & Reliable',
-          description: 'Enterprise-grade security powered by Supabase authentication',
-        },
-        {
-          title: 'Fast Authentication',
-          description: 'Sign in quickly with your email or preferred OAuth provider',
-        },
-        {
-          title: 'Privacy First',
-          description: 'Your data is encrypted and protected with industry standards',
-        },
-      ],
-    },
-  },
-
-  // Post-authentication redirects
-  redirects: {
-    afterSignIn: '/',            // Where to redirect after successful sign-in
-    afterSignOut: '/signin',     // Where to redirect after sign-out
   },
 }

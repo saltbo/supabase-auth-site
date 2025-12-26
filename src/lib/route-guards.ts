@@ -1,6 +1,5 @@
 import { redirect } from '@tanstack/react-router'
 import { supabase } from './supabase'
-import { siteConfig } from './config'
 
 
 /**
@@ -47,7 +46,7 @@ export async function requireAuth(options?: {
  *
  * Use this to redirect authenticated users away from guest-only pages (e.g., signin).
  *
- * @param redirectTo - Where to redirect authenticated users (default: config.redirects.afterSignIn)
+ * @param redirectTo - Where to redirect authenticated users (default: '/')
  * @throws Redirect if user is authenticated
  *
  * @example
@@ -59,15 +58,12 @@ export async function requireAuth(options?: {
  * })
  * ```
  */
-export async function requireGuest(redirectTo?: string): Promise<void> {
+export async function requireGuest(redirectTo: string = '/'): Promise<void> {
   const {
     data: { session },
   } = await supabase.auth.getSession()
 
   if (session) {
-    // Import dynamically to avoid circular dependency
-    const destination = redirectTo || siteConfig.redirects.afterSignIn
-
-    throw redirect({ to: destination })
+    throw redirect({ to: redirectTo })
   }
 }

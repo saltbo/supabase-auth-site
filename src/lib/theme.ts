@@ -1,17 +1,17 @@
-import { siteConfig } from './config'
+import type { SiteConfig } from '@/../site.config.types'
 
 /**
  * Inject theme colors from config into CSS custom properties
  * This allows dynamic theming based on user configuration
  *
- * Call this once during app initialization (in main.tsx)
+ * Call this when the theme config changes (e.g., in useEffect)
+ *
+ * @param theme - Theme configuration object with color values
  */
-export function injectThemeColors(): void {
+export function injectThemeColors(theme: SiteConfig['theme']): void {
   if (typeof document === 'undefined') {
     return // SSR safety
   }
-
-  const { theme } = siteConfig
 
   // Create style element with CSS custom properties
   const style = document.createElement('style')

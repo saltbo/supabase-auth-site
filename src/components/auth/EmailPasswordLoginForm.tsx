@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/lib/auth'
-import { TURNSTILE_SITE_KEY } from '@/lib/turnstile'
+import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
 import { performPostLoginRedirect } from '@/lib/redirect'
 import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/TurnstileWidget'
 import { ErrorAlert } from '@/components/ErrorAlert'
@@ -13,6 +13,7 @@ interface EmailPasswordLoginFormProps {}
 
 export function EmailPasswordLoginForm({}: EmailPasswordLoginFormProps) {
   const navigate = useNavigate()
+  const config = useSiteConfig()
   const { signIn } = useAuth()
   const turnstileRef = useRef<TurnstileWidgetRef>(null)
   const [email, setEmail] = useState('')
@@ -43,7 +44,7 @@ export function EmailPasswordLoginForm({}: EmailPasswordLoginFormProps) {
 
   const handlePasswordFocus = () => {
     // Show Turnstile when user starts entering password
-    if (TURNSTILE_SITE_KEY && !showTurnstile) {
+    if (isTurnstileEnabled(config) && !showTurnstile) {
       setShowTurnstile(true)
     }
   }
@@ -91,7 +92,7 @@ export function EmailPasswordLoginForm({}: EmailPasswordLoginFormProps) {
         <Button
           type="submit"
           className="w-full"
-          disabled={loading || (TURNSTILE_SITE_KEY && !turnstileToken)}
+          disabled={loading || (isTurnstileEnabled(config) && !turnstileToken)}
         >
           {loading ? (
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />

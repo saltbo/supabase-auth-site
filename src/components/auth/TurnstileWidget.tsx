@@ -1,6 +1,6 @@
 import { useEffect, useImperativeHandle, forwardRef, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
-import { TURNSTILE_SITE_KEY } from '@/lib/turnstile'
+import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
 
 export interface TurnstileWidgetRef {
   /**
@@ -57,6 +57,7 @@ interface TurnstileWidgetProps {
  */
 export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetProps>(
   ({ onSuccess, onTokenCleared, className = 'flex justify-center' }, ref) => {
+    const config = useSiteConfig()
     const [token, setToken] = useState<string | null>(null)
     const [resetKey, setResetKey] = useState(0)
 
@@ -79,7 +80,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
     }))
 
     // Don't render if Turnstile is not configured
-    if (!TURNSTILE_SITE_KEY) {
+    if (!isTurnstileEnabled(config)) {
       return null
     }
 
@@ -87,7 +88,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
       <div className={className}>
         <Turnstile
           key={resetKey}
-          siteKey={TURNSTILE_SITE_KEY}
+          siteKey={config.auth.turnstile.siteKey}
           onSuccess={handleSuccess}
           onError={handleTokenCleared}
           onExpire={handleTokenCleared}

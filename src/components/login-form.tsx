@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons'
 import { EmailOtpLoginForm } from '@/components/auth/EmailOtpLoginForm'
 import { EmailPasswordLoginForm } from '@/components/auth/EmailPasswordLoginForm'
+import { useSiteConfig, isPasswordAllowed } from '@/lib/config'
 
 type LoginMethod = 'default' | 'email-otp'
 
@@ -13,6 +14,8 @@ interface LoginFormProps extends React.ComponentPropsWithoutRef<'div'> {
 
 export function LoginForm({ className, ...props }: LoginFormProps) {
   const [loginMethod, setLoginMethod] = useState<LoginMethod>('default')
+  const config = useSiteConfig()
+  const passwordAllowed = isPasswordAllowed(config)
 
   const handleBackToDefault = () => {
     setLoginMethod('default')
@@ -43,13 +46,17 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               </Button>
             </div>
 
-            <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-              <span className="relative z-10 bg-card px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
+            {passwordAllowed && (
+              <>
+                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                  <span className="relative z-10 bg-card px-2 text-muted-foreground">
+                    Or continue with
+                  </span>
+                </div>
 
-            <EmailPasswordLoginForm />
+                <EmailPasswordLoginForm />
+              </>
+            )}
           </div>
         ) : (
           <EmailOtpLoginForm onBack={handleBackToDefault} />

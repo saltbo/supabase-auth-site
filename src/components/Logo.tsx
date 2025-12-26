@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { useSiteConfig } from '@/lib/config'
+import { injectThemeColors } from '@/lib/theme'
 
 interface LogoProps {
   className?: string
@@ -9,6 +11,11 @@ interface LogoProps {
 export function Logo({ className = 'h-8', variant = 'default' }: LogoProps) {
   const config = useSiteConfig()
   const isLight = variant === 'light'
+
+  // Inject theme colors when config changes
+  useEffect(() => {
+    injectThemeColors(config.theme)
+  }, [config.theme])
 
   // If custom logo URL is provided, use it
   if (config.branding.logo.url) {

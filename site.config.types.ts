@@ -49,55 +49,25 @@ export interface SiteConfig {
 
   /** Authentication configuration */
   auth: {
-    /** OAuth provider settings - supports any Supabase OAuth provider */
-    providers: Record<
-      string,
-      {
-        /** Enable/disable this OAuth provider */
-        enabled: boolean
-        /** Display name (defaults to capitalized provider key) */
-        displayName?: string
-        /** OAuth scopes to request (provider-specific) */
-        scopes?: string
-        /** Icon identifier (lucide-react icon name, defaults to provider key) */
-        icon?: string
-      }
-    >
-    /** Cloudflare Turnstile CAPTCHA */
+    /**
+     * List of enabled OAuth provider names
+     * Provider metadata (icons, scopes, display names) are defined in src/lib/auth-providers.ts
+     * Examples: ['google', 'github', 'gitlab', 'azure', 'facebook']
+     */
+    enabledProviders: string[]
+
+    /** Allow new user registration */
+    allowSignup: boolean
+
+    /** Allow email/password authentication */
+    allowPassword: boolean
+
+    /** Turnstile CAPTCHA configuration */
     turnstile: {
-      /** Enable/disable CAPTCHA (requires VITE_TURNSTILE_SITE_KEY) */
+      /** Enable Turnstile CAPTCHA protection */
       enabled: boolean
+      /** Turnstile Site Key (get from Cloudflare Dashboard) */
+      siteKey: string
     }
-    /** Session cookie configuration */
-    cookieOptions?: {
-      /** Cookie expiration in days (default: 365) */
-      expires?: number
-      /** Cookie sameSite policy (default: 'Lax') */
-      sameSite?: 'Lax' | 'Strict' | 'None'
-    }
-  }
-
-  /** Feature toggles */
-  features: {
-    /** Auth sidebar configuration (desktop only) */
-    sidebar: {
-      /** Show/hide the branded sidebar */
-      enabled: boolean
-      /** Feature highlights to display */
-      features: Array<{
-        /** Feature title */
-        title: string
-        /** Feature description */
-        description: string
-      }>
-    }
-  }
-
-  /** Redirect URLs */
-  redirects: {
-    /** Where to redirect after successful sign-in */
-    afterSignIn: string
-    /** Where to redirect after sign-out */
-    afterSignOut: string
   }
 }
