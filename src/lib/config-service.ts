@@ -7,6 +7,12 @@ import type { SiteConfig } from '@/../site.config.types'
 const CONFIG_BUCKET = 'auth-site'
 const CONFIG_FILE = 'config.json'
 
+let cachedConfig: SiteConfig | null = null
+
+export function getCachedConfig(): SiteConfig | null {
+  return cachedConfig
+}
+
 /**
  * Fetch site configuration from Storage
  * Returns null if config doesn't exist or on error
@@ -40,6 +46,7 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
         if (text && text.trim() !== '') {
           const config = JSON.parse(text) as SiteConfig
           console.log('Parsed config from public URL:', config)
+          cachedConfig = config
           return config
         }
       }
@@ -62,6 +69,7 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
 
     const config = JSON.parse(text) as SiteConfig
     console.log('Parsed config:', config)
+    cachedConfig = config
     return config
   } catch (err) {
     console.error('Error parsing config from Storage:', err)

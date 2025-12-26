@@ -54,5 +54,11 @@ export const defaultConfig: SiteConfig = {
       enabled: false,
       siteKey: '',
     },
+
+    // Cookie storage configuration
+    cookieOptions: {
+      expires: 365,
+      sameSite: 'Lax',
+    },
   },
 }

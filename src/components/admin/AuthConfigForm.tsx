@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AUTH_PROVIDERS, AVAILABLE_PROVIDERS } from '@/lib/auth-providers'
 
 const schema = z.object({
@@ -15,6 +16,10 @@ const schema = z.object({
     enabled: z.boolean(),
     siteKey: z.string(),
   }),
+  cookieOptions: z.object({
+    expires: z.number().min(1, 'Must be at least 1 day'),
+    sameSite: z.enum(['Lax', 'Strict', 'None']),
+  }).optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -28,12 +33,19 @@ interface AuthConfigFormProps {
 export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFormProps) {
   const {
     control,
+    register,
     handleSubmit,
     watch,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: initialData,
+    defaultValues: {
+      ...initialData,
+      cookieOptions: initialData.cookieOptions || {
+        expires: 365,
+        sameSite: 'Lax',
+      },
+    },
   })
 
   const enabledProviders = watch('enabledProviders')
@@ -205,6 +217,58 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
               </div>
             )}
           />
+        </div>
+      </div>
+
+      {/* Cookie Configuration */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-medium mb-2">Cookie Options</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Configure session cookie behavior for cross-domain authentication
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg border p-4">
+          <div className="space-y-2">
+            <Label htmlFor="cookieExpires">Session Expiration (Days)</Label>
+            <Input
+              id="cookieExpires"
+              type="number"
+              min="1"
+              placeholder="365"
+              {...register('cookieOptions.expires', { valueAsNumber: true })}
+            />
+            <p className="text-xs text-muted-foreground">
+              How long the session cookie should persist
+            </p>
+            {errors.cookieOptions?.expires && (
+              <p className="text-sm text-destructive">{errors.cookieOptions.expires.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="cookieSameSite">SameSite Policy</Label>
+            <Controller
+              name="cookieOptions.sameSite"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <SelectTrigger id="cookieSameSite">
+                    <SelectValue placeholder="Select SameSite policy" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Lax">Lax (Recommended)</SelectItem>
+                    <SelectItem value="Strict">Strict (More Secure)</SelectItem>
+                    <SelectItem value="None">None (Cross-Site)</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <p className="text-xs text-muted-foreground">
+              Controls when cookies are sent with cross-site requests
+            </p>
+          </div>
         </div>
       </div>
 

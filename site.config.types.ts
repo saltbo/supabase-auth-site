@@ -69,5 +69,13 @@ export interface SiteConfig {
       /** Turnstile Site Key (get from Cloudflare Dashboard) */
       siteKey: string
     }
+
+    /** Cookie storage configuration */
+    cookieOptions?: {
+      /** Cookie expiration in days */
+      expires: number
+      /** SameSite attribute for cookies */
+      sameSite: 'Lax' | 'Strict' | 'None'
+    }
   }
 }
