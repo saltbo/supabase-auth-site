@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { 
@@ -47,11 +48,13 @@ export function SiteConfigEditor({ config, onSave, isLoading }: SiteConfigEditor
   }
 
   const menuItems = [
-    { id: 'site', label: 'Site Info', icon: Globe, description: 'Basic information' },
-    { id: 'branding', label: 'Branding', icon: LayoutDashboard, description: 'Logo & favicon' },
-    { id: 'theme', label: 'Theme', icon: Palette, description: 'Colors & appearance' },
-    { id: 'auth', label: 'Authentication', icon: Lock, description: 'Login providers' },
+    { id: 'site', label: 'Site Info', icon: Globe, description: 'Basic information about your site' },
+    { id: 'branding', label: 'Branding', icon: LayoutDashboard, description: 'Customize your site logo and favicon' },
+    { id: 'theme', label: 'Theme', icon: Palette, description: 'Customize your site color scheme' },
+    { id: 'auth', label: 'Authentication', icon: Lock, description: 'Configure authentication providers and options' },
   ] as const
+
+  const activeItem = menuItems.find(i => i.id === activeTab)!
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -71,7 +74,7 @@ export function SiteConfigEditor({ config, onSave, isLoading }: SiteConfigEditor
               variant={activeTab === item.id ? "secondary" : "ghost"}
               className={cn(
                 "w-full justify-start text-left",
-                activeTab === item.id && "bg-secondary"
+                activeTab === item.id && "bg-secondary font-medium"
               )}
               onClick={() => setActiveTab(item.id as any)}
             >
@@ -92,73 +95,64 @@ export function SiteConfigEditor({ config, onSave, isLoading }: SiteConfigEditor
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-64">
-        <div className="h-full flex flex-col">
+      <main className="flex-1 ml-64 p-8 lg:p-10">
+        <div className="max-w-2xl mx-auto space-y-8">
           {/* Header */}
-          <header className="border-b bg-background/95 backdrop-blur px-8 py-6 sticky top-0 z-40">
-            <h1 className="text-2xl font-bold tracking-tight">
-              {menuItems.find(i => i.id === activeTab)?.label}
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              {activeItem.label}
             </h1>
-            <p className="text-muted-foreground mt-1">
-              {menuItems.find(i => i.id === activeTab)?.description}
+            <p className="text-muted-foreground mt-2">
+              {activeItem.description}
             </p>
-          </header>
+          </div>
 
-          {/* Content Area */}
-          <main className="flex-1 p-8 overflow-y-auto">
-            <div className="max-w-4xl mx-auto space-y-6">
-              {saveSuccess && (
-                <Alert className="border-green-200 bg-green-50 text-green-900 animate-in fade-in slide-in-from-top-2">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <AlertDescription>
-                    Configuration saved successfully! Changes will take effect immediately.
-                  </AlertDescription>
-                </Alert>
-              )}
+          <Separator />
 
-              {activeTab === 'site' && (
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-                  <SiteInfoForm
-                    initialData={config.site}
-                    onSave={(site) => handleSave({ site })}
-                    isLoading={isLoading}
-                  />
-                </div>
-              )}
+          {saveSuccess && (
+            <Alert className="border-green-200 bg-green-50 text-green-900 animate-in fade-in slide-in-from-top-2">
+              <CheckCircle2 className="h-4 w-4" />
+              <AlertDescription>
+                Configuration saved successfully! Changes will take effect immediately.
+              </AlertDescription>
+            </Alert>
+          )}
 
-              {activeTab === 'branding' && (
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-                  <BrandingForm
-                    initialData={config.branding}
-                    onSave={(branding) => handleSave({ branding })}
-                    isLoading={isLoading}
-                  />
-                </div>
-              )}
+          <div className="mt-8">
+            {activeTab === 'site' && (
+              <SiteInfoForm
+                initialData={config.site}
+                onSave={(site) => handleSave({ site })}
+                isLoading={isLoading}
+              />
+            )}
 
-              {activeTab === 'theme' && (
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-                  <ThemeForm
-                    initialData={config.theme}
-                    onSave={(theme) => handleSave({ theme })}
-                    isLoading={isLoading}
-                  />
-                </div>
-              )}
+            {activeTab === 'branding' && (
+              <BrandingForm
+                initialData={config.branding}
+                onSave={(branding) => handleSave({ branding })}
+                isLoading={isLoading}
+              />
+            )}
 
-              {activeTab === 'auth' && (
-                <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-                  <AuthConfigForm
-                    initialData={config.auth}
-                    onSave={(auth) => handleSave({ auth })}
-                    isLoading={isLoading}
-                  />
-                </div>
-              )}
-            </div>
-          </main>
+            {activeTab === 'theme' && (
+              <ThemeForm
+                initialData={config.theme}
+                onSave={(theme) => handleSave({ theme })}
+                isLoading={isLoading}
+              />
+            )}
+
+            {activeTab === 'auth' && (
+              <AuthConfigForm
+                initialData={config.auth}
+                onSave={(auth) => handleSave({ auth })}
+                isLoading={isLoading}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
