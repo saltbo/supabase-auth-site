@@ -63,7 +63,7 @@ export const cookieStorage: SupportedStorage = {
   setItem: (key: string, value: string): void => {
     // Try to get dynamic config, fallback to default
     const config = getCachedConfig() || defaultConfig
-    const cookieOptions = config.auth.cookieOptions || defaultConfig.auth.cookieOptions
+    const cookieOptions = config?.auth?.cookieOptions || defaultConfig.auth.cookieOptions
 
     Cookies.set(key, value, {
       expires: cookieOptions?.expires ?? 365,
