@@ -17,9 +17,7 @@ export interface SiteConfig {
     /** Site name (used in titles, meta tags, logo fallback) */
     name: string
     /** Main slogan or tagline displayed on auth pages */
-    slogan: string
-    /** Short description (used in sidebar and meta tags) */
-    description: string
+    slogan?: string
     /** Copyright text shown in footer */
     copyright: string
     /** Terms of Service URL */

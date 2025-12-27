@@ -15,8 +15,7 @@ import type { SiteConfig } from '../../../site.config.types'
 
 const schema = z.object({
   name: z.string().min(1, 'Site name is required'),
-  slogan: z.string().min(1, 'Slogan is required'),
-  description: z.string().min(1, 'Description is required'),
+  slogan: z.string().optional(),
   copyright: z.string().min(1, 'Copyright text is required'),
   termsUrl: z.string().optional(),
   privacyUrl: z.string().optional(),
@@ -115,7 +114,7 @@ export function SiteInfoForm({ config, onSave, isLoading }: SiteInfoFormProps) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Site Information</h3>
         <div className="space-y-2">
-          <Label htmlFor="name">Site Name</Label>
+          <Label htmlFor="name">Name</Label>
           <Input
             id="name"
             placeholder="My Awesome Site"
@@ -137,19 +136,6 @@ export function SiteInfoForm({ config, onSave, isLoading }: SiteInfoFormProps) {
           />
           {errors.slogan && (
             <p className="text-sm text-destructive">{errors.slogan.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <Input
-            id="description"
-            placeholder="Sign in to access your account"
-            {...register('description')}
-            readOnly={!isAdmin}
-          />
-          {errors.description && (
-            <p className="text-sm text-destructive">{errors.description.message}</p>
           )}
         </div>
       </div>

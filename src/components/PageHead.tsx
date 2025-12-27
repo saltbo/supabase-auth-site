@@ -49,7 +49,7 @@ export function PageHead() {
       metaDescription.setAttribute('name', 'description')
       document.head.appendChild(metaDescription)
     }
-    metaDescription.setAttribute('content', config.site.description)
+    metaDescription.setAttribute('content', config.site.slogan || config.site.name)
 
     // Update favicon
     const faviconUrl = getFaviconUrl(config)
@@ -67,7 +67,7 @@ export function PageHead() {
     if (appleTouchIcon) {
       appleTouchIcon.href = faviconUrl
     }
-  }, [config.site.name, config.site.description, config.branding.logoUrl, config.theme])
+  }, [config.site.name, config.site.slogan, config.branding.logoUrl, config.theme])
 
   // This component doesn't render anything
   return null
