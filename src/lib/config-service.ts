@@ -113,8 +113,9 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
         if (text && text.trim() !== '') {
           const config = JSON.parse(text) as SiteConfig
           console.log('Parsed config from public URL:', config)
-          cachedConfig = config
-          return config
+          const mergedConfig = mergeWithDefaultConfig(config)
+          cachedConfig = mergedConfig
+          return mergedConfig
         }
       }
 
@@ -136,8 +137,9 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
 
     const config = JSON.parse(text) as SiteConfig
     console.log('Parsed config:', config)
-    cachedConfig = config
-    return config
+    const mergedConfig = mergeWithDefaultConfig(config)
+    cachedConfig = mergedConfig
+    return mergedConfig
   } catch (err) {
     console.error('Error parsing config from Storage:', err)
     return null
