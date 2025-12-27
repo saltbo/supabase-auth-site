@@ -8,13 +8,11 @@ import {
   ArrowLeft,
   Code2,
   Menu,
-  X,
-  CheckCircle2
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useAdmin } from './AdminContext'
 
 import { Logo } from '@/components/Logo'
@@ -23,7 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export function AdminLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { config, saveSuccess, isLoading } = useAdmin()
+  const { config } = useAdmin()
   const { user } = useAuth()
   const location = useLocation()
 
@@ -120,31 +118,15 @@ export function AdminLayout() {
       <main className="flex-1 min-w-0 lg:ml-64 p-4 lg:p-10 pt-20 lg:pt-10">
         <div className="max-w-5xl space-y-8 mx-auto">
           {/* Header */}
-          {activeItem && (
-            <div>
+          <div className="flex items-center justify-between">
+            {activeItem && (
               <h1 className="text-2xl font-bold tracking-tight text-foreground">
                 {activeItem.label}
               </h1>
-            </div>
-          )}
+            )}
+          </div>
 
           <Separator />
-
-          {saveSuccess && (
-            <Alert className="border-green-200 bg-green-50 text-green-900 animate-in fade-in slide-in-from-top-2">
-              <CheckCircle2 className="h-4 w-4" />
-              <AlertDescription>
-                Configuration saved successfully! Changes will take effect immediately.
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {isLoading && !saveSuccess && (
-             <div className="flex items-center gap-2 text-muted-foreground animate-pulse">
-                <div className="h-4 w-4 rounded-full bg-primary/50" />
-                Saving...
-             </div>
-          )}
 
           <div className="mt-8">
             <Outlet />

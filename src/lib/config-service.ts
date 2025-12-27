@@ -151,11 +151,30 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
 /**
  * Upload site configuration to Storage
  * Uses upsert to create or update
+ * Implements optimistic concurrency control using revision
  */
 export async function uploadConfigToStorage(
   config: SiteConfig,
 ): Promise<void> {
-  const blob = new Blob([JSON.stringify(config, null, 2)], {
+  // 1. Fetch the latest config from storage to check for conflicts
+  const latestConfig = await fetchConfigFromStorage()
+  
+  if (latestConfig) {
+    // 2. Compare revisions
+    if (latestConfig.revision > config.revision) {
+      throw new Error(
+        `Conflict detected: The configuration has been updated by someone else (v${latestConfig.revision}). Please refresh the page and try again.`
+      )
+    }
+  }
+
+  // 3. Increment revision for the new save
+  const updatedConfig = {
+    ...config,
+    revision: (config.revision || 0) + 1
+  }
+
+  const blob = new Blob([JSON.stringify(updatedConfig, null, 2)], {
     type: 'application/json',
   })
 
@@ -169,6 +188,9 @@ export async function uploadConfigToStorage(
     }
     throw new Error(`Failed to upload config: ${error.message}`)
   }
+  
+  // Update cache
+  cachedConfig = updatedConfig
 }
 
 /**

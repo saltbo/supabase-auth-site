@@ -12,8 +12,8 @@ import { AdminContext } from '@/components/console/AdminContext'
 import { ConfigInitializer } from '@/components/console/ConfigInitializer'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { SiteConfig } from '@/../site.config.types'
-import { useState } from 'react'
 import { useAuth } from '@/lib/auth'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/console')({
   beforeLoad: async () => {
@@ -35,7 +35,6 @@ export const Route = createFileRoute('/console')({
 function ConsoleRouteComponent() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
-  const [saveSuccess, setSaveSuccess] = useState(false)
   
   const isAdmin = isUserAdmin(user?.email)
 
@@ -71,9 +70,15 @@ function ConsoleRouteComponent() {
     mutationFn: uploadConfigToStorage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['site-config'] })
-      setSaveSuccess(true)
-      setTimeout(() => setSaveSuccess(false), 3000)
+      toast.success("Success", {
+        description: "Configuration saved successfully! Changes will take effect immediately.",
+      })
     },
+    onError: (error: Error) => {
+      toast.error("Error", {
+        description: `Failed to save configuration: ${error.message}`,
+      })
+    }
   })
 
   const handleUpdateConfig = (updates: Partial<SiteConfig>) => {
@@ -140,7 +145,6 @@ function ConsoleRouteComponent() {
         config, 
         updateConfig: handleUpdateConfig, 
         isLoading: updating || loadingConfig,
-        saveSuccess,
         isAdmin
       }}
     >

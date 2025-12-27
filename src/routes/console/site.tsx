@@ -17,6 +17,7 @@ function AdminSitePage() {
         </p>
       </div>
       <SiteInfoForm 
+        key={config.revision}
         initialData={config.site} 
         onSave={(data) => updateConfig({ site: data })}
         isLoading={isLoading}

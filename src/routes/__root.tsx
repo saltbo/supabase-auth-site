@@ -6,6 +6,7 @@ import { AlertCircle, Loader2 } from 'lucide-react'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { PageHead } from '@/components/PageHead'
 import { useSiteConfigQuery } from '@/lib/config'
+import { Toaster } from 'sonner'
 
 // Generic error component for route-level errors
 function DefaultErrorComponent({ error }: { error: Error }) {
@@ -37,6 +38,7 @@ function RootComponent() {
     <>
       <PageHead />
       <Outlet />
+      <Toaster position="top-right" richColors />
       {/* Dev tools only in development */}
       {import.meta.env.DEV && (
         <TanStackDevtools

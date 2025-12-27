@@ -17,6 +17,7 @@ function AdminAuthPage() {
         </p>
       </div>
       <AuthConfigForm 
+        key={config.revision}
         initialData={config.auth} 
         onSave={(data) => updateConfig({ auth: data })}
         isLoading={isLoading}

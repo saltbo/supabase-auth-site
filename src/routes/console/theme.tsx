@@ -17,6 +17,7 @@ function AdminThemePage() {
         </p>
       </div>
       <ThemeForm 
+        key={config.revision}
         initialData={config.theme} 
         onSave={(data) => updateConfig({ theme: data })}
         isLoading={isLoading}

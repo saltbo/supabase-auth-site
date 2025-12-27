@@ -5,7 +5,6 @@ interface AdminContextType {
   config: SiteConfig
   updateConfig: (updates: Partial<SiteConfig>) => void
   isLoading: boolean
-  saveSuccess: boolean
   isAdmin: boolean
 }
 

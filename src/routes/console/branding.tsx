@@ -17,6 +17,7 @@ function AdminBrandingPage() {
         </p>
       </div>
       <BrandingForm 
+        key={config.revision}
         initialData={config.branding} 
         onSave={(data) => updateConfig({ branding: data })}
         isLoading={isLoading}

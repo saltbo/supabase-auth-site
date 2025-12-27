@@ -7,6 +7,9 @@ import type { SiteConfig } from './site.config.types'
  * This is a complete example showing all available options.
  */
 export const defaultConfig: SiteConfig = {
+  // Version control
+  revision: 1,
+
   // Basic site information
   site: {
     name: 'My Auth App',

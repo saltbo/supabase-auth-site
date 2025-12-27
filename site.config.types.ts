@@ -6,6 +6,12 @@
  */
 
 export interface SiteConfig {
+  /** 
+   * Version of the configuration 
+   * Used for React keys and optimistic concurrency control
+   */
+  revision: number
+
   /** Basic site information */
   site: {
     /** Site name (used in titles, meta tags, logo fallback) */
