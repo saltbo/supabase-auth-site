@@ -53,10 +53,10 @@ export function EmailOtpLoginForm({
       turnstileRef.current?.reset()
     } else {
       if (isMagicLink) {
-        toast.success('Check your email', {
-          description: 'We sent you a sign-in link. Please check your inbox.',
+        navigate({
+          to: '/check-email',
+          search: { email },
         })
-        setLoading(false)
       } else {
         // Navigate to OTP verification page
         navigate({

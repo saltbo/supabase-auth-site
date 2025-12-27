@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as SigninRouteImport } from './routes/signin'
+import { Route as CheckEmailRouteImport } from './routes/check-email'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as ConsoleRouteRouteImport } from './routes/console/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -30,6 +31,11 @@ const VerifyOtpRoute = VerifyOtpRouteImport.update({
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
   path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckEmailRoute = CheckEmailRouteImport.update({
+  id: '/check-email',
+  path: '/check-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CallbackRoute = CallbackRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/console': typeof ConsoleRouteRouteWithChildren
   '/callback': typeof CallbackRoute
+  '/check-email': typeof CheckEmailRoute
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/check-email': typeof CheckEmailRoute
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/console': typeof ConsoleRouteRouteWithChildren
   '/callback': typeof CallbackRoute
+  '/check-email': typeof CheckEmailRoute
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/'
     | '/console'
     | '/callback'
+    | '/check-email'
     | '/signin'
     | '/verify-otp'
     | '/console/auth'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/callback'
+    | '/check-email'
     | '/signin'
     | '/verify-otp'
     | '/console/auth'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/'
     | '/console'
     | '/callback'
+    | '/check-email'
     | '/signin'
     | '/verify-otp'
     | '/console/auth'
@@ -173,6 +185,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConsoleRouteRoute: typeof ConsoleRouteRouteWithChildren
   CallbackRoute: typeof CallbackRoute
+  CheckEmailRoute: typeof CheckEmailRoute
   SigninRoute: typeof SigninRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
   OauthConsentRoute: typeof OauthConsentRoute
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/signin'
       fullPath: '/signin'
       preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/check-email': {
+      id: '/check-email'
+      path: '/check-email'
+      fullPath: '/check-email'
+      preLoaderRoute: typeof CheckEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/callback': {
@@ -292,6 +312,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConsoleRouteRoute: ConsoleRouteRouteWithChildren,
   CallbackRoute: CallbackRoute,
+  CheckEmailRoute: CheckEmailRoute,
   SigninRoute: SigninRoute,
   VerifyOtpRoute: VerifyOtpRoute,
   OauthConsentRoute: OauthConsentRoute,
