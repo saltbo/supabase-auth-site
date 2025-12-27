@@ -21,6 +21,7 @@ export const defaultConfig: SiteConfig = {
   // Branding assets
   branding: {
     logo: {
+      type: 'icon',
       // Option 1: Use a custom logo image
       // url: '/logo.png',
 
@@ -28,7 +29,6 @@ export const defaultConfig: SiteConfig = {
       text: 'My Auth App',
       icon: 'M',
     },
-    favicon: '/favicon.ico',
   },
 
   // Theme colors (use any valid CSS color format)

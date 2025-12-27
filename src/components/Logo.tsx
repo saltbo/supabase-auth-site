@@ -20,8 +20,8 @@ export function Logo({ className = 'h-8', variant = 'default', config: propConfi
     injectThemeColors(config.theme)
   }, [config.theme])
 
-  // If custom logo URL is provided, use it
-  if (config.branding.logo.url) {
+  // If custom logo image is selected and URL is provided, use it
+  if (config.branding.logo.type === 'image' && config.branding.logo.url) {
     return (
       <img
         src={config.branding.logo.url}

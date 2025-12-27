@@ -28,6 +28,8 @@ export interface SiteConfig {
   branding: {
     /** Logo configuration */
     logo: {
+      /** Mode of the logo */
+      type: 'image' | 'icon'
       /** URL to custom logo image (e.g., '/logo.png') */
       url?: string
       /** Text-based logo (fallback if no image provided) */
@@ -35,8 +37,6 @@ export interface SiteConfig {
       /** Single letter or emoji for icon */
       icon?: string
     }
-    /** Path to favicon */
-    favicon: string
   }
 
   /** Theme colors (CSS color values: hex, rgb, hsl, etc.) */
