@@ -22,6 +22,7 @@ import { usePreviewStore } from '@/lib/preview-store'
 import { Mail, KeyRound, ShieldCheck, Globe, Fingerprint, UserPlus, Ticket } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
+import { toast } from 'sonner'
 
 const schema = z.object({
   enabledProviders: z.array(z.string()),
@@ -65,7 +66,6 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     register,
     handleSubmit,
     watch,
-    setError,
     formState: { isDirty, errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -112,9 +112,8 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     const hasProviders = data.enabledProviders && data.enabledProviders.length > 0
 
     if (!hasPassword && !hasEmailOTP && !hasProviders) {
-      setError('root', {
-        type: 'manual',
-        message: "At least one login method must be enabled (Password, Email OTP, or an OAuth Provider)."
+      toast.error("Configuration Error", {
+        description: "At least one login method must be enabled (Password, Email OTP, or an OAuth Provider)."
       })
       return
     }
@@ -124,16 +123,6 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-      {errors.root && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Configuration Error</AlertTitle>
-          <AlertDescription>
-            {errors.root.message}
-          </AlertDescription>
-        </Alert>
-      )}
-
       <Tabs defaultValue="methods" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-6">
           <TabsTrigger value="methods">Login Methods</TabsTrigger>
