@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import type { SiteConfig } from '../../site.config.types'
-import { defaultConfig } from '../../site.config.default'
 
 interface PreviewState {
   previewConfig: SiteConfig | null

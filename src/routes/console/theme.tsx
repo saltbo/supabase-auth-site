@@ -11,11 +11,6 @@ function AdminThemePage() {
 
   return (
     <div className="max-w-2xl">
-      <div className="mb-6">
-        <p className="text-muted-foreground">
-          Customize your site color scheme and gradients.
-        </p>
-      </div>
       <ThemeForm 
         key={config.revision}
         initialData={config.theme} 

@@ -30,17 +30,11 @@ export interface SiteConfig {
 
   /** Branding and visual assets */
   branding: {
-    /** Logo configuration */
-    logo: {
-      /** Mode of the logo */
-      type: 'image' | 'icon'
-      /** URL to custom logo image (e.g., '/logo.png') */
-      url?: string
-      /** Text-based logo (fallback if no image provided) */
-      text?: string
-      /** Single letter or emoji for icon */
-      icon?: string
-    }
+    /** 
+     * URL to custom logo image (e.g., '/logo.png') 
+     * If not provided, the site name and its first letter will be used.
+     */
+    logoUrl?: string
   }
 
   /** Theme colors (CSS color values: hex, rgb, hsl, etc.) */
@@ -69,8 +63,14 @@ export interface SiteConfig {
     /** Allow new user registration */
     allowSignup: boolean
 
+    /** Require invite code for registration */
+    requireInviteCode?: boolean
+
     /** Allow email/password authentication */
     allowPassword: boolean
+
+    /** Allow email OTP (magic link) authentication */
+    allowEmailOTP?: boolean
 
     /** Turnstile CAPTCHA configuration */
     turnstile: {

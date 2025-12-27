@@ -27,10 +27,10 @@ export function Logo({
   }, [config.theme])
 
   // If custom logo image is selected and URL is provided, use it
-  if (config.branding.logo.type === 'image' && config.branding.logo.url) {
+  if (config.branding.logoUrl) {
     return (
       <img
-        src={config.branding.logo.url}
+        src={config.branding.logoUrl}
         alt={config.site.name}
         className={className}
       />
@@ -38,8 +38,8 @@ export function Logo({
   }
 
   // Otherwise use text/icon based logo
-  const logoText = config.branding.logo.text || config.site.name
-  const logoIcon = config.branding.logo.icon || logoText[0] || 'A'
+  const logoText = config.site.name
+  const logoIcon = logoText[0] || 'A'
 
   return (
     <div className={cn('flex items-center gap-2', className)}>

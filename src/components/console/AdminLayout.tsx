@@ -5,7 +5,6 @@ import {
   Palette, 
   Globe, 
   Lock, 
-  ArrowLeft,
   Code2,
   Menu,
   X,
@@ -14,7 +13,6 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { useAdmin } from './AdminContext'
 
 import { Logo } from '@/components/Logo'
@@ -42,14 +40,34 @@ export function AdminLayout() {
   const initials = displayName.slice(0, 2).toUpperCase()
 
   const menuItems = [
-    { to: '/console/site', label: 'Site Info', icon: Globe },
-    { to: '/console/branding', label: 'Branding', icon: LayoutDashboard },
-    { to: '/console/theme', label: 'Theme', icon: Palette },
-    { to: '/console/auth', label: 'Authentication', icon: Lock },
-    { to: '/console/integration', label: 'Integration', icon: Code2 },
+    { 
+      to: '/console/site', 
+      label: 'Site', 
+      icon: Globe,
+      description: 'Basic information about your site including name, slogan, description and logo.'
+    },
+    { 
+      to: '/console/theme', 
+      label: 'Theme', 
+      icon: Palette,
+      description: 'Customize your site color scheme and gradients.'
+    },
+    { 
+      to: '/console/auth', 
+      label: 'Authentication', 
+      icon: Lock,
+      description: 'Configure authentication providers, sign-up settings, and security options.'
+    },
+    { 
+      to: '/console/integration', 
+      label: 'Integration', 
+      icon: Code2,
+      description: 'Guides and examples for integrating your application with the authentication system.'
+    },
   ] as const
 
   const activeItem = menuItems.find(item => location.pathname.startsWith(item.to))
+  const showPreview = activeItem?.to !== '/console/integration'
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background fixed inset-0">
@@ -147,19 +165,25 @@ export function AdminLayout() {
       {/* Main Container: Form + Preview */}
       <div className="flex-1 flex overflow-hidden pt-16 lg:pt-0">
         {/* Middle Column: Forms */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 xl:p-10 border-r">
-          <div className="max-w-3xl mx-auto space-y-8">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              {activeItem && (
-                <h1 className="text-2xl font-bold tracking-tight text-foreground">
+        <main className={cn(
+          "flex-1 overflow-y-auto p-4 lg:p-8 xl:p-10",
+          showPreview && "border-r"
+        )}>
+          <div className={cn(
+            "mx-auto space-y-8",
+            showPreview ? "max-w-3xl" : "max-w-5xl"
+          )}>
+            {activeItem && (
+              <div className="flex items-center gap-4 border-b pb-4">
+                <h1 className="text-2xl font-bold tracking-tight text-foreground whitespace-nowrap">
                   {activeItem.label}
                 </h1>
-              )}
-            </div>
-
-            <Separator />
-
+                <p className="text-sm text-muted-foreground pt-1 truncate">
+                  {activeItem.description}
+                </p>
+              </div>
+            )}
+            
             <div className="mt-8">
               <Outlet />
             </div>
@@ -167,9 +191,11 @@ export function AdminLayout() {
         </main>
 
         {/* Right Column: Preview */}
-        <div className="hidden lg:block w-[450px] xl:w-[500px] flex-shrink-0 bg-muted/5">
-          <PreviewPanel />
-        </div>
+        {showPreview && (
+          <div className="hidden lg:block w-[450px] xl:w-[500px] flex-shrink-0 bg-muted/5">
+            <PreviewPanel />
+          </div>
+        )}
       </div>
     </div>
   )

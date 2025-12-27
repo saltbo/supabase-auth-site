@@ -20,7 +20,6 @@ import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
 import { Route as ConsoleThemeRouteImport } from './routes/console/theme'
 import { Route as ConsoleSiteRouteImport } from './routes/console/site'
 import { Route as ConsoleIntegrationRouteImport } from './routes/console/integration'
-import { Route as ConsoleBrandingRouteImport } from './routes/console/branding'
 import { Route as ConsoleAuthRouteImport } from './routes/console/auth'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
@@ -78,11 +77,6 @@ const ConsoleIntegrationRoute = ConsoleIntegrationRouteImport.update({
   path: '/integration',
   getParentRoute: () => ConsoleRouteRoute,
 } as any)
-const ConsoleBrandingRoute = ConsoleBrandingRouteImport.update({
-  id: '/branding',
-  path: '/branding',
-  getParentRoute: () => ConsoleRouteRoute,
-} as any)
 const ConsoleAuthRoute = ConsoleAuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -96,7 +90,6 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
-  '/console/branding': typeof ConsoleBrandingRoute
   '/console/integration': typeof ConsoleIntegrationRoute
   '/console/site': typeof ConsoleSiteRoute
   '/console/theme': typeof ConsoleThemeRoute
@@ -110,7 +103,6 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
-  '/console/branding': typeof ConsoleBrandingRoute
   '/console/integration': typeof ConsoleIntegrationRoute
   '/console/site': typeof ConsoleSiteRoute
   '/console/theme': typeof ConsoleThemeRoute
@@ -126,7 +118,6 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
-  '/console/branding': typeof ConsoleBrandingRoute
   '/console/integration': typeof ConsoleIntegrationRoute
   '/console/site': typeof ConsoleSiteRoute
   '/console/theme': typeof ConsoleThemeRoute
@@ -143,7 +134,6 @@ export interface FileRouteTypes {
     | '/signin'
     | '/verify-otp'
     | '/console/auth'
-    | '/console/branding'
     | '/console/integration'
     | '/console/site'
     | '/console/theme'
@@ -157,7 +147,6 @@ export interface FileRouteTypes {
     | '/signin'
     | '/verify-otp'
     | '/console/auth'
-    | '/console/branding'
     | '/console/integration'
     | '/console/site'
     | '/console/theme'
@@ -172,7 +161,6 @@ export interface FileRouteTypes {
     | '/signin'
     | '/verify-otp'
     | '/console/auth'
-    | '/console/branding'
     | '/console/integration'
     | '/console/site'
     | '/console/theme'
@@ -270,13 +258,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsoleIntegrationRouteImport
       parentRoute: typeof ConsoleRouteRoute
     }
-    '/console/branding': {
-      id: '/console/branding'
-      path: '/branding'
-      fullPath: '/console/branding'
-      preLoaderRoute: typeof ConsoleBrandingRouteImport
-      parentRoute: typeof ConsoleRouteRoute
-    }
     '/console/auth': {
       id: '/console/auth'
       path: '/auth'
@@ -289,7 +270,6 @@ declare module '@tanstack/react-router' {
 
 interface ConsoleRouteRouteChildren {
   ConsoleAuthRoute: typeof ConsoleAuthRoute
-  ConsoleBrandingRoute: typeof ConsoleBrandingRoute
   ConsoleIntegrationRoute: typeof ConsoleIntegrationRoute
   ConsoleSiteRoute: typeof ConsoleSiteRoute
   ConsoleThemeRoute: typeof ConsoleThemeRoute
@@ -298,7 +278,6 @@ interface ConsoleRouteRouteChildren {
 
 const ConsoleRouteRouteChildren: ConsoleRouteRouteChildren = {
   ConsoleAuthRoute: ConsoleAuthRoute,
-  ConsoleBrandingRoute: ConsoleBrandingRoute,
   ConsoleIntegrationRoute: ConsoleIntegrationRoute,
   ConsoleSiteRoute: ConsoleSiteRoute,
   ConsoleThemeRoute: ConsoleThemeRoute,

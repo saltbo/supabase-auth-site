@@ -80,13 +80,6 @@ const supabase = createClient(
 
   return (
     <div className="space-y-6 max-w-full">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold tracking-tight">Integration Guide</h2>
-        <p className="text-sm text-muted-foreground">
-          Choose the best integration method for your application type.
-        </p>
-      </div>
-
       <Tabs defaultValue="direct" className="w-full">
         <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
           <TabsTrigger value="direct">Direct Integration</TabsTrigger>

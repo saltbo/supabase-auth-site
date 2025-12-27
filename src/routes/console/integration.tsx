@@ -11,11 +11,6 @@ function AdminIntegrationPage() {
 
   return (
     <div className="max-w-4xl">
-       <div className="mb-6">
-        <p className="text-muted-foreground">
-          Guides and examples for integrating your application with the authentication system.
-        </p>
-      </div>
       <IntegrationGuide config={config} />
     </div>
   )

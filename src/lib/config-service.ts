@@ -58,10 +58,6 @@ export function mergeWithDefaultConfig(partialConfig: Partial<SiteConfig> | null
     branding: {
       ...defaultConfig.branding,
       ...partialConfig.branding,
-      logo: {
-        ...defaultConfig.branding.logo,
-        ...(partialConfig.branding?.logo || {}),
-      },
     },
     theme: {
       ...defaultConfig.theme,

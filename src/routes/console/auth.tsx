@@ -10,12 +10,7 @@ function AdminAuthPage() {
   const { config, updateConfig, isLoading } = useAdmin()
 
   return (
-    <div className="max-w-2xl">
-      <div className="mb-6">
-        <p className="text-muted-foreground">
-          Configure authentication providers, sign-up settings, and security options.
-        </p>
-      </div>
+    <div className="max-w-4xl">
       <AuthConfigForm 
         key={config.revision}
         initialData={config.auth} 

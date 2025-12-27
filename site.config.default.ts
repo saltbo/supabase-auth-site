@@ -22,15 +22,8 @@ export const defaultConfig: SiteConfig = {
 
   // Branding assets
   branding: {
-    logo: {
-      type: 'icon',
-      // Option 1: Use a custom logo image
-      // url: '/logo.png',
-
-      // Option 2: Use text-based logo
-      text: 'My Auth App',
-      icon: 'M',
-    },
+    // Optional: Upload a custom logo in the console
+    // logoUrl: '/logo.png',
   },
 
   // Theme colors (use any valid CSS color format)
@@ -51,8 +44,14 @@ export const defaultConfig: SiteConfig = {
     // Allow new user registration
     allowSignup: true,
 
+    // Require invite code for registration
+    requireInviteCode: false,
+
     // Allow email/password authentication
     allowPassword: true,
+
+    // Allow email OTP (magic link) authentication
+    allowEmailOTP: true,
 
     // Default OTP length (matches Supabase default of 8 digits)
     otpLength: 8,

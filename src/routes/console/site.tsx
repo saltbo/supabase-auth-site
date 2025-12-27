@@ -11,15 +11,10 @@ function AdminSitePage() {
 
   return (
     <div className="max-w-2xl">
-      <div className="mb-6">
-        <p className="text-muted-foreground">
-          Basic information about your site including name, slogan, and description.
-        </p>
-      </div>
       <SiteInfoForm 
         key={config.revision}
-        initialData={config.site} 
-        onSave={(data) => updateConfig({ site: data })}
+        config={config}
+        onSave={(updates) => updateConfig(updates)}
         isLoading={isLoading}
       />
     </div>
