@@ -24,6 +24,23 @@ export function injectThemeColors(theme: SiteConfig['theme']): void {
       --config-gradient-from: ${theme.gradientFrom};
       --config-gradient-via: ${theme.gradientVia};
       --config-gradient-to: ${theme.gradientTo};
+
+      /* Shadcn UI Overrides */
+      --primary: ${theme.brandColor};
+      --primary-foreground: #ffffff;
+      --ring: ${theme.brandColor};
+      
+      --secondary: ${theme.accentColor};
+      --secondary-foreground: #ffffff;
+    }
+
+    .dark {
+      --primary: ${theme.brandColor};
+      --primary-foreground: #ffffff;
+      --ring: ${theme.brandColor};
+      
+      --secondary: ${theme.accentColor};
+      --secondary-foreground: #ffffff;
     }
   `.trim()
 
