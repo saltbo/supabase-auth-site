@@ -97,7 +97,7 @@ VITE_ADMIN_EMAILS=admin@example.com
 
 **Configure via Admin UI:**
 
-1. Navigate to `https://auth.example.com/admin`
+1. Navigate to `https://auth.example.com/console`
 2. Go to **Auth Settings**
 3. Set **Cookie Domain (SSO)** to `.example.com`
 
@@ -167,7 +167,7 @@ VITE_API_BASE_URL=https://api.example.com
 
 ### SSO Configuration
 
-Most settings, including the **Cookie Domain**, are now managed through the built-in **Admin Panel** at `/admin`. This allows you to update your site configuration without redeploying.
+Most settings, including the **Cookie Domain**, are now managed through the built-in **Admin Panel** at `/console`. This allows you to update your site configuration without redeploying.
 
 1. Login to the Admin Panel.
 2. Navigate to **Auth Settings**.
@@ -516,7 +516,7 @@ sudo nano /etc/hosts
 
 **Configure via Admin UI:**
 
-1. Navigate to `http://auth.local.dev:3000/admin`
+1. Navigate to `http://auth.local.dev:3000/console`
 2. Set **Cookie Domain (SSO)** to `.local.dev`
 
 **Run your apps:**

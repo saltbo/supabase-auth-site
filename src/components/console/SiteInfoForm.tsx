@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAdmin } from './AdminContext'
 
 const schema = z.object({
   name: z.string().min(1, 'Site name is required'),
@@ -21,6 +22,7 @@ interface SiteInfoFormProps {
 }
 
 export function SiteInfoForm({ initialData, onSave, isLoading }: SiteInfoFormProps) {
+  const { isAdmin } = useAdmin()
   const {
     register,
     handleSubmit,
@@ -38,6 +40,7 @@ export function SiteInfoForm({ initialData, onSave, isLoading }: SiteInfoFormPro
           id="name"
           placeholder="My Awesome Site"
           {...register('name')}
+          readOnly={!isAdmin}
         />
         {errors.name && (
           <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -50,6 +53,7 @@ export function SiteInfoForm({ initialData, onSave, isLoading }: SiteInfoFormPro
           id="slogan"
           placeholder="Secure Authentication Made Simple"
           {...register('slogan')}
+          readOnly={!isAdmin}
         />
         {errors.slogan && (
           <p className="text-sm text-destructive">{errors.slogan.message}</p>
@@ -62,6 +66,7 @@ export function SiteInfoForm({ initialData, onSave, isLoading }: SiteInfoFormPro
           id="description"
           placeholder="Sign in to access your account"
           {...register('description')}
+          readOnly={!isAdmin}
         />
         {errors.description && (
           <p className="text-sm text-destructive">{errors.description.message}</p>
@@ -74,15 +79,18 @@ export function SiteInfoForm({ initialData, onSave, isLoading }: SiteInfoFormPro
           id="copyright"
           placeholder="© 2025 My Company"
           {...register('copyright')}
+          readOnly={!isAdmin}
         />
         {errors.copyright && (
           <p className="text-sm text-destructive">{errors.copyright.message}</p>
         )}
       </div>
 
-      <Button type="submit" disabled={isLoading || !isDirty}>
-        {isLoading ? 'Saving...' : 'Save Changes'}
-      </Button>
+      {isAdmin && (
+        <Button type="submit" disabled={isLoading || !isDirty}>
+          {isLoading ? 'Saving...' : 'Save Changes'}
+        </Button>
+      )}
     </form>
   )
 }

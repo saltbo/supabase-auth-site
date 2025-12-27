@@ -55,14 +55,16 @@ const supabase = createClient(
   }
 
   const CodeBlock = ({ code, id }: { code: string; id: string }) => (
-    <div className="relative mt-2 rounded-md bg-muted p-4">
-      <pre className="text-sm font-mono text-foreground whitespace-pre-wrap break-all pr-8">
-        <code>{code}</code>
-      </pre>
+    <div className="relative mt-2 rounded-md bg-muted group">
+      <div className="overflow-x-auto p-4 pr-12">
+        <pre className="text-sm font-mono text-foreground min-w-max">
+          <code>{code}</code>
+        </pre>
+      </div>
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-2 top-2 h-8 w-8 text-muted-foreground hover:text-foreground bg-muted/80 backdrop-blur-sm"
+        className="absolute right-2 top-2 h-8 w-8 text-muted-foreground hover:text-foreground bg-muted/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
         onClick={() => copyToClipboard(code, id)}
       >
         <Copy className="h-4 w-4" />
@@ -168,7 +170,7 @@ if (session) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="oauth" className="space-y-4 mt-6">
+        <TabsContent value="oauth" className="space-y-4 mt-6 min-w-0">
           <Card>
             <CardHeader>
               <CardTitle>OAuth Integration (Third-Party)</CardTitle>
@@ -177,13 +179,13 @@ if (session) {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-6">
-                <div className="space-y-2">
+              <div className="flex flex-col gap-6 min-w-0">
+                <div className="space-y-2 min-w-0">
                   <h3 className="text-sm font-medium">1. Enable OAuth Server & Create Application</h3>
                   <p className="text-sm text-muted-foreground">
                     First, enable the OAuth 2.0 server and create an application in your Supabase project.
                   </p>
-                  <div className="rounded-lg border p-4 bg-muted/50">
+                  <div className="rounded-lg border p-4 bg-muted/50 min-w-0">
                     <ol className="list-decimal list-inside space-y-2 text-sm">
                       <li>Go to your Supabase Project Dashboard.</li>
                       <li>Navigate to <strong>Authentication</strong> &gt; <strong>OAuth 2.0</strong> (under Configuration).</li>
@@ -195,7 +197,7 @@ if (session) {
                           <li><strong>Public:</strong> For SPAs or Mobile apps (uses PKCE, no Secret).</li>
                         </ul>
                       </li>
-                      <li>Enter your application name and callback URL (e.g., <code>https://your-app.com/callback</code>).</li>
+                      <li>Enter your application name and callback URL (e.g., <code className="break-all">https://your-app.com/callback</code>).</li>
                       <li>Copy the generated <strong>Client ID</strong> (and <strong>Client Secret</strong> if confidential).</li>
                     </ol>
                     <div className="mt-4">
@@ -210,14 +212,14 @@ if (session) {
 
                 <Separator />
 
-                <div className="space-y-2">
+                <div className="space-y-2 min-w-0">
                   <h3 className="text-sm font-medium">2. Configure OIDC Client</h3>
                   <p className="text-sm text-muted-foreground">
                     Use an OIDC-compliant library for your framework using the discovery URL below.
                   </p>
 
-                  <div className="mt-4 rounded-md bg-secondary/50 p-3 mb-6 flex items-center gap-3">
-                    <div className="text-xs font-mono bg-background p-1.5 rounded border flex-1 truncate">
+                  <div className="mt-4 rounded-md bg-secondary/50 p-3 mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-full">
+                    <div className="text-xs font-mono bg-background p-1.5 rounded border flex-1 min-w-0 truncate">
                       {`${supabaseUrl}/auth/v1/.well-known/openid-configuration`}
                     </div>
                     <Button
@@ -231,17 +233,17 @@ if (session) {
                     </Button>
                   </div>
 
-                  <Tabs defaultValue={integrationExamples[0].id} className="w-full">
-                    <TabsList className="w-full justify-start overflow-x-auto h-auto p-1 gap-1 flex-wrap">
+                  <Tabs defaultValue={integrationExamples[0].id} className="w-full max-w-full">
+                    <TabsList className="flex w-full justify-start overflow-x-auto h-auto p-1 gap-1 flex-nowrap">
                       {integrationExamples.map((example) => (
-                        <TabsTrigger key={example.id} value={example.id}>
+                        <TabsTrigger key={example.id} value={example.id} className="whitespace-nowrap flex-shrink-0">
                           {example.label}
                         </TabsTrigger>
                       ))}
                     </TabsList>
 
                     {integrationExamples.map((example) => (
-                      <TabsContent key={example.id} value={example.id} className="mt-4 space-y-4">
+                      <TabsContent key={example.id} value={example.id} className="mt-4 space-y-4 min-w-0">
                         <p className="text-sm text-muted-foreground">{example.description}:</p>
                         <CodeBlock 
                           id={`${example.id}-example`}

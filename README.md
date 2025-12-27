@@ -38,7 +38,7 @@ Unlike other templates, **you don't need to touch the code**. Every aspect of th
 | ------- | ----------- |
 | **🎨 No-Code Styling** | Customize logo, colors, fonts, and gradients directly via the Admin UI. |
 | **🔐 Multi-Auth Support** | Email/Password, Magic Link (OTP), Google, GitHub, and more out of the box. |
-| **⚙️ Admin Dashboard** | A secure `/admin` route to manage your site configuration in real-time. |
+| **⚙️ Console** | A secure `/console` route to manage your site configuration in real-time. |
 | **🌐 Cross-Domain SSO** | Seamlessly share sessions between `auth.yourdomain.com` and `app.yourdomain.com`. |
 | **📱 Mobile Responsive** | Carefully crafted UI that looks perfect on desktop, tablet, and mobile. |
 | **🛡️ Enterprise Ready** | Built-in support for Cloudflare Turnstile CAPTCHA and PKCE security flow. |
@@ -102,7 +102,7 @@ Add the following environment variables in your deployment platform settings:
 
 Once deployed, you don't need to commit code to change the look and feel.
 
-1.  Navigate to `https://your-deployed-site.com/admin`
+1.  Navigate to `https://your-deployed-site.com/console`
 2.  Login with an email address you added to `VITE_ADMIN_EMAILS`.
 3.  **Initialize**: Click the button to create your first config file.
 4.  **Edit**: Use the visual editor to update:

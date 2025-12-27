@@ -11,11 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as SigninRouteImport } from './routes/signin'
+import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as ConsoleIndexRouteImport } from './routes/console/index'
 import { Route as OauthSessionEndedRouteImport } from './routes/oauth/session-ended'
 import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
+import { Route as ConsoleThemeRouteImport } from './routes/console/theme'
+import { Route as ConsoleSiteRouteImport } from './routes/console/site'
+import { Route as ConsoleIntegrationRouteImport } from './routes/console/integration'
+import { Route as ConsoleBrandingRouteImport } from './routes/console/branding'
+import { Route as ConsoleAuthRouteImport } from './routes/console/auth'
 
 const VerifyOtpRoute = VerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -25,6 +31,11 @@ const VerifyOtpRoute = VerifyOtpRouteImport.update({
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
   path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsoleRoute = ConsoleRouteImport.update({
+  id: '/console',
+  path: '/console',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CallbackRoute = CallbackRouteImport.update({
@@ -37,10 +48,10 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+const ConsoleIndexRoute = ConsoleIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConsoleRoute,
 } as any)
 const OauthSessionEndedRoute = OauthSessionEndedRouteImport.update({
   id: '/oauth/session-ended',
@@ -52,73 +63,132 @@ const OauthConsentRoute = OauthConsentRouteImport.update({
   path: '/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsoleThemeRoute = ConsoleThemeRouteImport.update({
+  id: '/theme',
+  path: '/theme',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleSiteRoute = ConsoleSiteRouteImport.update({
+  id: '/site',
+  path: '/site',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleIntegrationRoute = ConsoleIntegrationRouteImport.update({
+  id: '/integration',
+  path: '/integration',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleBrandingRoute = ConsoleBrandingRouteImport.update({
+  id: '/branding',
+  path: '/branding',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleAuthRoute = ConsoleAuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => ConsoleRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/console': typeof ConsoleRouteWithChildren
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/console/auth': typeof ConsoleAuthRoute
+  '/console/branding': typeof ConsoleBrandingRoute
+  '/console/integration': typeof ConsoleIntegrationRoute
+  '/console/site': typeof ConsoleSiteRoute
+  '/console/theme': typeof ConsoleThemeRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
-  '/admin': typeof AdminIndexRoute
+  '/console/': typeof ConsoleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/console/auth': typeof ConsoleAuthRoute
+  '/console/branding': typeof ConsoleBrandingRoute
+  '/console/integration': typeof ConsoleIntegrationRoute
+  '/console/site': typeof ConsoleSiteRoute
+  '/console/theme': typeof ConsoleThemeRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
-  '/admin': typeof AdminIndexRoute
+  '/console': typeof ConsoleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/console': typeof ConsoleRouteWithChildren
   '/signin': typeof SigninRoute
   '/verify-otp': typeof VerifyOtpRoute
+  '/console/auth': typeof ConsoleAuthRoute
+  '/console/branding': typeof ConsoleBrandingRoute
+  '/console/integration': typeof ConsoleIntegrationRoute
+  '/console/site': typeof ConsoleSiteRoute
+  '/console/theme': typeof ConsoleThemeRoute
   '/oauth/consent': typeof OauthConsentRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
-  '/admin/': typeof AdminIndexRoute
+  '/console/': typeof ConsoleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/callback'
+    | '/console'
     | '/signin'
     | '/verify-otp'
+    | '/console/auth'
+    | '/console/branding'
+    | '/console/integration'
+    | '/console/site'
+    | '/console/theme'
     | '/oauth/consent'
     | '/oauth/session-ended'
-    | '/admin'
+    | '/console/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/callback'
     | '/signin'
     | '/verify-otp'
+    | '/console/auth'
+    | '/console/branding'
+    | '/console/integration'
+    | '/console/site'
+    | '/console/theme'
     | '/oauth/consent'
     | '/oauth/session-ended'
-    | '/admin'
+    | '/console'
   id:
     | '__root__'
     | '/'
     | '/callback'
+    | '/console'
     | '/signin'
     | '/verify-otp'
+    | '/console/auth'
+    | '/console/branding'
+    | '/console/integration'
+    | '/console/site'
+    | '/console/theme'
     | '/oauth/consent'
     | '/oauth/session-ended'
-    | '/admin/'
+    | '/console/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CallbackRoute: typeof CallbackRoute
+  ConsoleRoute: typeof ConsoleRouteWithChildren
   SigninRoute: typeof SigninRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
   OauthConsentRoute: typeof OauthConsentRoute
   OauthSessionEndedRoute: typeof OauthSessionEndedRoute
-  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -137,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/console': {
+      id: '/console'
+      path: '/console'
+      fullPath: '/console'
+      preLoaderRoute: typeof ConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/callback': {
       id: '/callback'
       path: '/callback'
@@ -151,12 +228,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+    '/console/': {
+      id: '/console/'
+      path: '/'
+      fullPath: '/console/'
+      preLoaderRoute: typeof ConsoleIndexRouteImport
+      parentRoute: typeof ConsoleRoute
     }
     '/oauth/session-ended': {
       id: '/oauth/session-ended'
@@ -172,17 +249,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/console/theme': {
+      id: '/console/theme'
+      path: '/theme'
+      fullPath: '/console/theme'
+      preLoaderRoute: typeof ConsoleThemeRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/site': {
+      id: '/console/site'
+      path: '/site'
+      fullPath: '/console/site'
+      preLoaderRoute: typeof ConsoleSiteRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/integration': {
+      id: '/console/integration'
+      path: '/integration'
+      fullPath: '/console/integration'
+      preLoaderRoute: typeof ConsoleIntegrationRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/branding': {
+      id: '/console/branding'
+      path: '/branding'
+      fullPath: '/console/branding'
+      preLoaderRoute: typeof ConsoleBrandingRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/console/auth': {
+      id: '/console/auth'
+      path: '/auth'
+      fullPath: '/console/auth'
+      preLoaderRoute: typeof ConsoleAuthRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
   }
 }
+
+interface ConsoleRouteChildren {
+  ConsoleAuthRoute: typeof ConsoleAuthRoute
+  ConsoleBrandingRoute: typeof ConsoleBrandingRoute
+  ConsoleIntegrationRoute: typeof ConsoleIntegrationRoute
+  ConsoleSiteRoute: typeof ConsoleSiteRoute
+  ConsoleThemeRoute: typeof ConsoleThemeRoute
+  ConsoleIndexRoute: typeof ConsoleIndexRoute
+}
+
+const ConsoleRouteChildren: ConsoleRouteChildren = {
+  ConsoleAuthRoute: ConsoleAuthRoute,
+  ConsoleBrandingRoute: ConsoleBrandingRoute,
+  ConsoleIntegrationRoute: ConsoleIntegrationRoute,
+  ConsoleSiteRoute: ConsoleSiteRoute,
+  ConsoleThemeRoute: ConsoleThemeRoute,
+  ConsoleIndexRoute: ConsoleIndexRoute,
+}
+
+const ConsoleRouteWithChildren =
+  ConsoleRoute._addFileChildren(ConsoleRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CallbackRoute: CallbackRoute,
+  ConsoleRoute: ConsoleRouteWithChildren,
   SigninRoute: SigninRoute,
   VerifyOtpRoute: VerifyOtpRoute,
   OauthConsentRoute: OauthConsentRoute,
   OauthSessionEndedRoute: OauthSessionEndedRoute,
-  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

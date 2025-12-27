@@ -22,7 +22,10 @@ interface BrandingFormProps {
   isLoading: boolean
 }
 
+import { useAdmin } from './AdminContext'
+
 export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormProps) {
+  const { isAdmin } = useAdmin()
   const {
     register,
     handleSubmit,
@@ -49,6 +52,7 @@ export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormPro
             id="logo.url"
             placeholder="https://example.com/logo.png"
             {...register('logo.url')}
+            readOnly={!isAdmin}
           />
           {errors.logo?.url && (
             <p className="text-sm text-destructive">{errors.logo.url.message}</p>
@@ -65,6 +69,7 @@ export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormPro
               id="logo.text"
               placeholder="My Site"
               {...register('logo.text')}
+              readOnly={!isAdmin}
             />
             <p className="text-xs text-muted-foreground">
               Displayed if no image URL
@@ -78,6 +83,7 @@ export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormPro
               placeholder="M"
               maxLength={2}
               {...register('logo.icon')}
+              readOnly={!isAdmin}
             />
             <p className="text-xs text-muted-foreground">
               1-2 characters for icon
@@ -93,6 +99,7 @@ export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormPro
           id="favicon"
           placeholder="/favicon.svg"
           {...register('favicon')}
+          readOnly={!isAdmin}
         />
         {errors.favicon && (
           <p className="text-sm text-destructive">{errors.favicon.message}</p>
@@ -102,9 +109,11 @@ export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormPro
         </p>
       </div>
 
-      <Button type="submit" disabled={isLoading || !isDirty}>
-        {isLoading ? 'Saving...' : 'Save Changes'}
-      </Button>
+      {isAdmin && (
+        <Button type="submit" disabled={isLoading || !isDirty}>
+          {isLoading ? 'Saving...' : 'Save Changes'}
+        </Button>
+      )}
     </form>
   )
 }

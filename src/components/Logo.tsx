@@ -2,14 +2,17 @@ import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { useSiteConfig } from '@/lib/config'
 import { injectThemeColors } from '@/lib/theme'
+import type { SiteConfig } from '@/../site.config.types'
 
 interface LogoProps {
   className?: string
   variant?: 'default' | 'light'
+  config?: SiteConfig
 }
 
-export function Logo({ className = 'h-8', variant = 'default' }: LogoProps) {
-  const config = useSiteConfig()
+export function Logo({ className = 'h-8', variant = 'default', config: propConfig }: LogoProps) {
+  const hookConfig = useSiteConfig()
+  const config = propConfig || hookConfig
   const isLight = variant === 'light'
 
   // Inject theme colors when config changes

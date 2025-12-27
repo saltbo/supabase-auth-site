@@ -1,6 +1,7 @@
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -31,7 +32,10 @@ interface AuthConfigFormProps {
   isLoading: boolean
 }
 
+import { useAdmin } from './AdminContext'
+
 export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFormProps) {
+  const { isAdmin } = useAdmin()
   const {
     control,
     register,
@@ -85,7 +89,11 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                 return (
                   <div
                     key={providerName}
-                    className="flex items-center space-x-3 rounded-lg border p-3 hover:bg-accent/50 transition-colors"
+                    className={cn(
+                      "flex items-center space-x-3 rounded-lg border p-3 transition-colors",
+                      isAdmin && "hover:bg-accent/50",
+                      !isAdmin && "opacity-80"
+                    )}
                   >
                     <Checkbox
                       id={`provider-${providerName}`}
@@ -93,10 +101,14 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                       onCheckedChange={() => {
                         field.onChange(toggleProvider(field.value, providerName))
                       }}
+                      disabled={!isAdmin}
                     />
                     <Label
                       htmlFor={`provider-${providerName}`}
-                      className="flex items-center gap-2 cursor-pointer flex-1"
+                      className={cn(
+                        "flex items-center gap-2 flex-1",
+                        isAdmin && "cursor-pointer"
+                      )}
                     >
                       <Icon className="h-5 w-5" />
                       <span>{provider.displayName}</span>
@@ -133,9 +145,10 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                 id="allowSignup"
                 checked={field.value}
                 onCheckedChange={field.onChange}
+                disabled={!isAdmin}
               />
               <div className="flex-1">
-                <Label htmlFor="allowSignup" className="cursor-pointer">
+                <Label htmlFor="allowSignup" className={cn(isAdmin && "cursor-pointer")}>
                   Allow User Registration
                 </Label>
                 <p className="text-sm text-muted-foreground">
@@ -155,9 +168,10 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                 id="allowPassword"
                 checked={field.value}
                 onCheckedChange={field.onChange}
+                disabled={!isAdmin}
               />
               <div className="flex-1">
-                <Label htmlFor="allowPassword" className="cursor-pointer">
+                <Label htmlFor="allowPassword" className={cn(isAdmin && "cursor-pointer")}>
                   Allow Password Login
                 </Label>
                 <p className="text-sm text-muted-foreground">
@@ -188,9 +202,10 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                   id="turnstileEnabled"
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  disabled={!isAdmin}
                 />
                 <div className="flex-1">
-                  <Label htmlFor="turnstileEnabled" className="cursor-pointer">
+                  <Label htmlFor="turnstileEnabled" className={cn(isAdmin && "cursor-pointer")}>
                     Enable Turnstile
                   </Label>
                   <p className="text-sm text-muted-foreground">
@@ -211,6 +226,7 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                   id="turnstileSiteKey"
                   placeholder="0x4AAAAAA..."
                   {...field}
+                  readOnly={!isAdmin}
                 />
                 <p className="text-sm text-muted-foreground">
                   Get your site key from the <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Cloudflare Dashboard</a>
@@ -239,6 +255,7 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
               min="1"
               placeholder="365"
               {...register('cookieOptions.expires', { valueAsNumber: true })}
+              readOnly={!isAdmin}
             />
             <p className="text-xs text-muted-foreground">
               How long the session cookie should persist
@@ -254,7 +271,7 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
               name="cookieOptions.sameSite"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
                   <SelectTrigger id="cookieSameSite">
                     <SelectValue placeholder="Select SameSite policy" />
                   </SelectTrigger>
@@ -277,6 +294,7 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
               id="cookieDomain"
               placeholder=".example.com"
               {...register('cookieDomain')}
+              readOnly={!isAdmin}
             />
             <p className="text-xs text-muted-foreground">
               Set to your root domain (e.g., .example.com) to share sessions across subdomains. 
@@ -286,9 +304,11 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
         </div>
       </div>
 
-      <Button type="submit" disabled={isLoading || !isDirty}>
-        {isLoading ? 'Saving...' : 'Save Changes'}
-      </Button>
+      {isAdmin && (
+        <Button type="submit" disabled={isLoading || !isDirty}>
+          {isLoading ? 'Saving...' : 'Save Changes'}
+        </Button>
+      )}
     </form>
   )
 }
