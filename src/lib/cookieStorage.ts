@@ -14,8 +14,7 @@
 
 import Cookies from 'js-cookie'
 import type { SupportedStorage } from '@supabase/supabase-js'
-import { getCachedConfig } from './config-service'
-import { defaultConfig } from '@/../site.config.default'
+import { getCachedConfig, mergeWithDefaultConfig } from './config-service'
 
 /**
  * Cookie domain for cross-subdomain sharing
@@ -62,8 +61,9 @@ export const cookieStorage: SupportedStorage = {
    */
   setItem: (key: string, value: string): void => {
     // Try to get dynamic config, fallback to default
-    const config = getCachedConfig() || defaultConfig
-    const cookieOptions = config?.auth?.cookieOptions || defaultConfig.auth.cookieOptions
+    const rawConfig = getCachedConfig()
+    const config = mergeWithDefaultConfig(rawConfig)
+    const cookieOptions = config.auth.cookieOptions
 
     Cookies.set(key, value, {
       expires: cookieOptions?.expires ?? 365,

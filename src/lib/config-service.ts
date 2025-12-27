@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import type { SiteConfig } from '@/../site.config.types'
+import { defaultConfig } from '@/../site.config.default'
 
 /**
  * Storage bucket name for site configuration
@@ -11,6 +12,51 @@ let cachedConfig: SiteConfig | null = null
 
 export function getCachedConfig(): SiteConfig | null {
   return cachedConfig
+}
+
+/**
+ * Merge a partial config with the default config
+ * Ensures all required fields are present
+ */
+export function mergeWithDefaultConfig(partialConfig: Partial<SiteConfig> | null): SiteConfig {
+  if (!partialConfig) {
+    return defaultConfig
+  }
+
+  return {
+    ...defaultConfig,
+    ...partialConfig,
+    site: {
+      ...defaultConfig.site,
+      ...partialConfig.site,
+    },
+    branding: {
+      ...defaultConfig.branding,
+      ...partialConfig.branding,
+      logo: {
+        ...defaultConfig.branding.logo,
+        ...(partialConfig.branding?.logo || {}),
+      },
+    },
+    theme: {
+      ...defaultConfig.theme,
+      ...partialConfig.theme,
+    },
+    auth: {
+      ...defaultConfig.auth,
+      ...partialConfig.auth,
+      turnstile: {
+        ...defaultConfig.auth.turnstile,
+        ...(partialConfig.auth?.turnstile || {}),
+      },
+      cookieOptions: defaultConfig.auth.cookieOptions
+        ? {
+            ...defaultConfig.auth.cookieOptions,
+            ...(partialConfig.auth?.cookieOptions || {}),
+          }
+        : undefined,
+    },
+  }
 }
 
 /**

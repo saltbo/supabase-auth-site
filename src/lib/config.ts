@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchConfigFromStorage } from './config-service'
+import { fetchConfigFromStorage, mergeWithDefaultConfig } from './config-service'
 import { defaultConfig } from '@/../site.config.default'
 import { getProviderMetadata } from './auth-providers'
 import type { SiteConfig } from '@/../site.config'
@@ -43,34 +43,7 @@ export function useSiteConfig(): SiteConfig {
 
   // Merge storage config with default config to ensure all fields exist
   // This handles partial configs or missing fields (e.g. after update)
-  return {
-    ...defaultConfig,
-    ...storageConfig,
-    site: {
-      ...defaultConfig.site,
-      ...storageConfig.site,
-    },
-    branding: {
-      ...defaultConfig.branding,
-      ...storageConfig.branding,
-      logo: {
-        ...defaultConfig.branding.logo,
-        ...(storageConfig.branding?.logo || {}),
-      },
-    },
-    theme: {
-      ...defaultConfig.theme,
-      ...storageConfig.theme,
-    },
-    auth: {
-      ...defaultConfig.auth,
-      ...storageConfig.auth,
-      turnstile: {
-        ...defaultConfig.auth.turnstile,
-        ...(storageConfig.auth?.turnstile || {}),
-      },
-    },
-  }
+  return mergeWithDefaultConfig(storageConfig)
 }
 
 /**
