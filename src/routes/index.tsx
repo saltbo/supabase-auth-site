@@ -3,6 +3,7 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { isUserAdmin } from '@/lib/config-service'
+import { getProviderMetadata } from '@/lib/auth-providers'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -16,9 +17,9 @@ import {
   Terminal, 
   ChevronDown, 
   ChevronUp,
-  Globe,
   Wifi,
-  Cpu
+  Cpu,
+  Mail
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
@@ -90,6 +91,9 @@ function HomePage() {
   }
 
   const systemInfo = getSystemInfo()
+  const providerName = user.app_metadata?.provider || 'email'
+  const provider = getProviderMetadata(providerName)
+  const ProviderIcon = providerName === 'email' ? Mail : provider.icon
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -196,8 +200,8 @@ function HomePage() {
              <div className="mt-4">
                <div className="flex items-center justify-between bg-muted/50 p-3 rounded-lg border border-muted">
                  <span className="font-medium capitalize flex items-center gap-2">
-                   <Globe className="h-4 w-4 opacity-50" />
-                   {user.app_metadata?.provider || 'Email'}
+                   <ProviderIcon className="h-4 w-4 opacity-70" />
+                   {provider.displayName}
                  </span>
                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
                </div>
