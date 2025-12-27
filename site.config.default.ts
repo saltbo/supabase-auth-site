@@ -52,6 +52,9 @@ export const defaultConfig: SiteConfig = {
     // Allow email/password authentication
     allowPassword: true,
 
+    // Default OTP length (matches Supabase default of 8 digits)
+    otpLength: 8,
+
     // Turnstile CAPTCHA configuration
     turnstile: {
       enabled: false,

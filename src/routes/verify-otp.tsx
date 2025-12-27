@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router'
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { ArrowLeft } from 'lucide-react'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
@@ -9,8 +10,8 @@ import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/Turn
 import { ErrorAlert } from '@/components/ErrorAlert'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp'
 
 export const Route = createFileRoute('/verify-otp')({
   component: VerifyOtpPage,
@@ -37,6 +38,7 @@ export const Route = createFileRoute('/verify-otp')({
 function VerifyOtpPage() {
   const navigate = useNavigate()
   const config = useSiteConfig()
+  const otpLength = Math.min(Math.max(config.auth?.otpLength ?? 8, 6), 10)
   const { verifyOtp } = useAuth()
   const { email } = Route.useSearch()
   const turnstileRef = useRef<TurnstileWidgetRef>(null)
@@ -44,6 +46,21 @@ function VerifyOtpPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+  const accentAfterIndex = otpLength >= 6 ? Math.ceil(otpLength / 2) - 1 : null
+  const slotElements: ReactNode[] = []
+
+  for (let index = 0; index < otpLength; index += 1) {
+    slotElements.push(<InputOTPSlot key={`slot-${index}`} index={index} />)
+
+    if (accentAfterIndex !== null && index === accentAfterIndex) {
+      slotElements.push(
+        <InputOTPSeparator
+          key="otp-accent-divider"
+          className="mx-1 flex h-10 items-center text-muted-foreground"
+        />,
+      )
+    }
+  }
 
   const handleBackToSignIn = () => {
     navigate({ to: '/signin' })
@@ -56,6 +73,11 @@ function VerifyOtpPage() {
 
     if (isTurnstileEnabled(config) && !turnstileToken) {
       setError('Please complete the verification')
+      return
+    }
+
+    if (otp.length !== otpLength) {
+      setError(`Please enter the ${otpLength}-digit code`)
       return
     }
 
@@ -101,18 +123,24 @@ function VerifyOtpPage() {
               <Label htmlFor="otp">
                 Verification Code
               </Label>
-              <Input
+              <InputOTP
                 id="otp"
-                type="text"
-                placeholder="Enter 6-digit code"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                disabled={loading}
-                required
-                maxLength={6}
+                onChange={setOtp}
+                maxLength={otpLength}
+                containerClassName="w-full"
+                pattern={REGEXP_ONLY_DIGITS}
+                inputMode="numeric"
                 autoComplete="one-time-code"
-                className="h-11"
-              />
+                disabled={loading}
+              >
+                <InputOTPGroup className="flex flex-wrap items-center justify-center gap-2">
+                  {slotElements}
+                </InputOTPGroup>
+              </InputOTP>
+              <p className="text-xs text-muted-foreground">
+                Enter the {otpLength}-digit code from your email.
+              </p>
             </div>
 
             <TurnstileWidget

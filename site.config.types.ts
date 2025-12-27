@@ -76,6 +76,9 @@ export interface SiteConfig {
       siteKey: string
     }
 
+    /** Length of the OTP code expected from Supabase (defaults to 8) */
+    otpLength?: number
+
     /** Cookie storage configuration */
     cookieOptions?: {
       /** Cookie expiration in days */

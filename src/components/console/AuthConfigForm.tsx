@@ -14,6 +14,10 @@ const schema = z.object({
   enabledProviders: z.array(z.string()),
   allowSignup: z.boolean(),
   allowPassword: z.boolean(),
+  otpLength: z.number()
+    .int('OTP length must be a whole number')
+    .min(6, 'Must be at least 6 digits')
+    .max(10, 'Must be 10 digits or fewer'),
   turnstile: z.object({
     enabled: z.boolean(),
     siteKey: z.string(),
@@ -47,6 +51,7 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     resolver: zodResolver(schema),
     defaultValues: {
       ...initialData,
+      otpLength: initialData.otpLength ?? 8,
       cookieOptions: initialData.cookieOptions || {
         expires: 365,
         sameSite: 'Lax',
@@ -182,6 +187,25 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
             </div>
           )}
         />
+
+        <div className="grid gap-2">
+          <Label htmlFor="otpLength">OTP Length</Label>
+          <Input
+            id="otpLength"
+            type="number"
+            min={6}
+            max={10}
+            placeholder="8"
+            {...register('otpLength', { valueAsNumber: true })}
+            readOnly={!isAdmin}
+          />
+          <p className="text-xs text-muted-foreground">
+            Must match the OTP length configured in Supabase Auth (default 8 digits).
+          </p>
+          {errors.otpLength && (
+            <p className="text-sm text-destructive">{errors.otpLength.message}</p>
+          )}
+        </div>
       </div>
 
       {/* Turnstile Configuration */}
