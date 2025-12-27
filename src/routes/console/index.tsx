@@ -4,6 +4,7 @@ export const Route = createFileRoute('/console/')({
   beforeLoad: () => {
     throw redirect({
       to: '/console/site',
+      replace: true,
     })
   },
 })
