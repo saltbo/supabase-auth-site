@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as CheckEmailRouteImport } from './routes/check-email'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as ConsoleRouteRouteImport } from './routes/console/route'
@@ -28,9 +30,19 @@ const VerifyOtpRoute = VerifyOtpRouteImport.update({
   path: '/verify-otp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
   path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckEmailRoute = CheckEmailRouteImport.update({
@@ -94,7 +106,9 @@ export interface FileRoutesByFullPath {
   '/console': typeof ConsoleRouteRouteWithChildren
   '/callback': typeof CallbackRoute
   '/check-email': typeof CheckEmailRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
   '/console/integration': typeof ConsoleIntegrationRoute
@@ -108,7 +122,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
   '/check-email': typeof CheckEmailRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
   '/console/integration': typeof ConsoleIntegrationRoute
@@ -124,7 +140,9 @@ export interface FileRoutesById {
   '/console': typeof ConsoleRouteRouteWithChildren
   '/callback': typeof CallbackRoute
   '/check-email': typeof CheckEmailRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
   '/console/integration': typeof ConsoleIntegrationRoute
@@ -141,7 +159,9 @@ export interface FileRouteTypes {
     | '/console'
     | '/callback'
     | '/check-email'
+    | '/forgot-password'
     | '/signin'
+    | '/signup'
     | '/verify-otp'
     | '/console/auth'
     | '/console/integration'
@@ -155,7 +175,9 @@ export interface FileRouteTypes {
     | '/'
     | '/callback'
     | '/check-email'
+    | '/forgot-password'
     | '/signin'
+    | '/signup'
     | '/verify-otp'
     | '/console/auth'
     | '/console/integration'
@@ -170,7 +192,9 @@ export interface FileRouteTypes {
     | '/console'
     | '/callback'
     | '/check-email'
+    | '/forgot-password'
     | '/signin'
+    | '/signup'
     | '/verify-otp'
     | '/console/auth'
     | '/console/integration'
@@ -186,7 +210,9 @@ export interface RootRouteChildren {
   ConsoleRouteRoute: typeof ConsoleRouteRouteWithChildren
   CallbackRoute: typeof CallbackRoute
   CheckEmailRoute: typeof CheckEmailRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   SigninRoute: typeof SigninRoute
+  SignupRoute: typeof SignupRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
   OauthConsentRoute: typeof OauthConsentRoute
   OauthSessionEndedRoute: typeof OauthSessionEndedRoute
@@ -201,11 +227,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyOtpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signin': {
       id: '/signin'
       path: '/signin'
       fullPath: '/signin'
       preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/check-email': {
@@ -313,7 +353,9 @@ const rootRouteChildren: RootRouteChildren = {
   ConsoleRouteRoute: ConsoleRouteRouteWithChildren,
   CallbackRoute: CallbackRoute,
   CheckEmailRoute: CheckEmailRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   SigninRoute: SigninRoute,
+  SignupRoute: SignupRoute,
   VerifyOtpRoute: VerifyOtpRoute,
   OauthConsentRoute: OauthConsentRoute,
   OauthSessionEndedRoute: OauthSessionEndedRoute,

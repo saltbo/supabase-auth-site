@@ -18,6 +18,11 @@ interface AuthContextType {
     email: string,
     password: string,
     captchaToken?: string,
+    inviteCode?: string,
+  ) => Promise<{ error: AuthError | null }>
+  resetPasswordForEmail: (
+    email: string,
+    captchaToken?: string,
   ) => Promise<{ error: AuthError | null }>
   signOut: () => Promise<{ error: AuthError | null }>
   signInWithOAuth: (
@@ -79,13 +84,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error }
   }
 
-  const signUp = async (email: string, password: string, captchaToken?: string) => {
+  const signUp = async (
+    email: string, 
+    password: string, 
+    captchaToken?: string,
+    inviteCode?: string
+  ) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         captchaToken,
+        data: inviteCode ? { invite_code: inviteCode } : undefined,
       },
+    })
+    return { error }
+  }
+
+  const resetPasswordForEmail = async (email: string, captchaToken?: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      captchaToken,
+      redirectTo: new URL('/auth/callback?next=/console/settings', window.location.origin).toString(),
     })
     return { error }
   }
@@ -156,6 +175,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     signIn,
     signUp,
+    resetPasswordForEmail,
     signOut,
     signInWithOAuth,
     signInWithOtp,

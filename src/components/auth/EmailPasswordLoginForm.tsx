@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, Link } from '@tanstack/react-router'
 import { useAuth } from '@/lib/auth'
 import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
 import { performPostLoginRedirect } from '@/lib/redirect'
@@ -68,7 +68,15 @@ export function EmailPasswordLoginForm({}: EmailPasswordLoginFormProps) {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
+          <div className="flex items-center">
+            <Label htmlFor="password">Password</Label>
+            <Link 
+              to="/forgot-password" 
+              className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+            >
+              Forgot your password?
+            </Link>
+          </div>
           <Input
             id="password"
             type="password"

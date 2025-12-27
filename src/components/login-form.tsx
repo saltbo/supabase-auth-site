@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from '@tanstack/react-router'
 import { Mail, Link as LinkIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -10,6 +11,7 @@ import {
   isPasswordAllowed, 
   isEmailOtpAllowed,
   isMagicLinkAllowed,
+  isSignupAllowed,
   getEnabledProviders 
 } from '@/lib/config'
 import type { SiteConfig } from '@/../site.config.types'
@@ -108,6 +110,15 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
             onBack={handleBackToDefault} 
             flow={loginMethod === 'magiclink' ? 'magiclink' : 'otp'} 
           />
+        )}
+
+        {loginMethod === 'default' && isSignupAllowed(config) && (
+          <div className="text-center text-sm">
+            Don&apos;t have an account?{' '}
+            <Link to="/signup" className="underline underline-offset-4 hover:text-primary">
+              Sign up
+            </Link>
+          </div>
         )}
 
         {/* Legal Disclaimer */}
