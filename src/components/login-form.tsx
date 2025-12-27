@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Mail } from 'lucide-react'
+import { Mail, Link as LinkIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons'
@@ -9,11 +9,12 @@ import {
   useSiteConfig, 
   isPasswordAllowed, 
   isEmailOtpAllowed,
+  isMagicLinkAllowed,
   getEnabledProviders 
 } from '@/lib/config'
 import type { SiteConfig } from '@/../site.config.types'
 
-type LoginMethod = 'default' | 'email-otp'
+type LoginMethod = 'default' | 'email-otp' | 'magiclink'
 
 interface LoginFormProps extends React.ComponentPropsWithoutRef<'div'> {
   config?: SiteConfig
@@ -27,29 +28,36 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
   const config = propConfig || siteConfig
   const passwordAllowed = isPasswordAllowed(config)
   const emailOtpAllowed = isEmailOtpAllowed(config)
+  const magicLinkAllowed = isMagicLinkAllowed(config)
   const enabledProviders = getEnabledProviders(config)
   const hasSocialProviders = enabledProviders.length > 0
 
-  // Reset to default view if Email OTP is disabled while active
+  // Reset to default view if selected method is disabled while active
   useEffect(() => {
     if (!emailOtpAllowed && loginMethod === 'email-otp') {
       setLoginMethod('default')
     }
-  }, [emailOtpAllowed, loginMethod])
+    if (!magicLinkAllowed && loginMethod === 'magiclink') {
+      setLoginMethod('default')
+    }
+  }, [emailOtpAllowed, magicLinkAllowed, loginMethod])
 
   const handleBackToDefault = () => {
     setLoginMethod('default')
   }
 
-  // Only show separator if there are methods above (Social or OTP) AND password is enabled
-  const showSeparator = passwordAllowed && (hasSocialProviders || emailOtpAllowed)
+  // Only show separator if there are methods above (Social or OTP/Magic) AND password is enabled
+  const hasEmailMethods = emailOtpAllowed || magicLinkAllowed
+  const showSeparator = passwordAllowed && (hasSocialProviders || hasEmailMethods)
 
   return (
     <div className={cn('space-y-6', className)} {...props}>
       {/* Page Title */}
-      <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 text-center">
-        Sign in to your account
-      </h2>
+      {loginMethod === 'default' && (
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 text-center">
+          Sign in to your account
+        </h2>
+      )}
 
       {/* Login Content */}
       <div className="space-y-6">
@@ -57,6 +65,18 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
           <div className="grid gap-4">
             <div className="grid gap-3">
               <SocialLoginButtons config={config} />
+
+              {magicLinkAllowed && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setLoginMethod('magiclink')}
+                  className="h-11 justify-center gap-2 border-border/60 bg-background text-sm font-medium hover:bg-muted hover:border-border"
+                >
+                  <LinkIcon className="h-5 w-5" />
+                  <span>Continue with Magic Link</span>
+                </Button>
+              )}
 
               {emailOtpAllowed && (
                 <Button
@@ -84,7 +104,10 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
             )}
           </div>
         ) : (
-          <EmailOtpLoginForm onBack={handleBackToDefault} />
+          <EmailOtpLoginForm 
+            onBack={handleBackToDefault} 
+            flow={loginMethod === 'magiclink' ? 'magiclink' : 'otp'} 
+          />
         )}
 
         {/* Legal Disclaimer */}

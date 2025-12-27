@@ -120,6 +120,16 @@ export function isEmailOtpAllowed(config: SiteConfig): boolean {
   return config.auth?.allowEmailOTP ?? true
 }
 
+/**
+ * Check if magic link login is allowed
+ *
+ * @param config - Site configuration object
+ * @returns true if magic link login is allowed
+ */
+export function isMagicLinkAllowed(config: SiteConfig): boolean {
+  return config.auth?.allowMagicLink ?? true
+}
+
 // Deprecated: Keep for backward compatibility
 export function getProviderConfig(provider: string) {
   console.warn('getProviderConfig is deprecated. Use getProviderMetadata from auth-providers.ts instead')

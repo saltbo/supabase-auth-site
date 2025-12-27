@@ -49,8 +49,11 @@ export const defaultConfig: SiteConfig = {
     // Allow email/password authentication
     allowPassword: true,
 
-    // Allow email OTP (magic link) authentication
+    // Allow email OTP (verification code) authentication
     allowEmailOTP: true,
+
+    // Allow email Magic Link (sign-in link) authentication
+    allowMagicLink: true,
 
     // Default OTP length (matches Supabase default of 8 digits)
     otpLength: 8,

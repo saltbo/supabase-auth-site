@@ -30,6 +30,7 @@ const schema = z.object({
   requireInviteCode: z.boolean(),
   allowPassword: z.boolean(),
   allowEmailOTP: z.boolean(),
+  allowMagicLink: z.boolean(),
   otpLength: z.number()
     .int('OTP length must be a whole number')
     .min(6, 'Must be at least 6 digits')
@@ -68,6 +69,7 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
       ...initialData,
       requireInviteCode: initialData.requireInviteCode ?? false,
       allowEmailOTP: initialData.allowEmailOTP ?? true,
+      allowMagicLink: initialData.allowMagicLink ?? true,
       otpLength: initialData.otpLength ?? 8,
       cookieOptions: initialData.cookieOptions || {
         expires: 365,
@@ -104,11 +106,12 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     // This safeguards against any potential issues with the Zod resolver or empty submissions
     const hasPassword = data.allowPassword === true
     const hasEmailOTP = data.allowEmailOTP === true
+    const hasMagicLink = data.allowMagicLink === true
     const hasProviders = data.enabledProviders && data.enabledProviders.length > 0
 
-    if (!hasPassword && !hasEmailOTP && !hasProviders) {
+    if (!hasPassword && !hasEmailOTP && !hasMagicLink && !hasProviders) {
       toast.error("Configuration Error", {
-        description: "At least one login method must be enabled (Password, Email OTP, or an OAuth Provider)."
+        description: "At least one login method must be enabled (Password, Email OTP, Magic Link, or an OAuth Provider)."
       })
       return
     }
@@ -166,13 +169,34 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                   render={({ field }) => (
                     <div className="flex items-center justify-between space-x-4">
                       <div className="flex flex-col space-y-1">
-                        <Label htmlFor="allowEmailOTP" className="text-base font-medium">Email OTP / Magic Link</Label>
+                        <Label htmlFor="allowEmailOTP" className="text-base font-medium">Email OTP</Label>
                         <span className="text-sm text-muted-foreground">
-                          Allow passwordless login via a one-time password sent to email.
+                          Allow passwordless login via a one-time verification code.
                         </span>
                       </div>
                       <Switch
                         id="allowEmailOTP"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={!isAdmin}
+                      />
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name="allowMagicLink"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex items-center justify-between space-x-4 mt-4 pt-4 border-t">
+                      <div className="flex flex-col space-y-1">
+                        <Label htmlFor="allowMagicLink" className="text-base font-medium">Magic Link</Label>
+                        <span className="text-sm text-muted-foreground">
+                          Allow passwordless login via a sign-in link sent to email.
+                        </span>
+                      </div>
+                      <Switch
+                        id="allowMagicLink"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                         disabled={!isAdmin}

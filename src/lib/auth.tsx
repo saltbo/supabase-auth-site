@@ -26,6 +26,7 @@ interface AuthContextType {
   signInWithOtp: (
     email: string,
     captchaToken?: string,
+    flow?: 'otp' | 'magiclink',
   ) => Promise<{ error: AuthError | null }>
   verifyOtp: (
     email: string,
@@ -111,13 +112,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error }
   }
 
-  const signInWithOtp = async (email: string, captchaToken?: string) => {
+  const signInWithOtp = async (
+    email: string, 
+    captchaToken?: string,
+    flow: 'otp' | 'magiclink' = 'otp'
+  ) => {
     // Respect allowSignup config - only create new users if allowed
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         shouldCreateUser: config.auth?.allowSignup ?? true,
         captchaToken,
+        emailRedirectTo: flow === 'magiclink' ? window.location.origin : undefined,
       },
     })
     return { error }

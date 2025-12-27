@@ -67,8 +67,11 @@ export interface SiteConfig {
     /** Allow email/password authentication */
     allowPassword: boolean
 
-    /** Allow email OTP (magic link) authentication */
+    /** Allow email OTP (verification code) authentication */
     allowEmailOTP?: boolean
+
+    /** Allow email Magic Link (sign-in link) authentication */
+    allowMagicLink?: boolean
 
     /** Turnstile CAPTCHA configuration */
     turnstile: {

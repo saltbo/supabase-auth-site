@@ -7,13 +7,16 @@ import { ErrorAlert } from '@/components/ErrorAlert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { toast } from 'sonner'
 
 interface EmailOtpLoginFormProps {
   onBack?: () => void
+  flow?: 'otp' | 'magiclink'
 }
 
 export function EmailOtpLoginForm({
   onBack,
+  flow = 'otp',
 }: EmailOtpLoginFormProps) {
   const navigate = useNavigate()
   const config = useSiteConfig()
@@ -23,6 +26,8 @@ export function EmailOtpLoginForm({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+
+  const isMagicLink = flow === 'magiclink'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,6 +43,7 @@ export function EmailOtpLoginForm({
     const { error: otpError } = await signInWithOtp(
       email,
       turnstileToken || undefined,
+      flow
     )
 
     if (otpError) {
@@ -46,61 +52,82 @@ export function EmailOtpLoginForm({
       // Reset Turnstile
       turnstileRef.current?.reset()
     } else {
-      // Navigate to OTP verification page
-      navigate({
-        to: '/verify-otp',
-        search: { email },
-      })
+      if (isMagicLink) {
+        toast.success('Check your email', {
+          description: 'We sent you a sign-in link. Please check your inbox.',
+        })
+        setLoading(false)
+      } else {
+        // Navigate to OTP verification page
+        navigate({
+          to: '/verify-otp',
+          search: { email },
+        })
+      }
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="grid gap-6">
-        {onBack && (
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onBack}
-            className="w-fit px-0 text-sm text-muted-foreground hover:text-foreground"
-          >
-            ← Back to options
-          </Button>
-        )}
-
-        <ErrorAlert message={error} />
-
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="name@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-            required
-          />
-        </div>
-
-        <TurnstileWidget
-          ref={turnstileRef}
-          onSuccess={setTurnstileToken}
-          onTokenCleared={() => setTurnstileToken(null)}
-        />
-
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={loading || (isTurnstileEnabled(config) && !turnstileToken)}
-        >
-          {loading ? (
-            <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          ) : (
-            'Send verification code'
-          )}
-        </Button>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          {isMagicLink ? 'Sign in with Magic Link' : 'Sign in with Email OTP'}
+        </h3>
+        <p className="text-sm text-muted-foreground mt-1">
+          {isMagicLink 
+            ? 'We will email you a link to sign in instantly' 
+            : 'We will email you a code to verify your account'}
+        </p>
       </div>
-    </form>
+
+      <form onSubmit={handleSubmit}>
+        <div className="grid gap-6">
+          <ErrorAlert message={error} />
+
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email address</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
+            />
+          </div>
+
+          <TurnstileWidget
+            ref={turnstileRef}
+            onSuccess={setTurnstileToken}
+            onTokenCleared={() => setTurnstileToken(null)}
+          />
+
+          <Button
+            type="submit"
+            className="w-full h-11"
+            disabled={loading || (isTurnstileEnabled(config) && !turnstileToken)}
+          >
+            {loading ? (
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            ) : (
+              isMagicLink ? 'Send magic link' : 'Send verification code'
+            )}
+          </Button>
+
+          {onBack && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onBack}
+              className="w-full text-sm text-muted-foreground hover:text-foreground"
+              disabled={loading}
+            >
+              ← Back to login options
+            </Button>
+          )}
+        </div>
+      </form>
+    </div>
   )
 }
