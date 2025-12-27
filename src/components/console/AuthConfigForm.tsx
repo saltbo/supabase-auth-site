@@ -26,9 +26,9 @@ import { AlertCircle } from 'lucide-react'
 const schema = z.object({
   enabledProviders: z.array(z.string()),
   allowSignup: z.boolean(),
-  requireInviteCode: z.boolean().optional(),
+  requireInviteCode: z.boolean(),
   allowPassword: z.boolean(),
-  allowEmailOTP: z.boolean().optional(),
+  allowEmailOTP: z.boolean(),
   otpLength: z.number()
     .int('OTP length must be a whole number')
     .min(6, 'Must be at least 6 digits')
@@ -43,7 +43,7 @@ const schema = z.object({
   }).optional(),
   cookieDomain: z.string().optional(),
 }).refine((data) => {
-  return data.allowPassword || data.allowEmailOTP || data.enabledProviders.length > 0
+  return data.allowPassword === true || data.allowEmailOTP === true || data.enabledProviders.length > 0
 }, {
   message: "At least one login method must be enabled (Password, Email OTP, or an OAuth Provider).",
   path: ["root"], // This will attach the error to the root of the form
