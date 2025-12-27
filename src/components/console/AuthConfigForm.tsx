@@ -65,6 +65,7 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { isDirty, errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -103,8 +104,26 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     return [...currentProviders, provider]
   }
 
+  const onSubmit = (data: FormData) => {
+    // Manual validation fallback to ensure at least one login method is enabled
+    // This safeguards against any potential issues with the Zod resolver or empty submissions
+    const hasPassword = data.allowPassword === true
+    const hasEmailOTP = data.allowEmailOTP === true
+    const hasProviders = data.enabledProviders && data.enabledProviders.length > 0
+
+    if (!hasPassword && !hasEmailOTP && !hasProviders) {
+      setError('root', {
+        type: 'manual',
+        message: "At least one login method must be enabled (Password, Email OTP, or an OAuth Provider)."
+      })
+      return
+    }
+    
+    onSave(data)
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSave)} className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {errors.root && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
