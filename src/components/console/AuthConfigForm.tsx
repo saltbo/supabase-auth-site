@@ -19,9 +19,7 @@ import {
 import { AUTH_PROVIDERS, AVAILABLE_PROVIDERS } from '@/lib/auth-providers'
 import { useAdmin } from './AdminContext'
 import { usePreviewStore } from '@/lib/preview-store'
-import { Mail, KeyRound, ShieldCheck, Globe, Fingerprint, UserPlus, Ticket } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AlertCircle } from 'lucide-react'
+import { Mail, KeyRound, ShieldCheck, Globe, Fingerprint, UserPlus, Ticket, Info } from 'lucide-react'
 import { toast } from 'sonner'
 
 const schema = z.object({
@@ -52,6 +50,15 @@ interface AuthConfigFormProps {
   initialData: any
   onSave: (data: FormData) => void
   isLoading: boolean
+}
+
+function ConfigurationHint({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex gap-2 items-start text-sm text-muted-foreground bg-muted/50 p-3 rounded-md mt-2">
+      <Info className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />
+      <div className="flex-1">{children}</div>
+    </div>
+  )
 }
 
 export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFormProps) {
@@ -103,7 +110,6 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
 
   const onSubmit = (data: FormData) => {
     // Manual validation fallback to ensure at least one login method is enabled
-    // This safeguards against any potential issues with the Zod resolver or empty submissions
     const hasPassword = data.allowPassword === true
     const hasEmailOTP = data.allowEmailOTP === true
     const hasMagicLink = data.allowMagicLink === true
@@ -167,19 +173,26 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                   name="allowEmailOTP"
                   control={control}
                   render={({ field }) => (
-                    <div className="flex items-center justify-between space-x-4">
-                      <div className="flex flex-col space-y-1">
-                        <Label htmlFor="allowEmailOTP" className="text-base font-medium">Email OTP</Label>
-                        <span className="text-sm text-muted-foreground">
-                          Allow passwordless login via a one-time verification code.
-                        </span>
+                    <div className="flex flex-col space-y-2 mb-4">
+                      <div className="flex items-center justify-between space-x-4">
+                        <div className="flex flex-col space-y-1">
+                          <Label htmlFor="allowEmailOTP" className="text-base font-medium">Email OTP</Label>
+                          <span className="text-sm text-muted-foreground">
+                            Allow passwordless login via a one-time verification code.
+                          </span>
+                        </div>
+                        <Switch
+                          id="allowEmailOTP"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={!isAdmin}
+                        />
                       </div>
-                      <Switch
-                        id="allowEmailOTP"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={!isAdmin}
-                      />
+                      {field.value && (
+                        <ConfigurationHint>
+                          Ensure <strong>Email Provider</strong> is enabled in your Supabase project under Authentication &gt; Providers.
+                        </ConfigurationHint>
+                      )}
                     </div>
                   )}
                 />
@@ -188,19 +201,26 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                   name="allowMagicLink"
                   control={control}
                   render={({ field }) => (
-                    <div className="flex items-center justify-between space-x-4 mt-4 pt-4 border-t">
-                      <div className="flex flex-col space-y-1">
-                        <Label htmlFor="allowMagicLink" className="text-base font-medium">Magic Link</Label>
-                        <span className="text-sm text-muted-foreground">
-                          Allow passwordless login via a sign-in link sent to email.
-                        </span>
+                    <div className="flex flex-col space-y-2 mt-4 pt-4 border-t">
+                      <div className="flex items-center justify-between space-x-4">
+                        <div className="flex flex-col space-y-1">
+                          <Label htmlFor="allowMagicLink" className="text-base font-medium">Magic Link</Label>
+                          <span className="text-sm text-muted-foreground">
+                            Allow passwordless login via a sign-in link sent to email.
+                          </span>
+                        </div>
+                        <Switch
+                          id="allowMagicLink"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={!isAdmin}
+                        />
                       </div>
-                      <Switch
-                        id="allowMagicLink"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={!isAdmin}
-                      />
+                      {field.value && (
+                        <ConfigurationHint>
+                          Requires <strong>Email Provider</strong> in Supabase. Also ensure your <strong>Site URL</strong> is configured in Authentication &gt; URL Configuration.
+                        </ConfigurationHint>
+                      )}
                     </div>
                   )}
                 />
@@ -241,54 +261,59 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Controller
-                name="enabledProviders"
-                control={control}
-                render={({ field }) => (
-                  <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
-                    {AVAILABLE_PROVIDERS.map((providerName) => {
-                      const provider = AUTH_PROVIDERS[providerName]
-                      const Icon = provider.icon
-                      const isChecked = field.value.includes(providerName)
+              <div className="space-y-4">
+                <ConfigurationHint>
+                  For each enabled provider, you must configure the <strong>Client ID</strong> and <strong>Secret</strong> in Supabase Dashboard &gt; Authentication &gt; Providers.
+                </ConfigurationHint>
+                <Controller
+                  name="enabledProviders"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
+                      {AVAILABLE_PROVIDERS.map((providerName) => {
+                        const provider = AUTH_PROVIDERS[providerName]
+                        const Icon = provider.icon
+                        const isChecked = field.value.includes(providerName)
 
-                      return (
-                        <div
-                          key={providerName}
-                          className={cn(
-                            "flex items-center gap-3 rounded-lg border p-2.5 transition-all relative",
-                            isChecked 
-                              ? "border-primary bg-primary/5 ring-1 ring-primary/20" 
-                              : "hover:border-primary/50 hover:bg-accent/50",
-                            !isAdmin && "opacity-80 pointer-events-none"
-                          )}
-                        >
-                          <Label
-                            htmlFor={`provider-${providerName}`}
-                            className="flex flex-1 items-center gap-3 cursor-pointer min-w-0"
+                        return (
+                          <div
+                            key={providerName}
+                            className={cn(
+                              "flex items-center gap-3 rounded-lg border p-2.5 transition-all relative",
+                              isChecked 
+                                ? "border-primary bg-primary/5 ring-1 ring-primary/20" 
+                                : "hover:border-primary/50 hover:bg-accent/50",
+                              !isAdmin && "opacity-80 pointer-events-none"
+                            )}
                           >
-                            <div className={cn(
-                              "flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors",
-                              isChecked ? "bg-background shadow-sm" : "bg-muted"
-                            )}>
-                              <Icon className="h-4 w-4" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium leading-none truncate">{provider.displayName}</p>
-                            </div>
-                          </Label>
-                          <Switch
-                            id={`provider-${providerName}`}
-                            checked={isChecked}
-                            onCheckedChange={() => field.onChange(toggleProvider(field.value, providerName))}
-                            disabled={!isAdmin}
-                            className="scale-75 origin-right"
-                          />
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-              />
+                            <Label
+                              htmlFor={`provider-${providerName}`}
+                              className="flex flex-1 items-center gap-3 cursor-pointer min-w-0"
+                            >
+                              <div className={cn(
+                                "flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors",
+                                isChecked ? "bg-background shadow-sm" : "bg-muted"
+                              )}>
+                                <Icon className="h-4 w-4" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium leading-none truncate">{provider.displayName}</p>
+                              </div>
+                            </Label>
+                            <Switch
+                              id={`provider-${providerName}`}
+                              checked={isChecked}
+                              onCheckedChange={() => field.onChange(toggleProvider(field.value, providerName))}
+                              disabled={!isAdmin}
+                              className="scale-75 origin-right"
+                            />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                />
+              </div>
               {enabledProviders.length === 0 && (
                 <div className="mt-4 p-4 rounded-lg bg-muted/50 border border-dashed text-center text-sm text-muted-foreground">
                   No OAuth providers enabled. Users can only log in via email methods.
@@ -383,19 +408,26 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                 name="turnstile.enabled"
                 control={control}
                 render={({ field }) => (
-                  <div className="flex items-center justify-between space-x-4">
-                    <div className="flex flex-col space-y-1">
-                      <Label htmlFor="turnstileEnabled" className="text-base font-medium">Enable Turnstile CAPTCHA</Label>
-                      <span className="text-sm text-muted-foreground">
-                        Require a CAPTCHA challenge for sensitive actions like sign-up.
-                      </span>
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center justify-between space-x-4">
+                      <div className="flex flex-col space-y-1">
+                        <Label htmlFor="turnstileEnabled" className="text-base font-medium">Enable Turnstile CAPTCHA</Label>
+                        <span className="text-sm text-muted-foreground">
+                          Require a CAPTCHA challenge for sensitive actions like sign-up.
+                        </span>
+                      </div>
+                      <Switch
+                        id="turnstileEnabled"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={!isAdmin}
+                      />
                     </div>
-                    <Switch
-                      id="turnstileEnabled"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={!isAdmin}
-                    />
+                    {field.value && (
+                      <ConfigurationHint>
+                        Go to Supabase Dashboard &gt; Authentication &gt; Security and enable <strong>Captcha Protection</strong>.
+                      </ConfigurationHint>
+                    )}
                   </div>
                 )}
               />
