@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { AUTH_PROVIDERS, AVAILABLE_PROVIDERS } from '@/lib/auth-providers'
+import { useAdmin } from './AdminContext'
+import { usePreviewStore } from '@/lib/preview-store'
 
 const schema = z.object({
   enabledProviders: z.array(z.string()),
@@ -32,15 +34,14 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 interface AuthConfigFormProps {
-  initialData: FormData
+  initialData: any
   onSave: (data: FormData) => void
   isLoading: boolean
 }
 
-import { useAdmin } from './AdminContext'
-
 export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFormProps) {
   const { isAdmin } = useAdmin()
+  const updateSection = usePreviewStore(state => state.updateSection)
   const {
     control,
     register,
@@ -59,7 +60,12 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     },
   })
 
+  const values = watch()
   const enabledProviders = watch('enabledProviders')
+
+  useEffect(() => {
+    updateSection('auth', values)
+  }, [values, updateSection])
 
   const toggleProvider = (
     currentProviders: string[],

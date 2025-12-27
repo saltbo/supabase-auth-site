@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAdmin } from './AdminContext'
+import { usePreviewStore } from '@/lib/preview-store'
 
 const schema = z.object({
   name: z.string().min(1, 'Site name is required'),
@@ -26,14 +27,22 @@ interface SiteInfoFormProps {
 
 export function SiteInfoForm({ initialData, onSave, isLoading }: SiteInfoFormProps) {
   const { isAdmin } = useAdmin()
+  const updateSection = usePreviewStore(state => state.updateSection)
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isDirty },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: initialData,
   })
+
+  const values = watch()
+
+  useEffect(() => {
+    updateSection('site', values)
+  }, [values, updateSection])
 
   return (
     <form onSubmit={handleSubmit(onSave)} className="space-y-4">

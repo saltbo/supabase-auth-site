@@ -6,15 +6,20 @@ import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons'
 import { EmailOtpLoginForm } from '@/components/auth/EmailOtpLoginForm'
 import { EmailPasswordLoginForm } from '@/components/auth/EmailPasswordLoginForm'
 import { useSiteConfig, isPasswordAllowed } from '@/lib/config'
+import type { SiteConfig } from '@/../site.config.types'
 
 type LoginMethod = 'default' | 'email-otp'
 
 interface LoginFormProps extends React.ComponentPropsWithoutRef<'div'> {
+  config?: SiteConfig
 }
 
-export function LoginForm({ className, ...props }: LoginFormProps) {
+export function LoginForm({ className, config: propConfig, ...props }: LoginFormProps) {
   const [loginMethod, setLoginMethod] = useState<LoginMethod>('default')
-  const config = useSiteConfig()
+  const siteConfig = useSiteConfig()
+  
+  // Use passed config (e.g. for preview) or fallback to global config
+  const config = propConfig || siteConfig
   const passwordAllowed = isPasswordAllowed(config)
 
   const handleBackToDefault = () => {
@@ -33,7 +38,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         {loginMethod === 'default' ? (
           <div className="grid gap-4">
             <div className="grid gap-3">
-              <SocialLoginButtons />
+              <SocialLoginButtons config={config} />
 
               <Button
                 type="button"

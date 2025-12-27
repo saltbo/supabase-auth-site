@@ -1,43 +1,40 @@
-import { useEffect, useState } from 'react'
-import { KeyRound } from 'lucide-react'
-import type { IconType } from 'react-icons'
+import { useState } from 'react'
 import type { Provider } from '@/lib/auth'
 import { useAuth } from '@/lib/auth'
-import { getProviderConfig, getProviderDisplayName } from '@/lib/config'
+import { getProviderDisplayName, useSiteConfig } from '@/lib/config'
+import { getProviderIcon } from '@/lib/auth-providers'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import { Button } from '@/components/ui/button'
-
-// Icon component type that supports both lucide and react-icons
-type IconComponent = IconType | React.ComponentType<{ className?: string }>
-
-/**
- * Get icon component for a provider
- * Falls back to a default key icon if no specific icon is found
- */
-function getProviderIcon(provider: string): IconComponent {
-  const metadata = getProviderConfig(provider)
-
-  // The provider metadata already includes the icon component
-  return metadata?.icon || KeyRound
-}
+import type { SiteConfig } from '@/../site.config.types'
 
 interface SocialLoginButtonsProps {
   primaryProvider?: Provider
   showHint?: boolean
+  config?: SiteConfig
 }
 
 export function SocialLoginButtons({
   primaryProvider,
   showHint = false,
+  config: propConfig,
 }: SocialLoginButtonsProps) {
-  const { signInWithOAuth, getEnabledProviders } = useAuth()
-  const [providers, setProviders] = useState<Array<Provider>>([])
+  const { signInWithOAuth } = useAuth()
+  const siteConfig = useSiteConfig()
+  
+  // Use passed config (e.g. for preview) or fallback to global config
+  const config = propConfig || siteConfig
+  
   const [loading, setLoading] = useState<Provider | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    getEnabledProviders().then(setProviders)
-  }, [getEnabledProviders])
+  const enabledProviders = (config.auth?.enabledProviders || []) as Provider[]
+  const providers = primaryProvider
+    ? [...enabledProviders].sort((a, b) => {
+        if (a === primaryProvider) return -1
+        if (b === primaryProvider) return 1
+        return 0
+      })
+    : enabledProviders
 
   const handleSocialLogin = async (provider: Provider) => {
     setLoading(provider)
@@ -53,14 +50,6 @@ export function SocialLoginButtons({
 
   if (providers.length === 0) return null
 
-  const orderedProviders = primaryProvider
-    ? [...providers].sort((a, b) => {
-        if (a === primaryProvider) return -1
-        if (b === primaryProvider) return 1
-        return 0
-      })
-    : providers
-
   return (
     <div className="space-y-4">
       {showHint && (
@@ -72,7 +61,7 @@ export function SocialLoginButtons({
       <ErrorAlert message={error || ''} />
 
       <div className="grid gap-3">
-        {orderedProviders.map((provider) => {
+        {providers.map((provider) => {
           const Icon = getProviderIcon(provider)
           const isLoading = loading === provider
           const providerName = getProviderDisplayName(provider)

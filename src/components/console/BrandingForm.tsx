@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { supabase } from '@/lib/supabase'
 import { CONFIG_BUCKET } from '@/lib/config-service'
 import { useAdmin } from './AdminContext'
+import { usePreviewStore } from '@/lib/preview-store'
 import { Loader2, Upload } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -31,6 +32,7 @@ interface BrandingFormProps {
 
 export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormProps) {
   const { isAdmin } = useAdmin()
+  const updateSection = usePreviewStore(state => state.updateSection)
   const [isUploading, setIsUploading] = useState(false)
   const {
     register,
@@ -51,7 +53,11 @@ export function BrandingForm({ initialData, onSave, isLoading }: BrandingFormPro
 
   const logoType = watch('logo.type')
   const logoUrl = watch('logo.url')
-  const logoIcon = watch('logo.icon')
+  const allValues = watch()
+
+  useEffect(() => {
+    updateSection('branding', { logo: allValues.logo })
+  }, [allValues.logo, updateSection])
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]

@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useAdmin } from './AdminContext'
+import { usePreviewStore } from '@/lib/preview-store'
 
 const schema = z.object({
   brandColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Must be a valid hex color'),
@@ -24,8 +26,6 @@ interface ThemeFormProps {
   onSave: (data: FormData) => void
   isLoading: boolean
 }
-
-import { useAdmin } from './AdminContext'
 
 interface ColorPickerFieldProps {
   label: string
@@ -75,6 +75,7 @@ function ColorPickerField({ label, value, onChange, error, disabled }: ColorPick
 
 export function ThemeForm({ initialData, onSave, isLoading }: ThemeFormProps) {
   const { isAdmin } = useAdmin()
+  const updateSection = usePreviewStore(state => state.updateSection)
   const {
     watch,
     setValue,
@@ -86,6 +87,10 @@ export function ThemeForm({ initialData, onSave, isLoading }: ThemeFormProps) {
   })
 
   const values = watch()
+
+  useEffect(() => {
+    updateSection('theme', values)
+  }, [values, updateSection])
 
   return (
     <form onSubmit={handleSubmit(onSave)} className="space-y-6">

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { supabase } from '@/lib/supabase'
 import {
@@ -11,9 +12,10 @@ import { AdminLayout } from '@/components/console/AdminLayout'
 import { AdminContext } from '@/components/console/AdminContext'
 import { ConfigInitializer } from '@/components/console/ConfigInitializer'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { SiteConfig } from '@/../site.config.types'
+import type { SiteConfig } from '../../../site.config.types'
 import { useAuth } from '@/lib/auth'
 import { toast } from 'sonner'
+import { usePreviewStore } from '@/lib/preview-store'
 
 export const Route = createFileRoute('/console')({
   beforeLoad: async () => {
@@ -35,6 +37,7 @@ export const Route = createFileRoute('/console')({
 function ConsoleRouteComponent() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
+  const setPreviewConfig = usePreviewStore(state => state.setPreviewConfig)
   
   const isAdmin = isUserAdmin(user?.email)
 
@@ -50,6 +53,13 @@ function ConsoleRouteComponent() {
     queryFn: fetchConfigFromStorage,
     enabled: exists === true,
   })
+
+  // Sync with preview store when config loads
+  useEffect(() => {
+    if (config) {
+      setPreviewConfig(config)
+    }
+  }, [config, setPreviewConfig])
 
   // Initialize config mutation
   const { mutate: initialize, isPending: initializing, error: initError } = useMutation({
@@ -85,6 +95,7 @@ function ConsoleRouteComponent() {
     if (!config || !isAdmin) return
     const updatedConfig = { ...config, ...updates }
     updateConfig(updatedConfig)
+    setPreviewConfig(updatedConfig)
   }
 
   // Loading state

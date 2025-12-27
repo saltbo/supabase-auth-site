@@ -8,9 +8,15 @@ interface LogoProps {
   className?: string
   variant?: 'default' | 'light'
   config?: SiteConfig
+  showText?: boolean
 }
 
-export function Logo({ className = 'h-8', variant = 'default', config: propConfig }: LogoProps) {
+export function Logo({ 
+  className = 'h-8', 
+  variant = 'default', 
+  config: propConfig,
+  showText = true
+}: LogoProps) {
   const hookConfig = useSiteConfig()
   const config = propConfig || hookConfig
   const isLight = variant === 'light'
@@ -39,7 +45,7 @@ export function Logo({ className = 'h-8', variant = 'default', config: propConfi
     <div className={cn('flex items-center gap-2', className)}>
       <div
         className={cn(
-          'flex items-center justify-center w-8 h-8 rounded-lg',
+          'flex items-center justify-center w-8 h-8 rounded-lg shrink-0',
           isLight ? 'bg-white/20' : '',
         )}
         style={
@@ -50,14 +56,16 @@ export function Logo({ className = 'h-8', variant = 'default', config: propConfi
       >
         <span className="text-white font-bold text-lg">{logoIcon}</span>
       </div>
-      <span
-        className={cn(
-          'text-xl font-bold tracking-tight',
-          isLight && 'text-white',
-        )}
-      >
-        {logoText}
-      </span>
+      {showText && (
+        <span
+          className={cn(
+            'text-xl font-bold tracking-tight truncate',
+            isLight && 'text-white',
+          )}
+        >
+          {logoText}
+        </span>
+      )}
     </div>
   )
 }
