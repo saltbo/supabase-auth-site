@@ -1,11 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Mail } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons'
 import { EmailOtpLoginForm } from '@/components/auth/EmailOtpLoginForm'
 import { EmailPasswordLoginForm } from '@/components/auth/EmailPasswordLoginForm'
-import { useSiteConfig, isPasswordAllowed } from '@/lib/config'
+import { 
+  useSiteConfig, 
+  isPasswordAllowed, 
+  isEmailOtpAllowed,
+  getEnabledProviders 
+} from '@/lib/config'
 import type { SiteConfig } from '@/../site.config.types'
 
 type LoginMethod = 'default' | 'email-otp'
@@ -21,10 +26,23 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
   // Use passed config (e.g. for preview) or fallback to global config
   const config = propConfig || siteConfig
   const passwordAllowed = isPasswordAllowed(config)
+  const emailOtpAllowed = isEmailOtpAllowed(config)
+  const enabledProviders = getEnabledProviders(config)
+  const hasSocialProviders = enabledProviders.length > 0
+
+  // Reset to default view if Email OTP is disabled while active
+  useEffect(() => {
+    if (!emailOtpAllowed && loginMethod === 'email-otp') {
+      setLoginMethod('default')
+    }
+  }, [emailOtpAllowed, loginMethod])
 
   const handleBackToDefault = () => {
     setLoginMethod('default')
   }
+
+  // Only show separator if there are methods above (Social or OTP) AND password is enabled
+  const showSeparator = passwordAllowed && (hasSocialProviders || emailOtpAllowed)
 
   return (
     <div className={cn('space-y-6', className)} {...props}>
@@ -40,27 +58,29 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
             <div className="grid gap-3">
               <SocialLoginButtons config={config} />
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setLoginMethod('email-otp')}
-                className="h-11 justify-center gap-2 border-border/60 bg-background text-sm font-medium hover:bg-muted hover:border-border"
-              >
-                <Mail className="h-5 w-5" />
-                <span>Continue with Email OTP</span>
-              </Button>
+              {emailOtpAllowed && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setLoginMethod('email-otp')}
+                  className="h-11 justify-center gap-2 border-border/60 bg-background text-sm font-medium hover:bg-muted hover:border-border"
+                >
+                  <Mail className="h-5 w-5" />
+                  <span>Continue with Email OTP</span>
+                </Button>
+              )}
             </div>
 
-            {passwordAllowed && (
-              <>
-                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                  <span className="relative z-10 bg-card px-2 text-muted-foreground">
-                    Or continue with
-                  </span>
-                </div>
+            {showSeparator && (
+              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                <span className="relative z-10 bg-card px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            )}
 
-                <EmailPasswordLoginForm />
-              </>
+            {passwordAllowed && (
+              <EmailPasswordLoginForm />
             )}
           </div>
         ) : (

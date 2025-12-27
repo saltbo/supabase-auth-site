@@ -110,6 +110,16 @@ export function isPasswordAllowed(config: SiteConfig): boolean {
   return config.auth?.allowPassword ?? true
 }
 
+/**
+ * Check if email OTP login is allowed
+ *
+ * @param config - Site configuration object
+ * @returns true if email OTP login is allowed
+ */
+export function isEmailOtpAllowed(config: SiteConfig): boolean {
+  return config.auth?.allowEmailOTP ?? true
+}
+
 // Deprecated: Keep for backward compatibility
 export function getProviderConfig(provider: string) {
   console.warn('getProviderConfig is deprecated. Use getProviderMetadata from auth-providers.ts instead')
