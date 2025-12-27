@@ -12,6 +12,8 @@ const schema = z.object({
   slogan: z.string().min(1, 'Slogan is required'),
   description: z.string().min(1, 'Description is required'),
   copyright: z.string().min(1, 'Copyright text is required'),
+  termsUrl: z.string().optional(),
+  privacyUrl: z.string().optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -84,6 +86,32 @@ export function SiteInfoForm({ initialData, onSave, isLoading }: SiteInfoFormPro
         />
         {errors.copyright && (
           <p className="text-sm text-destructive">{errors.copyright.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="termsUrl">Terms of Service URL</Label>
+        <Input
+          id="termsUrl"
+          placeholder="https://example.com/terms"
+          {...register('termsUrl')}
+          readOnly={!isAdmin}
+        />
+        {errors.termsUrl && (
+          <p className="text-sm text-destructive">{errors.termsUrl.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="privacyUrl">Privacy Policy URL</Label>
+        <Input
+          id="privacyUrl"
+          placeholder="https://example.com/privacy"
+          {...register('privacyUrl')}
+          readOnly={!isAdmin}
+        />
+        {errors.privacyUrl && (
+          <p className="text-sm text-destructive">{errors.privacyUrl.message}</p>
         )}
       </div>
 

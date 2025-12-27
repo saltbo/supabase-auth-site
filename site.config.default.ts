@@ -16,6 +16,8 @@ export const defaultConfig: SiteConfig = {
     slogan: 'Secure Authentication Made Simple',
     description: 'Sign in to access your account',
     copyright: '© 2025 My Auth App',
+    termsUrl: '',
+    privacyUrl: '',
   },
 
   // Branding assets

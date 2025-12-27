@@ -29,7 +29,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
       </h2>
 
       {/* Login Content */}
-      <div>
+      <div className="space-y-6">
         {loginMethod === 'default' ? (
           <div className="grid gap-4">
             <div className="grid gap-3">
@@ -61,6 +61,19 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         ) : (
           <EmailOtpLoginForm onBack={handleBackToDefault} />
         )}
+
+        {/* Legal Disclaimer */}
+        <p className="text-center text-[12px] text-muted-foreground/80 whitespace-nowrap">
+          By continuing, I agree to {config.site.name}'s{' '}
+          <a href={config.site.termsUrl || '#'} className="underline underline-offset-4 hover:text-primary transition-colors">
+            terms
+          </a>
+          ,{' '}
+          <a href={config.site.privacyUrl || '#'} className="underline underline-offset-4 hover:text-primary transition-colors">
+            privacy policy
+          </a>
+          .
+        </p>
       </div>
     </div>
   )

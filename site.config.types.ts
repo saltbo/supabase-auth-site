@@ -22,6 +22,10 @@ export interface SiteConfig {
     description: string
     /** Copyright text shown in footer */
     copyright: string
+    /** Terms of Service URL */
+    termsUrl?: string
+    /** Privacy Policy URL */
+    privacyUrl?: string
   }
 
   /** Branding and visual assets */
