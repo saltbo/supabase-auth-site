@@ -43,11 +43,6 @@ const schema = z.object({
     sameSite: z.enum(['Lax', 'Strict', 'None']),
   }).optional(),
   cookieDomain: z.string().optional(),
-}).refine((data) => {
-  return data.allowPassword === true || data.allowEmailOTP === true || data.enabledProviders.length > 0
-}, {
-  message: "At least one login method must be enabled (Password, Email OTP, or an OAuth Provider).",
-  path: ["root"], // This will attach the error to the root of the form
 })
 
 type FormData = z.infer<typeof schema>
