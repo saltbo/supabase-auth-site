@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useSiteConfig } from '@/lib/config'
+import { injectThemeColors } from '@/lib/theme'
 
 /**
  * Component to dynamically update page title, meta tags, and favicon
@@ -9,6 +10,9 @@ export function PageHead() {
   const config = useSiteConfig()
 
   useEffect(() => {
+    // Inject theme colors
+    injectThemeColors(config.theme)
+
     // Update page title
     document.title = config.site.name
 
@@ -35,7 +39,7 @@ export function PageHead() {
     if (appleTouchIcon) {
       appleTouchIcon.href = config.branding.favicon
     }
-  }, [config.site.name, config.site.description, config.branding.favicon])
+  }, [config.site.name, config.site.description, config.branding.favicon, config.theme])
 
   // This component doesn't render anything
   return null
