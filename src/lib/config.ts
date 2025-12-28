@@ -8,14 +8,13 @@ export type { SiteConfig }
 
 /**
  * React hook to access the raw site configuration query
- * Useful for checking loading state or error state
  */
 export function useSiteConfigQuery() {
   return useQuery({
     queryKey: ['site-config'],
     queryFn: fetchConfigFromStorage,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     retry: 1,
     refetchOnWindowFocus: false,
   })
@@ -23,115 +22,42 @@ export function useSiteConfigQuery() {
 
 /**
  * React hook to access site configuration
- * Loads from Storage with fallback to default config
- *
- * @example
- * ```tsx
- * function MyComponent() {
- *   const config = useSiteConfig()
- *   return <h1>{config.site.name}</h1>
- * }
- * ```
  */
 export function useSiteConfig(): SiteConfig {
   const { data: storageConfig, isLoading, error } = useSiteConfigQuery()
 
-  // If loading or error, use default config
   if (isLoading || error || !storageConfig) {
     return defaultConfig
   }
 
-  // Merge storage config with default config to ensure all fields exist
-  // This handles partial configs or missing fields (e.g. after update)
   return mergeWithDefaultConfig(storageConfig)
 }
 
 /**
- * Get list of enabled OAuth providers from config
- *
- * @param config - Site configuration object
- * @returns Array of enabled provider names
- *
- * @example
- * ```ts
- * const config = useSiteConfig()
- * const providers = getEnabledProviders(config)
- * // ['google', 'github']
- * ```
+ * Configuration Accessors
  */
-export function getEnabledProviders(config: SiteConfig): string[] {
-  return config.auth?.enabledProviders || []
+export const configSelectors = {
+  enabledProviders: (config: SiteConfig) => config.auth.providers || [],
+  
+  isTurnstileEnabled: (config: SiteConfig) => 
+    config.auth.security.turnstile.enabled && !!config.auth.security.turnstile.siteKey,
+  
+  isSignupAllowed: (config: SiteConfig) => config.auth.registration.enabled,
+  
+  isPasswordAllowed: (config: SiteConfig) => config.auth.email.password,
+  
+  isEmailOtpAllowed: (config: SiteConfig) => config.auth.email.otp,
+  
+  isMagicLinkAllowed: (config: SiteConfig) => config.auth.email.magicLink,
+  
+  getProviderDisplayName: (provider: string) => getProviderMetadata(provider).displayName,
 }
 
-/**
- * Get display name for a provider
- * Uses provider metadata from auth-providers.ts
- *
- * @param provider - Provider name
- * @returns Display name (falls back to capitalized provider name)
- *
- * @example
- * ```ts
- * getProviderDisplayName('google') // 'Google'
- * getProviderDisplayName('github') // 'GitHub'
- * ```
- */
-export function getProviderDisplayName(provider: string): string {
-  return getProviderMetadata(provider).displayName
-}
-
-/**
- * Check if Turnstile CAPTCHA is enabled
- *
- * @param config - Site configuration object
- * @returns true if Turnstile is enabled and site key is set
- */
-export function isTurnstileEnabled(config: SiteConfig): boolean {
-  return config.auth?.turnstile?.enabled && !!config.auth?.turnstile?.siteKey
-}
-
-/**
- * Check if user signup is allowed
- *
- * @param config - Site configuration object
- * @returns true if signup is allowed
- */
-export function isSignupAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowSignup === true
-}
-
-/**
- * Check if password login is allowed
- *
- * @param config - Site configuration object
- * @returns true if password login is allowed
- */
-export function isPasswordAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowPassword === true
-}
-
-/**
- * Check if email OTP login is allowed
- *
- * @param config - Site configuration object
- * @returns true if email OTP login is allowed
- */
-export function isEmailOtpAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowEmailOTP === true
-}
-
-/**
- * Check if magic link login is allowed
- *
- * @param config - Site configuration object
- * @returns true if magic link login is allowed
- */
-export function isMagicLinkAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowMagicLink === true
-}
-
-// Deprecated: Keep for backward compatibility
-export function getProviderConfig(provider: string) {
-  console.warn('getProviderConfig is deprecated. Use getProviderMetadata from auth-providers.ts instead')
-  return getProviderMetadata(provider)
-}
+// Keep these as individual exports for convenience if preferred, or just use configSelectors
+export const isTurnstileEnabled = configSelectors.isTurnstileEnabled
+export const isSignupAllowed = configSelectors.isSignupAllowed
+export const isPasswordAllowed = configSelectors.isPasswordAllowed
+export const isEmailOtpAllowed = configSelectors.isEmailOtpAllowed
+export const isMagicLinkAllowed = configSelectors.isMagicLinkAllowed
+export const getEnabledProviders = configSelectors.enabledProviders
+export const getProviderDisplayName = configSelectors.getProviderDisplayName

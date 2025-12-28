@@ -88,7 +88,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
       <div className={className}>
         <Turnstile
           key={resetKey}
-          siteKey={config.auth.turnstile.siteKey}
+          siteKey={config.auth.security.turnstile.siteKey}
           onSuccess={handleSuccess}
           onError={handleTokenCleared}
           onExpire={handleTokenCleared}

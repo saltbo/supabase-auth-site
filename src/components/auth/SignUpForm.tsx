@@ -23,7 +23,7 @@ export function SignUpForm() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [showTurnstile, setShowTurnstile] = useState(false)
 
-  const requireInviteCode = config.auth.requireInviteCode
+  const requireInviteCode = config.auth.registration.requireInviteCode
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

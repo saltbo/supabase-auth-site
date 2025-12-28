@@ -26,7 +26,7 @@ function resolveCookieDomain(): string {
   const rawConfig = getCachedConfig()
   const config = mergeWithDefaultConfig(rawConfig)
 
-  return config.auth.cookieDomain || window.location.hostname
+  return config.auth.session.domain || window.location.hostname
 }
 
 /**
@@ -67,14 +67,14 @@ export const cookieStorage: SupportedStorage = {
     // Try to get dynamic config, fallback to default
     const rawConfig = getCachedConfig()
     const config = mergeWithDefaultConfig(rawConfig)
-    const cookieOptions = config.auth.cookieOptions
+    const session = config.auth.session
     const domain = resolveCookieDomain()
 
     Cookies.set(key, value, {
-      expires: cookieOptions?.expires ?? 365,
+      expires: session.expires,
       path: '/',
       domain: domain,
-      sameSite: (cookieOptions?.sameSite as any) ?? 'Lax',
+      sameSite: session.sameSite as any,
       secure: isProduction && isSecure, // HTTPS only in production
     })
   },

@@ -38,7 +38,7 @@ export const Route = createFileRoute('/verify-otp')({
 function VerifyOtpPage() {
   const navigate = useNavigate()
   const config = useSiteConfig()
-  const otpLength = Math.min(Math.max(config.auth?.otpLength ?? 8, 6), 10)
+  const otpLength = Math.min(Math.max(config.auth?.security?.otpLength ?? 8, 6), 10)
   const { verifyOtp } = useAuth()
   const { email } = Route.useSearch()
   const turnstileRef = useRef<TurnstileWidgetRef>(null)

@@ -43,33 +43,25 @@ export function SiteInfoForm({ config, onSave, isLoading }: SiteInfoFormProps) {
     formState: { errors, isDirty },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      ...config.site,
-      logoUrl: config.branding.logoUrl || '',
-    },
+    defaultValues: config.site,
   })
 
   const values = watch()
   const logoUrl = watch('logoUrl')
 
   useEffect(() => {
-    // Split the values back into site and branding for preview
-    const { logoUrl, ...siteValues } = values
-    updateSection('site', siteValues)
-    updateSection('branding', { logoUrl })
+    updateSection('site', values)
   }, [values, updateSection])
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error('Please upload an image file')
       return
     }
 
-    // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
       toast.error('Image size should be less than 2MB')
       return
@@ -102,11 +94,7 @@ export function SiteInfoForm({ config, onSave, isLoading }: SiteInfoFormProps) {
   }
 
   const onSubmit = (data: FormData) => {
-    const { logoUrl, ...siteData } = data
-    onSave({
-      site: siteData,
-      branding: { logoUrl: logoUrl || undefined }
-    })
+    onSave({ site: data })
   }
 
   return (

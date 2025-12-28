@@ -27,10 +27,10 @@ export function Logo({
   }, [config.theme])
 
   // If custom logo image is selected and URL is provided, use it
-  if (config.branding.logoUrl) {
+  if (config.site.logoUrl) {
     return (
       <img
-        src={config.branding.logoUrl}
+        src={config.site.logoUrl}
         alt={config.site.name}
         className={className}
       />

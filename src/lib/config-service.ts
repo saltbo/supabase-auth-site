@@ -53,29 +53,35 @@ export function mergeWithDefaultConfig(partialConfig: Partial<SiteConfig> | null
     ...partialConfig,
     site: {
       ...defaultConfig.site,
-      ...partialConfig.site,
-    },
-    branding: {
-      ...defaultConfig.branding,
-      ...partialConfig.branding,
+      ...(partialConfig.site || {}),
     },
     theme: {
       ...defaultConfig.theme,
-      ...partialConfig.theme,
+      ...(partialConfig.theme || {}),
     },
     auth: {
       ...defaultConfig.auth,
-      ...partialConfig.auth,
-      turnstile: {
-        ...defaultConfig.auth.turnstile,
-        ...(partialConfig.auth?.turnstile || {}),
+      ...(partialConfig.auth || {}),
+      email: {
+        ...defaultConfig.auth.email,
+        ...(partialConfig.auth?.email || {})
       },
-      cookieOptions: defaultConfig.auth.cookieOptions
-        ? {
-            ...defaultConfig.auth.cookieOptions,
-            ...(partialConfig.auth?.cookieOptions || {}),
-          }
-        : undefined,
+      registration: {
+        ...defaultConfig.auth.registration,
+        ...(partialConfig.auth?.registration || {})
+      },
+      security: {
+        ...defaultConfig.auth.security,
+        ...(partialConfig.auth?.security || {}),
+        turnstile: {
+          ...defaultConfig.auth.security.turnstile,
+          ...(partialConfig.auth?.security?.turnstile || {})
+        }
+      },
+      session: {
+        ...defaultConfig.auth.session,
+        ...(partialConfig.auth?.session || {})
+      }
     },
   }
 }

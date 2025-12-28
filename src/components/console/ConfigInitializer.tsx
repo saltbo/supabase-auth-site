@@ -72,7 +72,7 @@ export function ConfigInitializer({ onInitialize, isLoading, error }: ConfigInit
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
                   <span>
-                    You can customize site info, branding, theme, and auth settings
+                    You can customize site info, theme, and auth settings
                   </span>
                 </li>
                 <li className="flex items-start">

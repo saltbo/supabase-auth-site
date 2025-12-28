@@ -1,6 +1,5 @@
 export { ConfigInitializer } from './ConfigInitializer'
 export { SiteInfoForm } from './SiteInfoForm'
-export { BrandingForm } from './BrandingForm'
 export { ThemeForm } from './ThemeForm'
 export { AuthConfigForm } from './AuthConfigForm'
 export { IntegrationGuide } from './IntegrationGuide'

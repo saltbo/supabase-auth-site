@@ -4,9 +4,9 @@ import type { AuthError, Session, User, Provider } from '@supabase/supabase-js'
 import { 
   useSiteConfig, 
   getEnabledProviders as getConfiguredProviders, 
-  getProviderConfig,
   isSignupAllowed 
 } from './config'
+import { getProviderMetadata } from './auth-providers'
 
 export type { Provider }
 
@@ -123,14 +123,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // OAuth 回调始终到 /auth/callback，然后由 callback 页面处理最终跳转
     const callbackUrl = new URL('/callback', window.location.origin)
 
-    // Get provider config for custom scopes
-    const providerConfig = getProviderConfig(provider)
+    // Get provider metadata for custom scopes
+    const providerMetadata = getProviderMetadata(provider as string)
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
         redirectTo: callbackUrl.toString(),
-        scopes: providerConfig?.defaultScopes,
+        scopes: providerMetadata?.defaultScopes,
       },
     })
     return { error }

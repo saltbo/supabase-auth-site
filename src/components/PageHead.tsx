@@ -7,7 +7,7 @@ import type { SiteConfig } from '@/../site.config.types'
  * Get the favicon URL based on configuration
  */
 function getFaviconUrl(config: SiteConfig) {
-  const { logoUrl } = config.branding
+  const { logoUrl } = config.site
 
   // 1. If it's an image-based logo, use the logo URL
   if (logoUrl) {
@@ -67,7 +67,7 @@ export function PageHead() {
     if (appleTouchIcon) {
       appleTouchIcon.href = faviconUrl
     }
-  }, [config.site.name, config.site.slogan, config.branding.logoUrl, config.theme])
+  }, [config.site.name, config.site.slogan, config.site.logoUrl, config.theme])
 
   // This component doesn't render anything
   return null

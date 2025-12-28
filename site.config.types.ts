@@ -12,27 +12,23 @@ export interface SiteConfig {
    */
   revision: number
 
-  /** Basic site information */
+  /** Basic site information and branding */
   site: {
     /** Site name (used in titles, meta tags, logo fallback) */
     name: string
     /** Main slogan or tagline displayed on auth pages */
     slogan?: string
+    /** 
+     * URL to custom logo image (e.g., '/logo.png') 
+     * If not provided, the site name and its first letter will be used.
+     */
+    logoUrl?: string
     /** Copyright text shown in footer */
     copyright: string
     /** Terms of Service URL */
     termsUrl?: string
     /** Privacy Policy URL */
     privacyUrl?: string
-  }
-
-  /** Branding and visual assets */
-  branding: {
-    /** 
-     * URL to custom logo image (e.g., '/logo.png') 
-     * If not provided, the site name and its first letter will be used.
-     */
-    logoUrl?: string
   }
 
   /** Theme colors (CSS color values: hex, rgb, hsl, etc.) */
@@ -53,49 +49,50 @@ export interface SiteConfig {
   auth: {
     /**
      * List of enabled OAuth provider names
-     * Provider metadata (icons, scopes, display names) are defined in src/lib/auth-providers.ts
-     * Examples: ['google', 'github', 'gitlab', 'azure', 'facebook']
+     * Provider metadata are defined in src/lib/auth-providers.ts
      */
-    enabledProviders: string[]
+    providers: string[]
 
-    /** Allow new user registration */
-    allowSignup: boolean
-
-    /** Require invite code for registration */
-    requireInviteCode?: boolean
-
-    /** Allow email/password authentication */
-    allowPassword: boolean
-
-    /** Allow email OTP (verification code) authentication */
-    allowEmailOTP?: boolean
-
-    /** Allow email Magic Link (sign-in link) authentication */
-    allowMagicLink?: boolean
-
-    /** Turnstile CAPTCHA configuration */
-    turnstile: {
-      /** Enable Turnstile CAPTCHA protection */
-      enabled: boolean
-      /** Turnstile Site Key (get from Cloudflare Dashboard) */
-      siteKey: string
+    /** Email authentication methods */
+    email: {
+      /** Allow email/password authentication */
+      password: boolean
+      /** Allow email OTP (verification code) authentication */
+      otp: boolean
+      /** Allow email Magic Link (sign-in link) authentication */
+      magicLink: boolean
     }
 
-    /** Length of the OTP code expected from Supabase (defaults to 8) */
-    otpLength?: number
+    /** Registration control */
+    registration: {
+      /** Allow new user registration */
+      enabled: boolean
+      /** Require invite code for registration */
+      requireInviteCode: boolean
+    }
 
-    /** Cookie storage configuration */
-    cookieOptions?: {
+    /** Security settings */
+    security: {
+      /** Length of the OTP code expected from Supabase (defaults to 8) */
+      otpLength: number
+      /** Turnstile CAPTCHA configuration */
+      turnstile: {
+        enabled: boolean
+        siteKey: string
+      }
+    }
+
+    /** Session management */
+    session: {
       /** Cookie expiration in days */
       expires: number
       /** SameSite attribute for cookies */
       sameSite: 'Lax' | 'Strict' | 'None'
+      /** 
+       * Domain for cookie storage (e.g., '.example.com') 
+       * Used for cross-subdomain SSO.
+       */
+      domain?: string
     }
-    
-    /** 
-     * Domain for cookie storage (e.g., '.example.com') 
-     * Used for cross-subdomain SSO.
-     */
-    cookieDomain?: string
   }
 }

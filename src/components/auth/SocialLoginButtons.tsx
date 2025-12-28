@@ -27,7 +27,7 @@ export function SocialLoginButtons({
   const [loading, setLoading] = useState<Provider | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const enabledProviders = (config.auth?.enabledProviders || []) as Provider[]
+  const enabledProviders = config.auth.providers as Provider[]
   const providers = primaryProvider
     ? [...enabledProviders].sort((a, b) => {
         if (a === primaryProvider) return -1

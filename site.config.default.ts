@@ -10,19 +10,15 @@ export const defaultConfig: SiteConfig = {
   // Version control
   revision: 1,
 
-  // Basic site information
+  // Basic site information and branding
   site: {
     name: 'My Auth App',
     slogan: 'Secure Authentication Made Simple',
     copyright: '© 2025 My Auth App',
-    termsUrl: '',
-    privacyUrl: '',
-  },
-
-  // Branding assets
-  branding: {
     // Optional: Upload a custom logo in the console
     // logoUrl: '/logo.png',
+    termsUrl: '',
+    privacyUrl: '',
   },
 
   // Theme colors (use any valid CSS color format)
@@ -37,41 +33,36 @@ export const defaultConfig: SiteConfig = {
   // Authentication configuration
   auth: {
     // List of enabled OAuth providers
-    // Provider metadata (icons, scopes, display names) are defined in src/lib/auth-providers.ts
-    enabledProviders: ['google', 'github'],
+    providers: ['google', 'github'],
 
-    // Allow new user registration
-    allowSignup: false,
-
-    // Require invite code for registration
-    requireInviteCode: false,
-
-    // Allow email/password authentication
-    allowPassword: true,
-
-    // Allow email OTP (verification code) authentication
-    allowEmailOTP: true,
-
-    // Allow email Magic Link (sign-in link) authentication
-    allowMagicLink: true,
-
-    // Default OTP length (matches Supabase default of 8 digits)
-    otpLength: 8,
-
-    // Turnstile CAPTCHA configuration
-    turnstile: {
-      enabled: false,
-      siteKey: '',
+    // Email authentication methods
+    email: {
+      password: true,
+      otp: true,
+      magicLink: true,
     },
 
-    // Cookie storage configuration
-    cookieOptions: {
+    // Registration control
+    registration: {
+      enabled: false,
+      requireInviteCode: false,
+    },
+
+    // Security settings
+    security: {
+      otpLength: 8,
+      turnstile: {
+        enabled: false,
+        siteKey: '',
+      },
+    },
+
+    // Session management
+    session: {
       expires: 365,
       sameSite: 'Lax',
+      // Set to '.yourdomain.com' to share session across subdomains
+      domain: undefined,
     },
-
-    // Domain for cookie storage (SSO)
-    // Set to '.yourdomain.com' to share session across subdomains
-    cookieDomain: undefined,
   },
 }
