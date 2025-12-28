@@ -14,6 +14,7 @@ import {
   isSignupAllowed,
   getEnabledProviders 
 } from '@/lib/config'
+import { defaultConfig } from '@/../site.config.default'
 import type { SiteConfig } from '@/../site.config.types'
 
 type LoginMethod = 'default' | 'email-otp' | 'magiclink'
@@ -152,7 +153,8 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
             isSignupAllowed: isSignupAllowed(config),
             revision: config.revision,
             source: propConfig ? 'prop' : 'global (hook)',
-            defaultAllowSignup: siteConfig.auth?.allowSignup
+            defaultConfigVal: defaultConfig.auth.allowSignup,
+            supabaseUrl: import.meta.env.VITE_SUPABASE_URL
           }, null, 2)}</pre>
         </div>
       </div>
