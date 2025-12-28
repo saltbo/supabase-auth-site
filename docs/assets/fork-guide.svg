@@ -1,0 +1,78 @@
+<svg width="800" height="100" viewBox="0 0 800 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .text { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji"; }
+    .repo-link { fill: #0969da; cursor: pointer; }
+    .repo-link:hover { text-decoration: underline; }
+    
+    @keyframes moveCursor {
+      0% { transform: translate(700px, 80px); }
+      30% { transform: translate(610px, 42px); } /* Move to Fork */
+      35% { transform: translate(610px, 42px) scale(0.85); } /* Click */
+      40% { transform: translate(610px, 42px) scale(1); } /* Release */
+      100% { transform: translate(610px, 42px); }
+    }
+    
+    @keyframes clickRipple {
+      0% { transform: scale(0); opacity: 0.3; }
+      40% { transform: scale(3); opacity: 0; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    @keyframes btnHighlight {
+      0%, 25% { fill: #f6f8fa; }
+      30%, 80% { fill: #ebf0f4; }
+      100% { fill: #f6f8fa; }
+    }
+
+    .cursor { animation: moveCursor 5s infinite cubic-bezier(0.4, 0, 0.2, 1); }
+    .ripple { animation: clickRipple 5s infinite; transform-origin: 610px 42px; }
+    .btn-bg { animation: btnHighlight 5s infinite; }
+  </style>
+
+  <!-- GitHub Header Background -->
+  <rect width="800" height="100" fill="#f6f8fa"/>
+  <line x1="0" y1="99.5" x2="800" y2="99.5" stroke="#d0d7de"/>
+
+  <!-- Repo Icon & Breadcrumbs -->
+  <g transform="translate(24, 32)">
+    <!-- Repo Icon (Book) -->
+    <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.25.25 0 01.25.25v12.5a.25.25 0 01-.25.25h-2.5a.75.75 0 110-1.5h1.75V1.5h-8v10h1.75a.75.75 0 110 1.5h-2.5a.25.25 0 01-.25-.25V2.5z" fill="#57606a" transform="translate(0, 2)"/>
+    <text x="24" y="14" fill="#0969da" class="text" font-size="18">saltbo</text>
+    <text x="80" y="14" fill="#57606a" class="text" font-size="18">/</text>
+    <text x="95" y="14" fill="#0969da" class="text" font-size="18" font-weight="600">supabase-auth-site</text>
+    
+    <!-- Public Badge -->
+    <rect x="275" y="-4" width="52" height="22" rx="11" stroke="#d0d7de" fill="transparent"/>
+    <text x="286" y="11" fill="#57606a" class="text" font-size="12" font-weight="500">Public</text>
+  </g>
+
+  <!-- Action Buttons Group -->
+  <g transform="translate(480, 26)">
+    <!-- Watch Button -->
+    <rect x="0" y="0" width="80" height="32" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+    <text x="30" y="21" fill="#24292f" class="text" font-size="12" font-weight="600">Watch</text>
+    <path d="M8 16a2 2 0 001.998-1.75H6.002A2 2 0 008 16zM1.415 11.083c.134-.143.433-.42.66-.757C2.9 9.1 2.8 6.4 4.5 4.8 5.4 4 6.6 3.5 8 3.5s2.6.5 3.5 1.3c1.7 1.6 1.6 4.3 2.425 5.526.227.337.526.614.66.757.34.362.415.767.415 1.167 0 .883-.717 1.6-1.6 1.6H1.6c-.883 0-1.6-.717-1.6-1.6 0-.4.075-.805.415-1.167z" fill="#57606a" transform="translate(8, 8) scale(0.8)"/>
+
+    <!-- Fork Button (The Target) -->
+    <g transform="translate(88, 0)">
+      <rect class="btn-bg" x="0" y="0" width="80" height="32" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+      <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.25h-1.5A2.25 2.25 0 013 6v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 10-1.5 0 .75.75 0 001.5 0z" fill="#57606a" transform="translate(8, 8) scale(0.9)"/>
+      <text x="32" y="21" fill="#24292f" class="text" font-size="12" font-weight="600">Fork</text>
+    </g>
+
+    <!-- Star Button -->
+    <g transform="translate(176, 0)">
+      <rect x="0" y="0" width="80" height="32" rx="6" fill="#f6f8fa" stroke="#d0d7de"/>
+      <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" fill="#57606a" transform="translate(8, 8) scale(0.9)"/>
+      <text x="32" y="21" fill="#24292f" class="text" font-size="12" font-weight="600">Star</text>
+    </g>
+  </g>
+
+  <!-- Ripple for click effect -->
+  <circle class="ripple" cx="610" cy="42" r="12" fill="#0969da" opacity="0"/>
+
+  <!-- Animated Cursor -->
+  <g class="cursor">
+    <path d="M0 0L0 16L4 12L7 18L9 17L6 11L11 11L0 0Z" fill="black" stroke="white" stroke-width="1.5"/>
+  </g>
+</svg>

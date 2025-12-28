@@ -1,8 +1,4 @@
 <div align="center">
-  <a href="https://github.com/saltbo/supabase-auth-site">
-    <img src="public/tanstack-word-logo-white.svg" alt="Logo" width="80" height="80">
-  </a>
-
   <h1 align="center">Supabase Auth Site</h1>
 
   <p align="center">
@@ -63,6 +59,8 @@ We strictly recommend the **Fork & Deploy** strategy. This keeps your deployment
 ### 1. Fork the Repository
 
 Click the **Fork** button at the top right of this page to create your own copy of the repository.
+
+[![Fork Guide](./docs/assets/fork-guide.svg)](https://github.com/saltbo/supabase-auth-site/fork)
 
 ### 2. Deploy
 
@@ -127,7 +125,7 @@ To update your site with the latest features and security patches:
 
 ## 📚 Documentation
 
-*   [Cross-Domain SSO Guide](./docs/CROSS_DOMAIN_AUTH.md) - Learn how to share sessions across subdomains.
+*   [Cross-Domain SSO Guide](./docs/SSO_GUIDE.md) - Learn how to share sessions across subdomains.
 *   [Contributing Guidelines](./CONTRIBUTING.md) - Want to help improve the project?
 
 ## 📄 License
