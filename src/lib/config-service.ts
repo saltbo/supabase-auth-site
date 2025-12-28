@@ -109,7 +109,7 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
         url.searchParams.set('t', Date.now().toString())
         
         console.log('Fetching from public URL:', url.toString())
-        const response = await fetch(url.toString())
+        const response = await fetch(url.toString(), { cache: 'no-store' })
         
         if (!response.ok) {
           console.warn('Public URL fetch failed:', response.status, response.statusText)

@@ -28,6 +28,16 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
   
   // Use passed config (e.g. for preview) or fallback to global config
   const config = propConfig || siteConfig
+  
+  // Debug config state
+  useEffect(() => {
+    console.log('[LoginForm] Auth Config:', {
+      allowSignup: config.auth?.allowSignup,
+      isSignupAllowed: isSignupAllowed(config),
+      source: propConfig ? 'prop' : 'global'
+    })
+  }, [config, propConfig])
+
   const passwordAllowed = isPasswordAllowed(config)
   const emailOtpAllowed = isEmailOtpAllowed(config)
   const magicLinkAllowed = isMagicLinkAllowed(config)

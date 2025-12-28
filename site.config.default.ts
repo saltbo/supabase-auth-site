@@ -41,7 +41,7 @@ export const defaultConfig: SiteConfig = {
     enabledProviders: ['google', 'github'],
 
     // Allow new user registration
-    allowSignup: true,
+    allowSignup: false,
 
     // Require invite code for registration
     requireInviteCode: false,
