@@ -97,7 +97,7 @@ export function isTurnstileEnabled(config: SiteConfig): boolean {
  * @returns true if signup is allowed
  */
 export function isSignupAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowSignup ?? true
+  return config.auth?.allowSignup === true
 }
 
 /**
@@ -107,7 +107,7 @@ export function isSignupAllowed(config: SiteConfig): boolean {
  * @returns true if password login is allowed
  */
 export function isPasswordAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowPassword ?? true
+  return config.auth?.allowPassword === true
 }
 
 /**
@@ -117,7 +117,7 @@ export function isPasswordAllowed(config: SiteConfig): boolean {
  * @returns true if email OTP login is allowed
  */
 export function isEmailOtpAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowEmailOTP ?? true
+  return config.auth?.allowEmailOTP === true
 }
 
 /**
@@ -127,7 +127,7 @@ export function isEmailOtpAllowed(config: SiteConfig): boolean {
  * @returns true if magic link login is allowed
  */
 export function isMagicLinkAllowed(config: SiteConfig): boolean {
-  return config.auth?.allowMagicLink ?? true
+  return config.auth?.allowMagicLink === true
 }
 
 // Deprecated: Keep for backward compatibility
