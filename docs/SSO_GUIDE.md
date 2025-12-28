@@ -73,5 +73,5 @@ To verify a Supabase JWT manually (Backend or Gateway):
 ---
 
 ## 🔗 Resources
-- [Supabase: Using JWKS for JWT Verification](https://supabase.com/docs/guides/auth/jwks)
+- [Supabase: Using JWKS for JWT Verification](https://supabase.com/docs/guides/auth/jwts#verifying-a-jwt-from-supabase)
 - [Supabase: Managing Session Cookies](https://supabase.com/docs/reference/javascript/auth-set-session)
