@@ -105,8 +105,17 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
         .getPublicUrl(CONFIG_FILE)
 
       if (publicUrlData?.publicUrl) {
-        console.log('Fetching from public URL:', publicUrlData.publicUrl)
-        const response = await fetch(publicUrlData.publicUrl)
+        const url = new URL(publicUrlData.publicUrl)
+        url.searchParams.set('t', Date.now().toString())
+        
+        console.log('Fetching from public URL:', url.toString())
+        const response = await fetch(url.toString())
+        
+        if (!response.ok) {
+          console.warn('Public URL fetch failed:', response.status, response.statusText)
+          return null
+        }
+
         const text = await response.text()
         console.log('Config text from public URL:', text)
 

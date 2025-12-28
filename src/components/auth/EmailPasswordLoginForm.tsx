@@ -72,7 +72,7 @@ export function EmailPasswordLoginForm({}: EmailPasswordLoginFormProps) {
             <Label htmlFor="password">Password</Label>
             <Link 
               to="/forgot-password" 
-              className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+              className="ml-auto inline-block text-xs text-muted-foreground underline-offset-4 hover:underline hover:text-primary"
             >
               Forgot your password?
             </Link>
