@@ -1,7 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase'
 import type { AuthError, Session, User, Provider } from '@supabase/supabase-js'
-import { useSiteConfig, getEnabledProviders as getConfiguredProviders, getProviderConfig } from './config'
+import { 
+  useSiteConfig, 
+  getEnabledProviders as getConfiguredProviders, 
+  getProviderConfig,
+  isSignupAllowed 
+} from './config'
 
 export type { Provider }
 
@@ -140,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: config.auth?.allowSignup ?? true,
+        shouldCreateUser: isSignupAllowed(config),
         captchaToken,
         emailRedirectTo: flow === 'magiclink' ? window.location.origin : undefined,
       },

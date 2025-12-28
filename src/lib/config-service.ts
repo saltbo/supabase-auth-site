@@ -80,77 +80,53 @@ export function mergeWithDefaultConfig(partialConfig: Partial<SiteConfig> | null
   }
 }
 
-/**
- * Fetch site configuration from Storage
- * Returns null if config doesn't exist or on error
- */
 export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
   try {
     console.log('Fetching config from Storage:', CONFIG_BUCKET, CONFIG_FILE)
 
-    // Try method 1: Using download() API
-    const { data, error } = await supabase.storage
+    // ALWAYS use public URL with cache busting to avoid CDN/Browser stale data
+    const { data: publicUrlData } = supabase.storage
       .from(CONFIG_BUCKET)
-      .download(CONFIG_FILE)
+      .getPublicUrl(CONFIG_FILE)
 
-    console.log('Storage download result:', { data, error, dataSize: data?.size })
-
-    if (error) {
-      console.warn('Failed to fetch config from Storage (download):', error)
-
-      // Try method 2: Using public URL
-      console.log('Trying public URL method...')
-      const { data: publicUrlData } = supabase.storage
-        .from(CONFIG_BUCKET)
-        .getPublicUrl(CONFIG_FILE)
-
-      if (publicUrlData?.publicUrl) {
-        const url = new URL(publicUrlData.publicUrl)
-        url.searchParams.set('t', Date.now().toString())
-        
-        console.log('Fetching from public URL:', url.toString())
-        const response = await fetch(url.toString(), { cache: 'no-store' })
-        
-        if (!response.ok) {
-          console.warn('Public URL fetch failed:', response.status, response.statusText)
-          return null
-        }
-
+    if (publicUrlData?.publicUrl) {
+      const url = new URL(publicUrlData.publicUrl)
+      url.searchParams.set('t', Date.now().toString())
+      
+      console.log('Fetching from URL (Cache Busting):', url.toString())
+      const response = await fetch(url.toString(), { cache: 'no-store' })
+      
+      if (response.ok) {
         const text = await response.text()
-        console.log('Config text from public URL:', text)
-
         if (text && text.trim() !== '') {
           const config = JSON.parse(text) as SiteConfig
-          console.log('Parsed config from public URL:', config)
+          console.log('Loaded config revision:', config.revision)
           const mergedConfig = mergeWithDefaultConfig(config)
           cachedConfig = mergedConfig
           return mergedConfig
         }
+      } else {
+        console.warn('Public URL fetch failed:', response.status)
       }
-
-      return null
     }
 
-    if (!data) {
-      console.warn('No data returned from Storage')
+    // Fallback to direct download only if public URL fails
+    const { data, error } = await supabase.storage
+      .from(CONFIG_BUCKET)
+      .download(CONFIG_FILE)
+
+    if (error) {
+      console.error('All fetch methods failed:', error)
       return null
     }
 
     const text = await data.text()
-    console.log('Config text from Storage:', text, 'Length:', text.length)
-
-    if (!text || text.trim() === '') {
-      console.warn('Empty config text from Storage')
-      return null
-    }
-
     const config = JSON.parse(text) as SiteConfig
-    console.log('Parsed config:', config)
     const mergedConfig = mergeWithDefaultConfig(config)
     cachedConfig = mergedConfig
     return mergedConfig
   } catch (err) {
-    console.error('Error parsing config from Storage:', err)
+    console.error('Error in fetchConfigFromStorage:', err)
     return null
   }
 }
