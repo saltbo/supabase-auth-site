@@ -143,6 +143,18 @@ export function LoginForm({ className, config: propConfig, ...props }: LoginForm
           </a>
           .
         </p>
+
+        {/* DEBUG INFO - REMOVE BEFORE PROD */}
+        <div className="mt-4 p-2 bg-black/5 dark:bg-white/5 rounded text-[10px] font-mono text-muted-foreground overflow-x-auto">
+          <p>DEBUG:</p>
+          <pre>{JSON.stringify({
+            allowSignup: config.auth?.allowSignup,
+            isSignupAllowed: isSignupAllowed(config),
+            revision: config.revision,
+            source: propConfig ? 'prop' : 'global (hook)',
+            defaultAllowSignup: siteConfig.auth?.allowSignup
+          }, null, 2)}</pre>
+        </div>
       </div>
     </div>
   )
