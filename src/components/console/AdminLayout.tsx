@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { 
-  LayoutDashboard, 
-  Palette, 
-  Globe, 
-  Lock, 
-  Code2,
-  Menu,
-  X,
-  ChevronLeft,
-  ChevronRight,
+  Globe,
+  Palette,
   LogOut,
-  Home
+  Menu,
+  ChevronRight,
+  Lock,
+  Code2,
+  X,
+  Home,
+  ChevronLeft,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'

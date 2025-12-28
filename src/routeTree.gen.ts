@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SignoutRouteImport } from './routes/signout'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as CheckEmailRouteImport } from './routes/check-email'
@@ -33,6 +34,11 @@ const VerifyOtpRoute = VerifyOtpRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignoutRoute = SignoutRouteImport.update({
+  id: '/signout',
+  path: '/signout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SigninRoute = SigninRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/check-email': typeof CheckEmailRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/signin': typeof SigninRoute
+  '/signout': typeof SignoutRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/check-email': typeof CheckEmailRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/signin': typeof SigninRoute
+  '/signout': typeof SignoutRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/check-email': typeof CheckEmailRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/signin': typeof SigninRoute
+  '/signout': typeof SignoutRoute
   '/signup': typeof SignupRoute
   '/verify-otp': typeof VerifyOtpRoute
   '/console/auth': typeof ConsoleAuthRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/check-email'
     | '/forgot-password'
     | '/signin'
+    | '/signout'
     | '/signup'
     | '/verify-otp'
     | '/console/auth'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/check-email'
     | '/forgot-password'
     | '/signin'
+    | '/signout'
     | '/signup'
     | '/verify-otp'
     | '/console/auth'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/check-email'
     | '/forgot-password'
     | '/signin'
+    | '/signout'
     | '/signup'
     | '/verify-otp'
     | '/console/auth'
@@ -212,6 +224,7 @@ export interface RootRouteChildren {
   CheckEmailRoute: typeof CheckEmailRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   SigninRoute: typeof SigninRoute
+  SignoutRoute: typeof SignoutRoute
   SignupRoute: typeof SignupRoute
   VerifyOtpRoute: typeof VerifyOtpRoute
   OauthConsentRoute: typeof OauthConsentRoute
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signout': {
+      id: '/signout'
+      path: '/signout'
+      fullPath: '/signout'
+      preLoaderRoute: typeof SignoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signin': {
@@ -355,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckEmailRoute: CheckEmailRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   SigninRoute: SigninRoute,
+  SignoutRoute: SignoutRoute,
   SignupRoute: SignupRoute,
   VerifyOtpRoute: VerifyOtpRoute,
   OauthConsentRoute: OauthConsentRoute,

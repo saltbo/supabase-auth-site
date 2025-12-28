@@ -38,7 +38,7 @@ export function EmailPasswordLoginForm({}: EmailPasswordLoginFormProps) {
       turnstileRef.current?.reset()
     } else {
       // Redirect after successful login
-      performPostLoginRedirect(navigate)
+      performPostLoginRedirect(navigate, config)
     }
   }
 

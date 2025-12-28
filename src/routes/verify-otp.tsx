@@ -97,7 +97,7 @@ function VerifyOtpPage() {
       turnstileRef.current?.reset()
     } else {
       // Verification successful, redirect to destination
-      performPostLoginRedirect(navigate)
+      performPostLoginRedirect(navigate, config)
     }
   }
 

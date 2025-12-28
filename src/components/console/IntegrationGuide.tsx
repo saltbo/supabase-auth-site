@@ -16,7 +16,7 @@ export function IntegrationGuide({ config }: IntegrationGuideProps) {
   const [copied, setCopied] = useState<string | null>(null)
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co'
-  const cookieDomain = config?.auth?.cookieDomain
+  const cookieDomain = config?.auth?.session?.domain
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text)

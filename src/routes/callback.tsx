@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/auth'
 import { performPostLoginRedirect } from '@/lib/redirect'
+import { useSiteConfig } from '@/lib/config'
 import { ErrorPage } from '@/components/ErrorPage'
 
 export const Route = createFileRoute('/callback')({
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/callback')({
 function OAuthCallbackPage() {
   const navigate = useNavigate()
   const { user, loading } = useAuth()
+  const config = useSiteConfig()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -19,7 +21,7 @@ function OAuthCallbackPage() {
 
     if (user) {
       // Session established, redirect to destination
-      performPostLoginRedirect(navigate)
+      performPostLoginRedirect(navigate, config)
     } else {
       // No session, show error
       setError('No session found. Please try signing in again.')

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { LoginForm } from '@/components/login-form'
 import { resolveRedirect } from '@/lib/redirect'
+import { useSiteConfig } from '@/lib/config'
 
 export const Route = createFileRoute('/signin')({
   beforeLoad: async () => {
@@ -19,10 +20,11 @@ export const Route = createFileRoute('/signin')({
 function LoginPage() {
   const search: { redirect?: string } = Route.useSearch()
   const { redirect: redirectUrl } = search
+  const config = useSiteConfig()
   
   // Save redirect URL to sessionStorage
   // Priority: query parameter > referer > existing sessionStorage value
-  resolveRedirect(redirectUrl)
+  resolveRedirect(redirectUrl, config)
 
   return (
     <AuthLayout>

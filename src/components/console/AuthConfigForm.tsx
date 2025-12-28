@@ -47,7 +47,7 @@ const schema = z.object({
   session: z.object({
     expires: z.number().min(1, 'Must be at least 1 day'),
     sameSite: z.enum(['Lax', 'Strict', 'None']),
-    domain: z.string().optional().nullable(),
+    domain: z.string().optional(),
   }),
 })
 
@@ -78,8 +78,8 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     watch,
     formState: { isDirty, errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: initialData,
+    resolver: zodResolver(schema) as any,
+    defaultValues: initialData as any,
   })
 
   useEffect(() => {
@@ -89,7 +89,6 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
     return () => subscription.unsubscribe()
   }, [watch, updateSection])
 
-  const enabledProviders = watch('providers')
   const allowSignup = watch('registration.enabled')
   const turnstileEnabled = watch('security.turnstile.enabled')
   
