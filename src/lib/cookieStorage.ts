@@ -81,12 +81,19 @@ export const cookieStorage: SupportedStorage = {
 
   /**
    * Remove item from cookie storage
+   * IMPORTANT: Must use the exact same options as setItem for successful deletion
    */
   removeItem: (key: string): void => {
+    const rawConfig = getCachedConfig()
+    const config = mergeWithDefaultConfig(rawConfig)
+    const session = config.auth.session
     const domain = resolveCookieDomain()
+
     Cookies.remove(key, {
       path: '/',
       domain: domain,
+      sameSite: session.sameSite as any,
+      secure: isProduction && isSecure,
     })
   },
 }
