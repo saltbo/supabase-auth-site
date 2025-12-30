@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -7,9 +7,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { routeTree } from './routeTree.gen'
 
 // Import auth modules
-import { AuthProvider } from './lib/auth'
+import { AuthProvider, useAuth } from './lib/auth'
 import { initializeAuth, type RouterContext } from './lib/auth-init'
-import { registerRouter } from './lib/router-auth'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 import './styles.css'
@@ -52,6 +51,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+function InnerApp({ router }: { router: AppRouter }) {
+  const auth = useAuth()
+  
+  // Memoize auth state to prevent unnecessary re-renders
+  // This passes the latest auth state to the router context
+  const authState = useMemo(() => ({
+    user: auth.user,
+    session: auth.session,
+    isAuthenticated: !!auth.session,
+  }), [auth.user, auth.session])
+
+  return <RouterProvider router={router} context={{ auth: authState }} />
+}
+
 // Bootstrap the application
 async function bootstrap() {
   const rootElement = document.getElementById('app')
@@ -75,10 +88,6 @@ async function bootstrap() {
   // Create router with auth context
   const router = createAppRouter({ auth: authState })
 
-  // Register router for dynamic auth updates
-  // This allows auth state changes to update router context without page refresh
-  registerRouter(router)
-
   // Clear loading state and render app
   rootElement.innerHTML = ''
   const root = ReactDOM.createRoot(rootElement)
@@ -87,7 +96,7 @@ async function bootstrap() {
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
           <AuthProvider initialState={authState}>
-            <RouterProvider router={router} />
+            <InnerApp router={router} />
           </AuthProvider>
         </ErrorBoundary>
       </QueryClientProvider>

@@ -8,7 +8,6 @@ import {
 } from './config'
 import { getProviderMetadata } from './auth-providers'
 import type { AuthState } from './auth-init'
-import { updateRouterAuthContext } from './router-auth'
 
 export type { Provider }
 
@@ -92,15 +91,6 @@ export function AuthProvider({ children, initialState }: AuthProviderProps) {
       setSession(nextSession)
       setUser(nextSession?.user ?? null)
       setLoading(false)
-
-      // Update router context so route guards have fresh auth state
-      // This enables SPA navigation after login without page refresh
-      const newAuthState: AuthState = {
-        user: nextSession?.user ?? null,
-        session: nextSession,
-        isAuthenticated: !!nextSession,
-      }
-      updateRouterAuthContext(newAuthState)
     })
 
     return () => subscription.unsubscribe()
