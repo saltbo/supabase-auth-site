@@ -79,7 +79,7 @@ export const isValidReferer = (referer: string): boolean => {
     const refererUrl = new URL(referer, window.location.origin) // Handle relative or absolute
 
     // 排除认证相关页面
-    const authPaths = ['/signin', '/verify-otp', '/callback', '/signout']
+    const authPaths = ['/signin', '/signup', '/verify-otp', '/callback', '/signout']
     return !authPaths.some((path) => refererUrl.pathname.startsWith(path))
   } catch {
     return false
@@ -126,8 +126,6 @@ export const resolveRedirect = (queryRedirect?: string): string | undefined => {
 export const performPostLoginRedirect = (
   navigate: (opts: { to: string }) => void,
 ) => {
-  resolveRedirect(undefined) // Re-resolve or just get stored
-
   const storedRedirect = getAuthRedirect()
 
   if (storedRedirect && isValidRedirect(storedRedirect)) {
