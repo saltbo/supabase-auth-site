@@ -1,7 +1,5 @@
-import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { useSiteConfig } from '@/lib/config'
-import { injectThemeColors } from '@/lib/theme'
 import type { SiteConfig } from '@/../site.config.types'
 
 interface LogoProps {
@@ -20,11 +18,6 @@ export function Logo({
   const hookConfig = useSiteConfig()
   const config = propConfig || hookConfig
   const isLight = variant === 'light'
-
-  // Inject theme colors when config changes
-  useEffect(() => {
-    injectThemeColors(config.theme)
-  }, [config.theme])
 
   // If custom logo image is selected and URL is provided, use it
   if (config.site.logoUrl) {

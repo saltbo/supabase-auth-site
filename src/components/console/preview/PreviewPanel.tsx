@@ -1,8 +1,7 @@
-import { useEffect } from 'react'
 import { usePreviewConfig } from './PreviewConfig'
 import { Logo } from '@/components/Logo'
 import { Card, CardContent } from '@/components/ui/card'
-import { injectThemeColors } from '@/lib/theme'
+import { ThemeStyles } from '@/lib/theme'
 import { LoginForm } from '@/components/login-form'
 
 export function PreviewPanel() {
@@ -13,13 +12,10 @@ export function PreviewPanel() {
     return null
   }
 
-  // 注入主题颜色
-  useEffect(() => {
-    injectThemeColors(previewConfig.theme)
-  }, [previewConfig.theme])
-
   return (
     <div className="flex flex-col w-full h-full bg-background border-l shadow-inner overflow-hidden">
+      <ThemeStyles theme={previewConfig.theme} />
+      
       {/* Browser Toolbar */}
       <div className="flex-shrink-0 bg-muted/40 border-b px-4 h-12 flex items-center gap-4">
         {/* Window Controls */}

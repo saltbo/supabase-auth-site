@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { PageHead } from '@/components/PageHead'
+import { ThemeStyles } from '@/lib/theme'
 import { useSiteConfigQuery } from '@/lib/config'
 import { Toaster } from 'sonner'
 import type { RouterContext } from '@/lib/auth-init'
@@ -25,7 +26,7 @@ function DefaultErrorComponent({ error }: { error: Error }) {
 }
 
 function RootComponent() {
-  const { isLoading } = useSiteConfigQuery()
+  const { data: config, isLoading } = useSiteConfigQuery()
 
   if (isLoading) {
     return (
@@ -38,6 +39,7 @@ function RootComponent() {
   return (
     <>
       <PageHead />
+      {config && <ThemeStyles theme={config.theme} />}
       <Outlet />
       <Toaster position="top-right" richColors />
       {/* Dev tools only in development */}

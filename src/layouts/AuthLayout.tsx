@@ -1,6 +1,5 @@
-import { useEffect, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { useSiteConfig } from '@/lib/config'
-import { injectThemeColors } from '@/lib/theme'
 import { Logo } from '@/components/Logo'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -10,11 +9,6 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   const config = useSiteConfig()
-
-  // Inject theme colors when config changes
-  useEffect(() => {
-    injectThemeColors(config.theme)
-  }, [config.theme])
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950/80 relative">

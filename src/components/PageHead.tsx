@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useSiteConfig } from '@/lib/config'
-import { injectThemeColors } from '@/lib/theme'
 import type { SiteConfig } from '@/../site.config.types'
 
 /**
@@ -36,9 +35,6 @@ export function PageHead() {
   const config = useSiteConfig()
 
   useEffect(() => {
-    // Inject theme colors
-    injectThemeColors(config.theme)
-
     // Update page title
     document.title = config.site.name
 
