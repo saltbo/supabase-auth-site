@@ -117,20 +117,29 @@ export const resolveRedirect = (queryRedirect?: string): string | undefined => {
  * 执行登录后的跳转
  * - 如果有存储的跳转地址，清除并跳转到该地址
  * - 否则跳转到默认页面 /
+ *
+ * @param navigate - TanStack Router's navigate function for SPA navigation
+ *
+ * Now uses SPA navigation instead of page refresh because router context
+ * is dynamically updated via updateRouterAuthContext() when auth state changes.
  */
 export const performPostLoginRedirect = (
   navigate: (opts: { to: string }) => void,
 ) => {
   resolveRedirect(undefined) // Re-resolve or just get stored
-  // Since resolveRedirect writes to storage, we can just read storage or use the return value.
-  // Ideally, we explicitly read storage to clear it.
 
   const storedRedirect = getAuthRedirect()
 
   if (storedRedirect && isValidRedirect(storedRedirect)) {
     clearAuthRedirect()
-    window.location.href = storedRedirect
+    // For cross-origin redirects, use window.location
+    if (storedRedirect.startsWith('http')) {
+      window.location.href = storedRedirect
+    } else {
+      navigate({ to: storedRedirect })
+    }
   } else {
+    // Use SPA navigation - router context is now dynamically updated
     navigate({ to: '/' })
   }
 }

@@ -9,6 +9,7 @@ import { routeTree } from './routeTree.gen'
 // Import auth modules
 import { AuthProvider } from './lib/auth'
 import { initializeAuth, type RouterContext } from './lib/auth-init'
+import { registerRouter } from './lib/router-auth'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 import './styles.css'
@@ -73,6 +74,10 @@ async function bootstrap() {
 
   // Create router with auth context
   const router = createAppRouter({ auth: authState })
+
+  // Register router for dynamic auth updates
+  // This allows auth state changes to update router context without page refresh
+  registerRouter(router)
 
   // Clear loading state and render app
   rootElement.innerHTML = ''

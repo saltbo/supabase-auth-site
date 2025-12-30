@@ -16,7 +16,7 @@
  */
 
 import Cookies from 'js-cookie'
-import type { SupportedStorage } from '@supabase/supabase-js'
+import type { SupportedStorage, Session, User } from '@supabase/supabase-js'
 
 /**
  * Cookie configuration from environment variables
@@ -80,6 +80,24 @@ function resolveCookieDomain(): string | undefined {
 }
 
 /**
+ * Type guard to check if an object is a valid Supabase Session
+ */
+function isSession(item: unknown): item is Session {
+  if (typeof item !== 'object' || item === null) {
+    return false
+  }
+
+  const session = item as Partial<Session>
+
+  return (
+    typeof session.access_token === 'string' &&
+    typeof session.refresh_token === 'string' &&
+    typeof session.user === 'object' &&
+    session.user !== null
+  )
+}
+
+/**
  * Creates a cookie-based storage adapter for Supabase Auth
  *
  * @returns StorageAdapter compatible with Supabase createClient
@@ -99,49 +117,110 @@ function resolveCookieDomain(): string | undefined {
 export const cookieStorage: SupportedStorage = {
   /**
    * Get item from cookie storage
+   * Handles split sessions and standard cookies
    */
   getItem: (key: string): string | null => {
+    // 1. Try retrieving split session (semantic parts)
+    const accessToken = Cookies.get(`${key}.at`)
+    if (accessToken) {
+      const refreshToken = Cookies.get(`${key}.rt`)
+      const userStr = Cookies.get(`${key}.user`)
+      const metaStr = Cookies.get(`${key}.meta`)
+
+      if (refreshToken && userStr && metaStr) {
+        try {
+          const user = JSON.parse(userStr) as User
+          const meta = JSON.parse(metaStr) as Partial<Session>
+          
+          const session: Session = {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            user,
+            token_type: meta.token_type || 'bearer',
+            expires_in: meta.expires_in || 3600,
+            expires_at: meta.expires_at,
+            ...meta
+          }
+          return JSON.stringify(session)
+        } catch (e) {
+          console.error('[cookieStorage] Failed to reconstruct split session', e)
+        }
+      }
+    }
+
+    // 2. Fallback: Standard cookie
     return Cookies.get(key) || null
   },
 
   /**
-   * Set item to cookie storage with cross-subdomain support
+   * Set item to cookie storage
+   * intelligently splits Supabase session JSON to avoid size limits
    */
   setItem: (key: string, value: string): void => {
     const domain = resolveCookieDomain()
-
     const cookieOptions = {
       expires: COOKIE_EXPIRES,
       path: '/',
       domain: domain,
       sameSite: COOKIE_SAMESITE as any,
-      secure: isProduction && isSecure, // HTTPS only in production
+      secure: isProduction && isSecure,
     }
 
-    console.log('[cookieStorage] Setting cookie:', {
-      key,
-      domain: domain || '(current hostname)',
-      sameSite: COOKIE_SAMESITE,
-      secure: cookieOptions.secure,
-      expires: COOKIE_EXPIRES,
-    })
+    try {
+      // Attempt to parse as Session JSON
+      const session = JSON.parse(value) as unknown
+      
+      // Check if it looks like a Supabase session using type guard
+      if (isSession(session)) {
+        console.log('[cookieStorage] Storing split session keys')
 
-    Cookies.set(key, value, cookieOptions)
+        // Destructure to separate large fields
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { access_token, refresh_token, user, ...rest } = session
+
+        // Store parts in separate cookies
+        Cookies.set(`${key}.at`, access_token, cookieOptions)
+        Cookies.set(`${key}.rt`, refresh_token, cookieOptions)
+        Cookies.set(`${key}.user`, JSON.stringify(user), cookieOptions)
+        Cookies.set(`${key}.meta`, JSON.stringify(rest), cookieOptions)
+        
+        // Marker to indicate split mode
+        Cookies.set(key, 'split', cookieOptions)
+        return
+      }
+    } catch (e) {
+      // Not JSON or not a session object, proceed to standard storage
+    }
+
+    // Standard storage (fallback for non-session values)
+    if (value.length <= 3000) {
+      Cookies.set(key, value, cookieOptions)
+    } else {
+      console.warn('[cookieStorage] Value too large for single cookie and not a valid session JSON. Saving failed.', key)
+    }
   },
 
   /**
    * Remove item from cookie storage
-   * IMPORTANT: Must use the exact same options as setItem for successful deletion
+   * Cleans up all storage variants
    */
   removeItem: (key: string): void => {
     const domain = resolveCookieDomain()
-
-    Cookies.remove(key, {
+    const removeOptions = {
       path: '/',
       domain: domain,
       sameSite: COOKIE_SAMESITE as any,
       secure: isProduction && isSecure,
-    })
+    }
+
+    // Remove split session parts
+    Cookies.remove(`${key}.at`, removeOptions)
+    Cookies.remove(`${key}.rt`, removeOptions)
+    Cookies.remove(`${key}.user`, removeOptions)
+    Cookies.remove(`${key}.meta`, removeOptions)
+
+    // Remove standard/marker cookie
+    Cookies.remove(key, removeOptions)
   },
 }
 

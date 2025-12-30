@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { supabase } from './supabase'
-import type { AuthError, Session, User, Provider } from '@supabase/supabase-js'
+import type { AuthError, Session, User, Provider, AuthChangeEvent } from '@supabase/supabase-js'
 import {
   useSiteConfig,
   getEnabledProviders as getConfiguredProviders,
@@ -8,6 +8,7 @@ import {
 } from './config'
 import { getProviderMetadata } from './auth-providers'
 import type { AuthState } from './auth-init'
+import { updateRouterAuthContext } from './router-auth'
 
 export type { Provider }
 
@@ -62,6 +63,10 @@ export function AuthProvider({ children, initialState }: AuthProviderProps) {
   const [loading, setLoading] = useState(!initialState)
   const config = useSiteConfig()
 
+  // Track if we've already initialized with initialState to prevent
+  // onAuthStateChange's INITIAL_SESSION event from overwriting it
+  const initializedRef = useRef(!!initialState)
+
   useEffect(() => {
     // If no initial state was provided, fetch session (fallback for backward compatibility)
     if (!initialState) {
@@ -75,10 +80,27 @@ export function AuthProvider({ children, initialState }: AuthProviderProps) {
     // Listen for auth state changes (sign in, sign out, token refresh, etc.)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, nextSession) => {
+      // Skip INITIAL_SESSION event if we already have initialState
+      // This prevents the initial event from overwriting our pre-loaded session
+      if (event === 'INITIAL_SESSION' && initializedRef.current) {
+        console.log('[AuthProvider] Skipping INITIAL_SESSION event, already initialized')
+        return
+      }
+
+      console.log('[AuthProvider] Auth state changed:', event, nextSession?.user?.email || 'no user')
       setSession(nextSession)
       setUser(nextSession?.user ?? null)
       setLoading(false)
+
+      // Update router context so route guards have fresh auth state
+      // This enables SPA navigation after login without page refresh
+      const newAuthState: AuthState = {
+        user: nextSession?.user ?? null,
+        session: nextSession,
+        isAuthenticated: !!nextSession,
+      }
+      updateRouterAuthContext(newAuthState)
     })
 
     return () => subscription.unsubscribe()

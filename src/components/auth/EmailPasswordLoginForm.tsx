@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useNavigate, Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/lib/auth'
 import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
 import { performPostLoginRedirect } from '@/lib/redirect'
