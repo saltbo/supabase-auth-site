@@ -172,8 +172,6 @@ export const cookieStorage: SupportedStorage = {
       
       // Check if it looks like a Supabase session using type guard
       if (isSession(session)) {
-        console.log('[cookieStorage] Storing split session keys')
-
         // Destructure to separate large fields
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { access_token, refresh_token, user, ...rest } = session

@@ -52,8 +52,6 @@ export async function initializeAuth(): Promise<AuthState> {
     const refreshToken = hashParams.get('refresh_token')
 
     if (accessToken) {
-      console.log('[auth-init] Found tokens in hash fragment, setting session...')
-
       const { data, error } = await supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken || '',
@@ -71,8 +69,6 @@ export async function initializeAuth(): Promise<AuthState> {
         }
       }
 
-      console.log('[auth-init] Session set from hash, user:', data.session?.user?.email || 'no user')
-
       return {
         user: data.session?.user ?? null,
         session: data.session,
@@ -86,15 +82,7 @@ export async function initializeAuth(): Promise<AuthState> {
   if (code) {
     // This is an OAuth callback - exchange the code for a session
     // The code_verifier should already be in cookie storage from the initial OAuth request
-    console.log('[auth-init] Found authorization code, exchanging for session...')
-
-    // Debug: Check if code_verifier exists in storage
-    // Supabase stores it with a key like 'sb-<project-ref>-auth-token-code-verifier'
-    const allCookies = document.cookie
-    const hasCodeVerifier = allCookies.includes('code-verifier') || allCookies.includes('code_verifier')
-    console.log('[auth-init] Cookies contain code_verifier:', hasCodeVerifier)
-    console.log('[auth-init] All cookies:', allCookies.substring(0, 500))
-
+    
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (error) {
@@ -110,9 +98,6 @@ export async function initializeAuth(): Promise<AuthState> {
       }
     }
 
-    console.log('[auth-init] Code exchange successful, session:', data.session ? 'exists' : 'null')
-    console.log('[auth-init] User:', data.session?.user?.email || 'no user')
-
     // Clear the code from URL after successful exchange
     url.searchParams.delete('code')
     window.history.replaceState({}, '', url.toString())
@@ -125,15 +110,9 @@ export async function initializeAuth(): Promise<AuthState> {
   }
 
   // No OAuth code - just load existing session from storage
-  console.log('[auth-init] No OAuth code, loading session from storage...')
-  console.log('[auth-init] Current cookies:', document.cookie.substring(0, 500))
-
   const {
     data: { session },
   } = await supabase.auth.getSession()
-
-  console.log('[auth-init] getSession result:', session ? 'session exists' : 'null')
-  console.log('[auth-init] User from storage:', session?.user?.email || 'no user')
 
   return {
     user: session?.user ?? null,

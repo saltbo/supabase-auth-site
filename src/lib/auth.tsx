@@ -83,11 +83,9 @@ export function AuthProvider({ children, initialState }: AuthProviderProps) {
       // Skip INITIAL_SESSION event if we already have initialState
       // This prevents the initial event from overwriting our pre-loaded session
       if (event === 'INITIAL_SESSION' && initializedRef.current) {
-        console.log('[AuthProvider] Skipping INITIAL_SESSION event, already initialized')
         return
       }
 
-      console.log('[AuthProvider] Auth state changed:', event, nextSession?.user?.email || 'no user')
       setSession(nextSession)
       setUser(nextSession?.user ?? null)
       setLoading(false)
