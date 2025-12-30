@@ -56,13 +56,5 @@ export const defaultConfig: SiteConfig = {
         siteKey: '',
       },
     },
-
-    // Session management
-    session: {
-      expires: 365,
-      sameSite: 'Lax',
-      // Set to '.yourdomain.com' to share session across subdomains
-      domain: undefined,
-    },
   },
 }

@@ -19,7 +19,7 @@ import {
 import { AUTH_PROVIDERS, AVAILABLE_PROVIDERS } from '@/lib/auth-providers'
 import { useAdmin } from './AdminContext'
 import { usePreviewStore } from '@/lib/preview-store'
-import { Mail, KeyRound, ShieldCheck, Globe, Fingerprint, UserPlus, Ticket, Info, Hash } from 'lucide-react'
+import { Mail, ShieldCheck, Fingerprint, UserPlus, Ticket, Info, Hash } from 'lucide-react'
 import { toast } from 'sonner'
 import type { SiteConfig } from '../../../site.config.types'
 
@@ -43,11 +43,6 @@ const schema = z.object({
       enabled: z.boolean(),
       siteKey: z.string(),
     }),
-  }),
-  session: z.object({
-    expires: z.number().min(1, 'Must be at least 1 day'),
-    sameSite: z.enum(['Lax', 'Strict', 'None']),
-    domain: z.string().optional(),
   }),
 })
 
@@ -426,69 +421,6 @@ export function AuthConfigForm({ initialData, onSave, isLoading }: AuthConfigFor
                   />
                 </div>
               )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <KeyRound className="h-5 w-5 text-primary" />
-                Session Management
-              </CardTitle>
-              <CardDescription>
-                Advanced cookie settings.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="cookieExpires">Session Duration (Days)</Label>
-                  <Input
-                    id="cookieExpires"
-                    type="number"
-                    min="1"
-                    {...register('session.expires', { valueAsNumber: true })}
-                    readOnly={!isAdmin}
-                  />
-                  {errors.session?.expires && (
-                    <p className="text-sm text-destructive">{errors.session.expires.message}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="cookieSameSite">SameSite Policy</Label>
-                  <Controller
-                    name="session.sameSite"
-                    control={control}
-                    render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isAdmin}>
-                        <SelectTrigger id="cookieSameSite">
-                          <SelectValue placeholder="Select policy" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Lax">Lax</SelectItem>
-                          <SelectItem value="Strict">Strict</SelectItem>
-                          <SelectItem value="None">None</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2 pt-2">
-                <Label htmlFor="cookieDomain" className="flex items-center gap-2">
-                  <Globe className="h-3 w-3" />
-                  Cookie Domain (SSO)
-                </Label>
-                <Input
-                  id="cookieDomain"
-                  placeholder=".example.com"
-                  {...register('session.domain')}
-                  readOnly={!isAdmin}
-                  className="font-mono"
-                />
-              </div>
             </CardContent>
           </Card>
         </TabsContent>

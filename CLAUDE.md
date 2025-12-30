@@ -63,7 +63,10 @@ The entire app is configurable without code changes through a centralized config
 **Session Storage:**
 - Uses **cookie storage** (not localStorage) via `src/lib/cookieStorage.ts`
 - Enables **cross-subdomain SSO** (e.g., session from `auth.example.com` works on `console.example.com`)
-- Cookie domain is configured via Admin Panel (`config.auth.cookieDomain`)
+- Cookie configuration is set via environment variables:
+  - `VITE_COOKIE_DOMAIN` - Cookie domain (e.g., '.example.com' for cross-subdomain)
+  - `VITE_COOKIE_SAMESITE` - SameSite policy ('Lax', 'Strict', 'None')
+  - `VITE_COOKIE_EXPIRES` - Expiration in days
 - See `docs/CROSS_DOMAIN_AUTH.md` for detailed SSO implementation guide
 
 **Auth Flow:**
@@ -139,17 +142,30 @@ const { config, updateConfig } = useAdmin()
 ## Important Patterns & Conventions
 
 ### Environment Variables
-Required environment variables (set in deployment platform):
+Required and optional environment variables (set in deployment platform):
+
+**Required:**
 ```bash
 VITE_SUPABASE_URL          # Supabase project URL
 VITE_SUPABASE_ANON_KEY     # Supabase anon/public key
 VITE_ADMIN_EMAILS          # Comma-separated admin emails
 ```
 
+**Optional (Session Cookie Configuration - Smart Defaults Applied):**
+```bash
+# These are optional - smart defaults automatically enable cross-subdomain SSO:
+# - auth.example.com → cookie domain: .example.com (auto SSO)
+# - localhost → cookie domain: (none)
+VITE_COOKIE_DOMAIN         # Override auto-detected root domain (rarely needed)
+VITE_COOKIE_SAMESITE       # SameSite attribute: 'Lax' (default), 'Strict', or 'None'
+VITE_COOKIE_EXPIRES        # Cookie expiration in days (default: 30)
+```
+
 ### Configuration vs Environment Variables
 **Use Environment Variables for:**
 - Supabase credentials (URL, anon key)
 - Admin access control (VITE_ADMIN_EMAILS)
+- **Session cookie settings (domain, sameSite, expires)** - Infrastructure config
 - Build-time values that differ per environment
 
 **Use Runtime Config (site.config) for:**
@@ -157,7 +173,9 @@ VITE_ADMIN_EMAILS          # Comma-separated admin emails
 - Branding (logo, colors, site name)
 - Auth provider selection
 - Feature toggles (allowSignup, allowPassword)
-- SSO domain settings
+
+**Why Session Config is in Environment Variables:**
+Session cookie settings (domain, sameSite, secure) are infrastructure configuration that should be set at deployment time, not changed frequently via Admin Panel. This follows 12-factor app best practices and prevents configuration errors that could break authentication.
 
 ### File Upload Pattern
 Logo/favicon uploads in Admin Panel:
@@ -221,10 +239,25 @@ Always use `uploadConfigToStorage()` - never upload config manually.
 **Key Implementation:**
 - `src/lib/cookieStorage.ts` implements Supabase `SupportedStorage` interface
 - Uses `js-cookie` library
-- Domain is dynamically resolved from config via `getCachedConfig()`
-- Cookie options (expires, sameSite) come from `config.auth.cookieOptions`
+- **Smart defaults with zero configuration**:
+  - Auto-extracts root domain: `auth.example.com` → cookie domain `.example.com`
+  - Enables cross-subdomain SSO automatically (auth.example.com ↔ app.example.com)
+  - `localhost` → no domain attribute (current host only)
+- Optional environment variables to override:
+  - `VITE_COOKIE_DOMAIN` - Explicit domain (rarely needed)
+  - `VITE_COOKIE_SAMESITE` - Defaults to 'Lax'
+  - `VITE_COOKIE_EXPIRES` - Defaults to 30 days
 
-**Important:** The cached config must be available before cookie operations. Config is cached on first fetch in `fetchConfigFromStorage()`.
+**Why Environment Variables:**
+Session cookie configuration is infrastructure-level config that should be set at deployment time. Using environment variables (vs runtime config) prevents circular dependencies and follows 12-factor app best practices.
+
+**Default Behavior Examples:**
+| Hostname | Cookie Domain | SSO Scope |
+|----------|---------------|-----------|
+| `auth.example.com` | `.example.com` | All `*.example.com` subdomains |
+| `example.com` | `.example.com` | All `*.example.com` subdomains |
+| `localhost` | (none) | `localhost` only |
+| `127.0.0.1` | (none) | `127.0.0.1` only |
 
 ### Theme Color Injection
 Theme colors must be applied **after** config is loaded:

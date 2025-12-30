@@ -81,18 +81,5 @@ export interface SiteConfig {
         siteKey: string
       }
     }
-
-    /** Session management */
-    session: {
-      /** Cookie expiration in days */
-      expires: number
-      /** SameSite attribute for cookies */
-      sameSite: 'Lax' | 'Strict' | 'None'
-      /** 
-       * Domain for cookie storage (e.g., '.example.com') 
-       * Used for cross-subdomain SSO.
-       */
-      domain?: string
-    }
   }
 }

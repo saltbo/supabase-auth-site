@@ -77,10 +77,6 @@ export function mergeWithDefaultConfig(partialConfig: Partial<SiteConfig> | null
           ...defaultConfig.auth.security.turnstile,
           ...(partialConfig.auth?.security?.turnstile || {})
         }
-      },
-      session: {
-        ...defaultConfig.auth.session,
-        ...(partialConfig.auth?.session || {})
       }
     },
   }
@@ -98,10 +94,10 @@ export async function fetchConfigFromStorage(): Promise<SiteConfig | null> {
     if (publicUrlData?.publicUrl) {
       const url = new URL(publicUrlData.publicUrl)
       url.searchParams.set('t', Date.now().toString())
-      
+
       console.log('Fetching from URL (Cache Busting):', url.toString())
       const response = await fetch(url.toString(), { cache: 'no-store' })
-      
+
       if (response.ok) {
         const text = await response.text()
         if (text && text.trim() !== '') {
@@ -177,7 +173,7 @@ export async function uploadConfigToStorage(
     }
     throw new Error(`Failed to upload config: ${error.message}`)
   }
-  
+
   // Update cache
   cachedConfig = updatedConfig
 }
