@@ -20,14 +20,14 @@ export const Route = createFileRoute('/oauth/consent')({
     }
   },
   // Route guard: require authentication before loading
-  beforeLoad: async ({ search }) => {
+  beforeLoad: ({ context, search }) => {
     // Require authorization_id parameter
     if (!search.authorization_id) {
       throw new Error('Missing authorization_id parameter')
     }
-    
+
     const redirectTo = `/oauth/consent?authorization_id=${search.authorization_id}`
-    return requireAuth({ redirectTo })
+    return requireAuth(context, { redirectTo })
   },
 })
 

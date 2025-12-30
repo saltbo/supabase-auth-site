@@ -1,17 +1,14 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useAuth } from '@/lib/auth'
 import { isValidRedirect } from '@/lib/redirect'
-import { useSiteConfig } from '@/lib/config'
 
 export const Route = createFileRoute('/signout')({
   component: SignOutPage,
 })
 
 function SignOutPage() {
-  const navigate = useNavigate()
   const { signOut, loading: authLoading } = useAuth()
-  const config = useSiteConfig()
   const search: { redirect?: string } = Route.useSearch()
   const { redirect: redirectUrl } = search
 
@@ -26,22 +23,19 @@ function SignOutPage() {
         console.error('Error during sign out:', error)
       }
 
-      // After sign out, handle redirection
-      if (redirectUrl && isValidRedirect(redirectUrl, config)) {
-        // If it's a relative path, use navigate. If it's absolute, window.location.href
-        if (redirectUrl.startsWith('/') && !redirectUrl.startsWith('//')) {
-          navigate({ to: redirectUrl })
-        } else {
-          window.location.href = redirectUrl
-        }
+      // After sign out, force a full page reload to reset router context
+      // This ensures the auth state is re-initialized properly
+      if (redirectUrl && isValidRedirect(redirectUrl)) {
+        window.location.href = redirectUrl.startsWith('/')
+          ? window.location.origin + redirectUrl
+          : redirectUrl
       } else {
-        // Default to signin page
-        navigate({ to: '/signin' })
+        window.location.href = window.location.origin + '/signin'
       }
     }
 
     performSignOut()
-  }, [signOut, authLoading, navigate, redirectUrl, config])
+  }, [signOut, authLoading, redirectUrl])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

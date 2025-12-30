@@ -1,4 +1,4 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -7,6 +7,7 @@ import { AuthLayout } from '@/layouts/AuthLayout'
 import { PageHead } from '@/components/PageHead'
 import { useSiteConfigQuery } from '@/lib/config'
 import { Toaster } from 'sonner'
+import type { RouterContext } from '@/lib/auth-init'
 
 // Generic error component for route-level errors
 function DefaultErrorComponent({ error }: { error: Error }) {
@@ -57,7 +58,7 @@ function RootComponent() {
   )
 }
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   errorComponent: DefaultErrorComponent,
 })

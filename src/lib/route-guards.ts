@@ -1,6 +1,5 @@
 import { redirect } from '@tanstack/react-router'
-import { supabase } from './supabase'
-
+import type { RouterContext } from './auth-init'
 
 /**
  * Route Guard: Require Authentication
@@ -8,6 +7,10 @@ import { supabase } from './supabase'
  * Use this in TanStack Router's `beforeLoad` to protect routes that require authentication.
  * Redirects unauthenticated users to the signin page with a redirect parameter.
  *
+ * This guard uses the router context which is initialized before routing starts,
+ * ensuring the auth state is always stable and consistent.
+ *
+ * @param context - Router context containing auth state
  * @param options - Configuration options
  * @param options.redirectTo - The current path to return to after signin (optional)
  * @returns Session object if authenticated
@@ -16,21 +19,17 @@ import { supabase } from './supabase'
  * @example
  * ```ts
  * export const Route = createFileRoute('/dashboard')({
- *   beforeLoad: async ({ location }) => {
- *     return await requireAuth({ redirectTo: location.pathname })
+ *   beforeLoad: ({ context, location }) => {
+ *     return requireAuth(context, { redirectTo: location.pathname })
  *   },
  * })
  * ```
  */
-export async function requireAuth(options?: {
-  redirectTo?: string
-}): Promise<{ session: any }> {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (!session) {
-    // Build signin URL with redirect parameter
+export function requireAuth(
+  context: RouterContext,
+  options?: { redirectTo?: string }
+): { session: typeof context.auth.session } {
+  if (!context.auth.isAuthenticated || !context.auth.session) {
     const signInUrl = options?.redirectTo
       ? `/signin?redirect=${encodeURIComponent(options.redirectTo)}`
       : '/signin'
@@ -38,7 +37,7 @@ export async function requireAuth(options?: {
     throw redirect({ to: signInUrl })
   }
 
-  return { session }
+  return { session: context.auth.session }
 }
 
 /**
@@ -46,24 +45,21 @@ export async function requireAuth(options?: {
  *
  * Use this to redirect authenticated users away from guest-only pages (e.g., signin).
  *
+ * @param context - Router context containing auth state
  * @param redirectTo - Where to redirect authenticated users (default: '/')
  * @throws Redirect if user is authenticated
  *
  * @example
  * ```ts
  * export const Route = createFileRoute('/signin')({
- *   beforeLoad: async () => {
- *     return await requireGuest('/dashboard')
+ *   beforeLoad: ({ context }) => {
+ *     return requireGuest(context, '/dashboard')
  *   },
  * })
  * ```
  */
-export async function requireGuest(redirectTo: string = '/'): Promise<void> {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (session) {
+export function requireGuest(context: RouterContext, redirectTo: string = '/'): void {
+  if (context.auth.isAuthenticated) {
     throw redirect({ to: redirectTo })
   }
 }

@@ -149,6 +149,6 @@ export const cookieStorage: SupportedStorage = {
  * Get the current cookie domain
  * Useful for debugging
  */
-export function getCookieDomain(): string {
+export function getCookieDomain(): string | undefined {
   return resolveCookieDomain()
 }

@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { supabase } from '@/lib/supabase'
+import { createFileRoute } from '@tanstack/react-router'
 import {
   isUserAdmin,
   configExists,
@@ -16,20 +15,11 @@ import type { SiteConfig } from '../../../site.config.types'
 import { useAuth } from '@/lib/auth'
 import { toast } from 'sonner'
 import { usePreviewStore } from '@/lib/preview-store'
+import { requireAuth } from '@/lib/route-guards'
 
 export const Route = createFileRoute('/console')({
-  beforeLoad: async () => {
-    // 1. Check if user is authenticated
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
-
-    if (!session) {
-      throw redirect({
-        to: '/signin',
-        search: { redirect: '/console' },
-      })
-    }
+  beforeLoad: ({ context }) => {
+    requireAuth(context, { redirectTo: '/console' })
   },
   component: ConsoleRouteComponent,
 })

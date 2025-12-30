@@ -33,7 +33,7 @@ export function AdminLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { config } = useAdmin()
-  const { user, signOut } = useAuth()
+  const { user } = useAuth()
   const location = useLocation()
 
   // Lock body scroll when admin layout is mounted
@@ -193,12 +193,11 @@ export function AdminLayout() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10" 
-                onClick={() => signOut()}
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>退出登录</span>
+              <DropdownMenuItem asChild className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
+                <Link to="/signout">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>退出登录</span>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

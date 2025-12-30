@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase'
 import type { AuthError, Session, User, Provider } from '@supabase/supabase-js'
-import { 
-  useSiteConfig, 
-  getEnabledProviders as getConfiguredProviders, 
-  isSignupAllowed 
+import {
+  useSiteConfig,
+  getEnabledProviders as getConfiguredProviders,
+  isSignupAllowed
 } from './config'
 import { getProviderMetadata } from './auth-providers'
+import type { AuthState } from './auth-init'
 
 export type { Provider }
 
@@ -48,21 +49,30 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+interface AuthProviderProps {
+  children: React.ReactNode
+  initialState?: AuthState
+}
+
+export function AuthProvider({ children, initialState }: AuthProviderProps) {
+  // Use initial state if provided (from auth-init), otherwise start with null
+  const [user, setUser] = useState<User | null>(initialState?.user ?? null)
+  const [session, setSession] = useState<Session | null>(initialState?.session ?? null)
+  // If initialState is provided, auth is already initialized
+  const [loading, setLoading] = useState(!initialState)
   const config = useSiteConfig()
 
   useEffect(() => {
-    // 获取初始会话
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      setSession(initialSession)
-      setUser(initialSession?.user ?? null)
-      setLoading(false)
-    })
+    // If no initial state was provided, fetch session (fallback for backward compatibility)
+    if (!initialState) {
+      supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+        setSession(initialSession)
+        setUser(initialSession?.user ?? null)
+        setLoading(false)
+      })
+    }
 
-    // 监听认证状态变化
+    // Listen for auth state changes (sign in, sign out, token refresh, etc.)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, nextSession) => {
@@ -72,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [initialState])
 
   const signIn = async (
     email: string,

@@ -3,7 +3,6 @@ import { useRef, useState, type ReactNode } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { useAuth } from '@/lib/auth'
-import { supabase } from '@/lib/supabase'
 import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
 import { performPostLoginRedirect } from '@/lib/redirect'
 import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/TurnstileWidget'
@@ -12,6 +11,7 @@ import { AuthLayout } from '@/layouts/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp'
+import { requireGuest } from '@/lib/route-guards'
 
 export const Route = createFileRoute('/verify-otp')({
   component: VerifyOtpPage,
@@ -20,13 +20,8 @@ export const Route = createFileRoute('/verify-otp')({
       email: search.email as string | undefined,
     }
   },
-  beforeLoad: async ({ search }) => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
-      throw redirect({
-        to: '/',
-      })
-    }
+  beforeLoad: ({ context, search }) => {
+    requireGuest(context)
     if (!search.email) {
       throw redirect({
         to: '/signin',
@@ -97,7 +92,7 @@ function VerifyOtpPage() {
       turnstileRef.current?.reset()
     } else {
       // Verification successful, redirect to destination
-      performPostLoginRedirect(navigate, config)
+      performPostLoginRedirect(navigate)
     }
   }
 

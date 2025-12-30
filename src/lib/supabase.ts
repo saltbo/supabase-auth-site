@@ -13,7 +13,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     flowType: 'pkce',
-    detectSessionInUrl: true,
+    detectSessionInUrl: false, // Manual handling in auth-init.ts for precise control
     persistSession: true,
     autoRefreshToken: true,
     storage: cookieStorage, // Use cookie storage for cross-subdomain support

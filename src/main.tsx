@@ -6,8 +6,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
-// Import auth provider
+// Import auth modules
 import { AuthProvider } from './lib/auth'
+import { initializeAuth, type RouterContext } from './lib/auth-init'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 import './styles.css'
@@ -28,32 +29,59 @@ const queryClient = new QueryClient({
 // Note: Theme colors are injected dynamically by Logo and AuthLayout components
 // when the config is loaded from Storage
 
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  context: {},
-  defaultPreload: 'intent',
-  scrollRestoration: true,
-  defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
-})
+// Create router factory - router needs auth context at creation time
+function createAppRouter(context: RouterContext) {
+  return createRouter({
+    routeTree,
+    context,
+    defaultPreload: 'intent',
+    scrollRestoration: true,
+    defaultStructuralSharing: true,
+    defaultPreloadStaleTime: 0,
+  })
+}
+
+// Type for router instance
+type AppRouter = ReturnType<typeof createAppRouter>
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof router
+    router: AppRouter
   }
 }
 
-// Render the app
-const rootElement = document.getElementById('app')
-if (rootElement && !rootElement.innerHTML) {
+// Bootstrap the application
+async function bootstrap() {
+  const rootElement = document.getElementById('app')
+  if (!rootElement || rootElement.innerHTML) return
+
+  // Show loading state while initializing auth
+  rootElement.innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #fafafa;">
+      <div style="text-align: center;">
+        <div style="width: 40px; height: 40px; border: 3px solid #e5e7eb; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        <p style="margin-top: 16px; color: #6b7280; font-family: system-ui, sans-serif;">Initializing...</p>
+      </div>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+  `
+
+  // Initialize auth state before creating router
+  // This handles OAuth code exchange if present in URL
+  const authState = await initializeAuth()
+
+  // Create router with auth context
+  const router = createAppRouter({ auth: authState })
+
+  // Clear loading state and render app
+  rootElement.innerHTML = ''
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
-          <AuthProvider>
+          <AuthProvider initialState={authState}>
             <RouterProvider router={router} />
           </AuthProvider>
         </ErrorBoundary>
@@ -61,6 +89,8 @@ if (rootElement && !rootElement.innerHTML) {
     </StrictMode>,
   )
 }
+
+bootstrap()
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -1,49 +1,38 @@
 import { useState } from 'react'
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAuth } from '@/lib/auth'
-import { supabase } from '@/lib/supabase'
 import { isUserAdmin } from '@/lib/config-service'
 import { getProviderMetadata } from '@/lib/auth-providers'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { 
-  LogOut, 
-  Settings, 
-  ShieldCheck, 
-  Clock, 
-  Fingerprint, 
-  Terminal, 
-  ChevronDown, 
+import {
+  LogOut,
+  Settings,
+  ShieldCheck,
+  Clock,
+  Fingerprint,
+  Terminal,
+  ChevronDown,
   ChevronUp,
   Wifi,
   Cpu,
   Mail
 } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { requireAuth } from '@/lib/route-guards'
 
 export const Route = createFileRoute('/')({
-  beforeLoad: async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      throw redirect({
-        to: '/signin',
-      })
-    }
+  beforeLoad: ({ context }) => {
+    requireAuth(context)
   },
   component: HomePage,
 })
 
 function HomePage() {
-  const navigate = useNavigate()
-  const { user, session, loading, signOut } = useAuth()
+  const { user, session, loading } = useAuth()
   const [showDevInfo, setShowDevInfo] = useState(false)
 
-  const handleSignOut = async () => {
-    await signOut()
-    navigate({ to: '/signin' })
-  }
 
   // Show loading state while AuthProvider initializes
   if (loading || !user) {
@@ -117,9 +106,11 @@ function HomePage() {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={handleSignOut} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              Sign Out
+            <Button variant="outline" asChild className="gap-2">
+              <Link to="/signout">
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Link>
             </Button>
             <Button asChild className="gap-2 shadow-lg shadow-primary/20">
               <Link to="/console">

@@ -12,11 +12,12 @@ interface IntegrationGuideProps {
   config?: SiteConfig
 }
 
-export function IntegrationGuide({ config }: IntegrationGuideProps) {
+export function IntegrationGuide({ config: _config }: IntegrationGuideProps) {
   const [copied, setCopied] = useState<string | null>(null)
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co'
-  const cookieDomain = config?.auth?.session?.domain
+  // Cookie domain is now configured via environment variable
+  const cookieDomain = import.meta.env.VITE_COOKIE_DOMAIN as string | undefined
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text)
