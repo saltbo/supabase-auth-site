@@ -1,5 +1,6 @@
 import { redirect } from '@tanstack/react-router'
 import type { RouterContext } from './auth-init'
+import { getAuthRedirect, clearAuthRedirect, isValidRedirect } from './redirect'
 
 /**
  * Route Guard: Require Authentication
@@ -44,22 +45,33 @@ export function requireAuth(
  * Route Guard: Require Guest (Not Authenticated)
  *
  * Use this to redirect authenticated users away from guest-only pages (e.g., signin).
+ * When a stored redirect URL exists in sessionStorage, it will be used instead of
+ * the default redirect target. This enables the unified redirect flow where:
+ * 1. User visits a protected page → redirected to /signin with redirect param
+ * 2. Redirect URL is saved to sessionStorage
+ * 3. After login, requireGuest detects auth and redirects to stored URL
  *
  * @param context - Router context containing auth state
- * @param redirectTo - Where to redirect authenticated users (default: '/')
+ * @param defaultRedirectTo - Fallback redirect target if no stored redirect (default: '/')
  * @throws Redirect if user is authenticated
  *
  * @example
  * ```ts
  * export const Route = createFileRoute('/signin')({
  *   beforeLoad: ({ context }) => {
- *     return requireGuest(context, '/dashboard')
+ *     return requireGuest(context)
  *   },
  * })
  * ```
  */
-export function requireGuest(context: RouterContext, redirectTo: string = '/'): void {
+export function requireGuest(context: RouterContext, defaultRedirectTo: string = '/'): void {
   if (context.auth.isAuthenticated) {
-    throw redirect({ to: redirectTo })
+    // Check for stored redirect URL (set by resolveRedirect on signin page)
+    const storedRedirect = getAuthRedirect()
+    if (storedRedirect && isValidRedirect(storedRedirect)) {
+      clearAuthRedirect()
+      throw redirect({ to: storedRedirect })
+    }
+    throw redirect({ to: defaultRedirectTo })
   }
 }
