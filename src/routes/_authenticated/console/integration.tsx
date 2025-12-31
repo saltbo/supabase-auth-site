@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useAdmin } from '@/components/console/AdminContext'
 import { IntegrationGuide } from '@/components/console/IntegrationGuide'
 
-export const Route = createFileRoute('/console/integration')({
+export const Route = createFileRoute('/_authenticated/console/integration')({
   component: AdminIntegrationPage,
 })
 

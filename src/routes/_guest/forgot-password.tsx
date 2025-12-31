@@ -3,19 +3,15 @@ import { useEffect } from 'react'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { ForgotPasswordForm } from '@/components/auth/ForgotPasswordForm'
 import { useSiteConfig, isPasswordAllowed } from '@/lib/config'
-import { requireGuest } from '@/lib/route-guards'
 
-export const Route = createFileRoute('/forgot-password')({
-  beforeLoad: ({ context }) => {
-    requireGuest(context)
-  },
+export const Route = createFileRoute('/_guest/forgot-password')({
   component: ForgotPasswordPage,
 })
 
 function ForgotPasswordPage() {
   const config = useSiteConfig()
   const navigate = useNavigate()
-  
+
   const passwordAllowed = isPasswordAllowed(config)
 
   useEffect(() => {

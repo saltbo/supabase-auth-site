@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@/lib/auth'
 import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
-import { performPostLoginRedirect } from '@/lib/redirect'
+import { executePostLoginRedirect } from '@/lib/redirect-manager'
 import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/TurnstileWidget'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import { Button } from '@/components/ui/button'
@@ -38,7 +38,7 @@ export function EmailPasswordLoginForm({}: EmailPasswordLoginFormProps) {
       turnstileRef.current?.reset()
     } else {
       // Redirect after successful login
-      performPostLoginRedirect(navigate)
+      executePostLoginRedirect(navigate)
     }
   }
 

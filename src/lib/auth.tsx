@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { supabase } from './supabase'
-import type { AuthError, Session, User, Provider, AuthChangeEvent } from '@supabase/supabase-js'
+import type { AuthError as SupabaseAuthError, Session, User, Provider, AuthChangeEvent } from '@supabase/supabase-js'
 import {
   useSiteConfig,
   getEnabledProviders as getConfiguredProviders,
   isSignupAllowed
 } from './config'
 import { getProviderMetadata } from './auth-providers'
-import type { AuthState } from './auth-init'
+import type { AuthState, AuthError } from './auth-init'
 
 export type { Provider }
 
@@ -15,36 +15,39 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
+  /** OAuth initialization error (e.g., user denied access) */
+  initError?: AuthError
   signIn: (
     email: string,
     password: string,
     captchaToken?: string,
-  ) => Promise<{ error: AuthError | null }>
+  ) => Promise<{ error: SupabaseAuthError | null }>
   signUp: (
     email: string,
     password: string,
     captchaToken?: string,
     inviteCode?: string,
-  ) => Promise<{ error: AuthError | null }>
+  ) => Promise<{ error: SupabaseAuthError | null }>
   resetPasswordForEmail: (
     email: string,
     captchaToken?: string,
-  ) => Promise<{ error: AuthError | null }>
-  signOut: () => Promise<{ error: AuthError | null }>
+  ) => Promise<{ error: SupabaseAuthError | null }>
+  signOut: () => Promise<{ error: SupabaseAuthError | null }>
   signInWithOAuth: (
     provider: Provider,
-  ) => Promise<{ error: AuthError | null }>
+  ) => Promise<{ error: SupabaseAuthError | null }>
   signInWithOtp: (
     email: string,
     captchaToken?: string,
     flow?: 'otp' | 'magiclink',
-  ) => Promise<{ error: AuthError | null }>
+  ) => Promise<{ error: SupabaseAuthError | null }>
   verifyOtp: (
     email: string,
     token: string,
     captchaToken?: string,
-  ) => Promise<{ error: AuthError | null }>
-  getEnabledProviders: () => Promise<Array<Provider>>
+  ) => Promise<{ error: SupabaseAuthError | null }>
+  /** Get enabled OAuth providers (synchronous) */
+  getEnabledProviders: () => Provider[]
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -55,44 +58,43 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children, initialState }: AuthProviderProps) {
-  // Use initial state if provided (from auth-init), otherwise start with null
   const [user, setUser] = useState<User | null>(initialState?.user ?? null)
   const [session, setSession] = useState<Session | null>(initialState?.session ?? null)
-  // If initialState is provided, auth is already initialized
   const [loading, setLoading] = useState(!initialState)
   const config = useSiteConfig()
 
-  // Track if we've already initialized with initialState to prevent
-  // onAuthStateChange's INITIAL_SESSION event from overwriting it
-  const initializedRef = useRef(!!initialState)
+  // Store init error from OAuth flow
+  const initError = initialState?.error
+
+  // Track if we have initialState to skip INITIAL_SESSION event
+  const hasInitialState = useRef(!!initialState)
 
   useEffect(() => {
-    // If no initial state was provided, fetch session (fallback for backward compatibility)
-    if (!initialState) {
-      supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-        setSession(initialSession)
-        setUser(initialSession?.user ?? null)
+    // If no initial state, fetch session
+    if (!hasInitialState.current) {
+      supabase.auth.getSession().then(({ data: { session: s } }) => {
+        setSession(s)
+        setUser(s?.user ?? null)
         setLoading(false)
       })
     }
 
-    // Listen for auth state changes (sign in, sign out, token refresh, etc.)
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, nextSession) => {
-      // Skip INITIAL_SESSION event if we already have initialState
-      // This prevents the initial event from overwriting our pre-loaded session
-      if (event === 'INITIAL_SESSION' && initializedRef.current) {
-        return
-      }
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event: AuthChangeEvent, nextSession) => {
+        // Skip INITIAL_SESSION if we already have initialState
+        if (event === 'INITIAL_SESSION' && hasInitialState.current) {
+          return
+        }
 
-      setSession(nextSession)
-      setUser(nextSession?.user ?? null)
-      setLoading(false)
-    })
+        setSession(nextSession)
+        setUser(nextSession?.user ?? null)
+        setLoading(false)
+      }
+    )
 
     return () => subscription.unsubscribe()
-  }, [initialState])
+  }, []) // Remove initialState dependency to avoid re-subscription
 
   const signIn = async (
     email: string,
@@ -129,7 +131,8 @@ export function AuthProvider({ children, initialState }: AuthProviderProps) {
   const resetPasswordForEmail = async (email: string, captchaToken?: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       captchaToken,
-      redirectTo: new URL('/auth/callback?next=/console/settings', window.location.origin).toString(),
+      // Use /callback, then redirect logic handles the rest
+      redirectTo: new URL('/callback', window.location.origin).toString(),
     })
     return { error }
   }
@@ -189,15 +192,16 @@ export function AuthProvider({ children, initialState }: AuthProviderProps) {
     return { error }
   }
 
-  const getEnabledProviders = async (): Promise<Array<Provider>> => {
-    // Get enabled providers from config
-    return (getConfiguredProviders(config) as Provider[])
+  // Synchronous - no need for async
+  const getEnabledProviders = (): Provider[] => {
+    return getConfiguredProviders(config) as Provider[]
   }
 
-  const value = {
+  const value: AuthContextType = {
     user,
     session,
     loading,
+    initError,
     signIn,
     signUp,
     resetPasswordForEmail,

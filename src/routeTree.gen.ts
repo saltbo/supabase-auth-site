@@ -9,51 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
-import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SignoutRouteImport } from './routes/signout'
-import { Route as SigninRouteImport } from './routes/signin'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as CheckEmailRouteImport } from './routes/check-email'
 import { Route as CallbackRouteImport } from './routes/callback'
-import { Route as ConsoleRouteRouteImport } from './routes/console/route'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ConsoleIndexRouteImport } from './routes/console/index'
+import { Route as GuestRouteRouteImport } from './routes/_guest/route'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as OauthSessionEndedRouteImport } from './routes/oauth/session-ended'
-import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
-import { Route as ConsoleThemeRouteImport } from './routes/console/theme'
-import { Route as ConsoleSiteRouteImport } from './routes/console/site'
-import { Route as ConsoleIntegrationRouteImport } from './routes/console/integration'
-import { Route as ConsoleAuthRouteImport } from './routes/console/auth'
+import { Route as GuestVerifyOtpRouteImport } from './routes/_guest/verify-otp'
+import { Route as GuestSignupRouteImport } from './routes/_guest/signup'
+import { Route as GuestSigninRouteImport } from './routes/_guest/signin'
+import { Route as GuestForgotPasswordRouteImport } from './routes/_guest/forgot-password'
+import { Route as GuestCheckEmailRouteImport } from './routes/_guest/check-email'
+import { Route as AuthenticatedConsoleRouteRouteImport } from './routes/_authenticated/console/route'
+import { Route as AuthenticatedConsoleIndexRouteImport } from './routes/_authenticated/console/index'
+import { Route as AuthenticatedOauthConsentRouteImport } from './routes/_authenticated/oauth/consent'
+import { Route as AuthenticatedConsoleThemeRouteImport } from './routes/_authenticated/console/theme'
+import { Route as AuthenticatedConsoleSiteRouteImport } from './routes/_authenticated/console/site'
+import { Route as AuthenticatedConsoleIntegrationRouteImport } from './routes/_authenticated/console/integration'
+import { Route as AuthenticatedConsoleAuthRouteImport } from './routes/_authenticated/console/auth'
 
-const VerifyOtpRoute = VerifyOtpRouteImport.update({
-  id: '/verify-otp',
-  path: '/verify-otp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SignoutRoute = SignoutRouteImport.update({
   id: '/signout',
   path: '/signout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckEmailRoute = CheckEmailRouteImport.update({
-  id: '/check-email',
-  path: '/check-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CallbackRoute = CallbackRouteImport.update({
@@ -61,218 +38,221 @@ const CallbackRoute = CallbackRouteImport.update({
   path: '/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConsoleRouteRoute = ConsoleRouteRouteImport.update({
-  id: '/console',
-  path: '/console',
+const GuestRouteRoute = GuestRouteRouteImport.update({
+  id: '/_guest',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConsoleIndexRoute = ConsoleIndexRouteImport.update({
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => ConsoleRouteRoute,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const OauthSessionEndedRoute = OauthSessionEndedRouteImport.update({
   id: '/oauth/session-ended',
   path: '/oauth/session-ended',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OauthConsentRoute = OauthConsentRouteImport.update({
-  id: '/oauth/consent',
-  path: '/oauth/consent',
-  getParentRoute: () => rootRouteImport,
+const GuestVerifyOtpRoute = GuestVerifyOtpRouteImport.update({
+  id: '/verify-otp',
+  path: '/verify-otp',
+  getParentRoute: () => GuestRouteRoute,
 } as any)
-const ConsoleThemeRoute = ConsoleThemeRouteImport.update({
-  id: '/theme',
-  path: '/theme',
-  getParentRoute: () => ConsoleRouteRoute,
+const GuestSignupRoute = GuestSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => GuestRouteRoute,
 } as any)
-const ConsoleSiteRoute = ConsoleSiteRouteImport.update({
-  id: '/site',
-  path: '/site',
-  getParentRoute: () => ConsoleRouteRoute,
+const GuestSigninRoute = GuestSigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => GuestRouteRoute,
 } as any)
-const ConsoleIntegrationRoute = ConsoleIntegrationRouteImport.update({
-  id: '/integration',
-  path: '/integration',
-  getParentRoute: () => ConsoleRouteRoute,
+const GuestForgotPasswordRoute = GuestForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => GuestRouteRoute,
 } as any)
-const ConsoleAuthRoute = ConsoleAuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => ConsoleRouteRoute,
+const GuestCheckEmailRoute = GuestCheckEmailRouteImport.update({
+  id: '/check-email',
+  path: '/check-email',
+  getParentRoute: () => GuestRouteRoute,
 } as any)
+const AuthenticatedConsoleRouteRoute =
+  AuthenticatedConsoleRouteRouteImport.update({
+    id: '/console',
+    path: '/console',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedConsoleIndexRoute =
+  AuthenticatedConsoleIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedConsoleRouteRoute,
+  } as any)
+const AuthenticatedOauthConsentRoute =
+  AuthenticatedOauthConsentRouteImport.update({
+    id: '/oauth/consent',
+    path: '/oauth/consent',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedConsoleThemeRoute =
+  AuthenticatedConsoleThemeRouteImport.update({
+    id: '/theme',
+    path: '/theme',
+    getParentRoute: () => AuthenticatedConsoleRouteRoute,
+  } as any)
+const AuthenticatedConsoleSiteRoute =
+  AuthenticatedConsoleSiteRouteImport.update({
+    id: '/site',
+    path: '/site',
+    getParentRoute: () => AuthenticatedConsoleRouteRoute,
+  } as any)
+const AuthenticatedConsoleIntegrationRoute =
+  AuthenticatedConsoleIntegrationRouteImport.update({
+    id: '/integration',
+    path: '/integration',
+    getParentRoute: () => AuthenticatedConsoleRouteRoute,
+  } as any)
+const AuthenticatedConsoleAuthRoute =
+  AuthenticatedConsoleAuthRouteImport.update({
+    id: '/auth',
+    path: '/auth',
+    getParentRoute: () => AuthenticatedConsoleRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/console': typeof ConsoleRouteRouteWithChildren
   '/callback': typeof CallbackRoute
-  '/check-email': typeof CheckEmailRoute
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/signin': typeof SigninRoute
   '/signout': typeof SignoutRoute
-  '/signup': typeof SignupRoute
-  '/verify-otp': typeof VerifyOtpRoute
-  '/console/auth': typeof ConsoleAuthRoute
-  '/console/integration': typeof ConsoleIntegrationRoute
-  '/console/site': typeof ConsoleSiteRoute
-  '/console/theme': typeof ConsoleThemeRoute
-  '/oauth/consent': typeof OauthConsentRoute
+  '/console': typeof AuthenticatedConsoleRouteRouteWithChildren
+  '/check-email': typeof GuestCheckEmailRoute
+  '/forgot-password': typeof GuestForgotPasswordRoute
+  '/signin': typeof GuestSigninRoute
+  '/signup': typeof GuestSignupRoute
+  '/verify-otp': typeof GuestVerifyOtpRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
-  '/console/': typeof ConsoleIndexRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/console/auth': typeof AuthenticatedConsoleAuthRoute
+  '/console/integration': typeof AuthenticatedConsoleIntegrationRoute
+  '/console/site': typeof AuthenticatedConsoleSiteRoute
+  '/console/theme': typeof AuthenticatedConsoleThemeRoute
+  '/oauth/consent': typeof AuthenticatedOauthConsentRoute
+  '/console/': typeof AuthenticatedConsoleIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
-  '/check-email': typeof CheckEmailRoute
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/signin': typeof SigninRoute
   '/signout': typeof SignoutRoute
-  '/signup': typeof SignupRoute
-  '/verify-otp': typeof VerifyOtpRoute
-  '/console/auth': typeof ConsoleAuthRoute
-  '/console/integration': typeof ConsoleIntegrationRoute
-  '/console/site': typeof ConsoleSiteRoute
-  '/console/theme': typeof ConsoleThemeRoute
-  '/oauth/consent': typeof OauthConsentRoute
+  '/check-email': typeof GuestCheckEmailRoute
+  '/forgot-password': typeof GuestForgotPasswordRoute
+  '/signin': typeof GuestSigninRoute
+  '/signup': typeof GuestSignupRoute
+  '/verify-otp': typeof GuestVerifyOtpRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
-  '/console': typeof ConsoleIndexRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/console/auth': typeof AuthenticatedConsoleAuthRoute
+  '/console/integration': typeof AuthenticatedConsoleIntegrationRoute
+  '/console/site': typeof AuthenticatedConsoleSiteRoute
+  '/console/theme': typeof AuthenticatedConsoleThemeRoute
+  '/oauth/consent': typeof AuthenticatedOauthConsentRoute
+  '/console': typeof AuthenticatedConsoleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/console': typeof ConsoleRouteRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_guest': typeof GuestRouteRouteWithChildren
   '/callback': typeof CallbackRoute
-  '/check-email': typeof CheckEmailRoute
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/signin': typeof SigninRoute
   '/signout': typeof SignoutRoute
-  '/signup': typeof SignupRoute
-  '/verify-otp': typeof VerifyOtpRoute
-  '/console/auth': typeof ConsoleAuthRoute
-  '/console/integration': typeof ConsoleIntegrationRoute
-  '/console/site': typeof ConsoleSiteRoute
-  '/console/theme': typeof ConsoleThemeRoute
-  '/oauth/consent': typeof OauthConsentRoute
+  '/_authenticated/console': typeof AuthenticatedConsoleRouteRouteWithChildren
+  '/_guest/check-email': typeof GuestCheckEmailRoute
+  '/_guest/forgot-password': typeof GuestForgotPasswordRoute
+  '/_guest/signin': typeof GuestSigninRoute
+  '/_guest/signup': typeof GuestSignupRoute
+  '/_guest/verify-otp': typeof GuestVerifyOtpRoute
   '/oauth/session-ended': typeof OauthSessionEndedRoute
-  '/console/': typeof ConsoleIndexRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/console/auth': typeof AuthenticatedConsoleAuthRoute
+  '/_authenticated/console/integration': typeof AuthenticatedConsoleIntegrationRoute
+  '/_authenticated/console/site': typeof AuthenticatedConsoleSiteRoute
+  '/_authenticated/console/theme': typeof AuthenticatedConsoleThemeRoute
+  '/_authenticated/oauth/consent': typeof AuthenticatedOauthConsentRoute
+  '/_authenticated/console/': typeof AuthenticatedConsoleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/console'
     | '/callback'
+    | '/signout'
+    | '/console'
     | '/check-email'
     | '/forgot-password'
     | '/signin'
-    | '/signout'
     | '/signup'
     | '/verify-otp'
+    | '/oauth/session-ended'
+    | '/'
     | '/console/auth'
     | '/console/integration'
     | '/console/site'
     | '/console/theme'
     | '/oauth/consent'
-    | '/oauth/session-ended'
     | '/console/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/callback'
+    | '/signout'
     | '/check-email'
     | '/forgot-password'
     | '/signin'
-    | '/signout'
     | '/signup'
     | '/verify-otp'
+    | '/oauth/session-ended'
+    | '/'
     | '/console/auth'
     | '/console/integration'
     | '/console/site'
     | '/console/theme'
     | '/oauth/consent'
-    | '/oauth/session-ended'
     | '/console'
   id:
     | '__root__'
-    | '/'
-    | '/console'
+    | '/_authenticated'
+    | '/_guest'
     | '/callback'
-    | '/check-email'
-    | '/forgot-password'
-    | '/signin'
     | '/signout'
-    | '/signup'
-    | '/verify-otp'
-    | '/console/auth'
-    | '/console/integration'
-    | '/console/site'
-    | '/console/theme'
-    | '/oauth/consent'
+    | '/_authenticated/console'
+    | '/_guest/check-email'
+    | '/_guest/forgot-password'
+    | '/_guest/signin'
+    | '/_guest/signup'
+    | '/_guest/verify-otp'
     | '/oauth/session-ended'
-    | '/console/'
+    | '/_authenticated/'
+    | '/_authenticated/console/auth'
+    | '/_authenticated/console/integration'
+    | '/_authenticated/console/site'
+    | '/_authenticated/console/theme'
+    | '/_authenticated/oauth/consent'
+    | '/_authenticated/console/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ConsoleRouteRoute: typeof ConsoleRouteRouteWithChildren
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  GuestRouteRoute: typeof GuestRouteRouteWithChildren
   CallbackRoute: typeof CallbackRoute
-  CheckEmailRoute: typeof CheckEmailRoute
-  ForgotPasswordRoute: typeof ForgotPasswordRoute
-  SigninRoute: typeof SigninRoute
   SignoutRoute: typeof SignoutRoute
-  SignupRoute: typeof SignupRoute
-  VerifyOtpRoute: typeof VerifyOtpRoute
-  OauthConsentRoute: typeof OauthConsentRoute
   OauthSessionEndedRoute: typeof OauthSessionEndedRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/verify-otp': {
-      id: '/verify-otp'
-      path: '/verify-otp'
-      fullPath: '/verify-otp'
-      preLoaderRoute: typeof VerifyOtpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/signout': {
       id: '/signout'
       path: '/signout'
       fullPath: '/signout'
       preLoaderRoute: typeof SignoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/check-email': {
-      id: '/check-email'
-      path: '/check-email'
-      fullPath: '/check-email'
-      preLoaderRoute: typeof CheckEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/callback': {
@@ -282,26 +262,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/console': {
-      id: '/console'
-      path: '/console'
-      fullPath: '/console'
-      preLoaderRoute: typeof ConsoleRouteRouteImport
+    '/_guest': {
+      id: '/_guest'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof GuestRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/console/': {
-      id: '/console/'
-      path: '/'
-      fullPath: '/console/'
-      preLoaderRoute: typeof ConsoleIndexRouteImport
-      parentRoute: typeof ConsoleRouteRoute
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/oauth/session-ended': {
       id: '/oauth/session-ended'
@@ -310,75 +290,155 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OauthSessionEndedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/oauth/consent': {
-      id: '/oauth/consent'
+    '/_guest/verify-otp': {
+      id: '/_guest/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof GuestVerifyOtpRouteImport
+      parentRoute: typeof GuestRouteRoute
+    }
+    '/_guest/signup': {
+      id: '/_guest/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof GuestSignupRouteImport
+      parentRoute: typeof GuestRouteRoute
+    }
+    '/_guest/signin': {
+      id: '/_guest/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof GuestSigninRouteImport
+      parentRoute: typeof GuestRouteRoute
+    }
+    '/_guest/forgot-password': {
+      id: '/_guest/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof GuestForgotPasswordRouteImport
+      parentRoute: typeof GuestRouteRoute
+    }
+    '/_guest/check-email': {
+      id: '/_guest/check-email'
+      path: '/check-email'
+      fullPath: '/check-email'
+      preLoaderRoute: typeof GuestCheckEmailRouteImport
+      parentRoute: typeof GuestRouteRoute
+    }
+    '/_authenticated/console': {
+      id: '/_authenticated/console'
+      path: '/console'
+      fullPath: '/console'
+      preLoaderRoute: typeof AuthenticatedConsoleRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/console/': {
+      id: '/_authenticated/console/'
+      path: '/'
+      fullPath: '/console/'
+      preLoaderRoute: typeof AuthenticatedConsoleIndexRouteImport
+      parentRoute: typeof AuthenticatedConsoleRouteRoute
+    }
+    '/_authenticated/oauth/consent': {
+      id: '/_authenticated/oauth/consent'
       path: '/oauth/consent'
       fullPath: '/oauth/consent'
-      preLoaderRoute: typeof OauthConsentRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedOauthConsentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/console/theme': {
-      id: '/console/theme'
+    '/_authenticated/console/theme': {
+      id: '/_authenticated/console/theme'
       path: '/theme'
       fullPath: '/console/theme'
-      preLoaderRoute: typeof ConsoleThemeRouteImport
-      parentRoute: typeof ConsoleRouteRoute
+      preLoaderRoute: typeof AuthenticatedConsoleThemeRouteImport
+      parentRoute: typeof AuthenticatedConsoleRouteRoute
     }
-    '/console/site': {
-      id: '/console/site'
+    '/_authenticated/console/site': {
+      id: '/_authenticated/console/site'
       path: '/site'
       fullPath: '/console/site'
-      preLoaderRoute: typeof ConsoleSiteRouteImport
-      parentRoute: typeof ConsoleRouteRoute
+      preLoaderRoute: typeof AuthenticatedConsoleSiteRouteImport
+      parentRoute: typeof AuthenticatedConsoleRouteRoute
     }
-    '/console/integration': {
-      id: '/console/integration'
+    '/_authenticated/console/integration': {
+      id: '/_authenticated/console/integration'
       path: '/integration'
       fullPath: '/console/integration'
-      preLoaderRoute: typeof ConsoleIntegrationRouteImport
-      parentRoute: typeof ConsoleRouteRoute
+      preLoaderRoute: typeof AuthenticatedConsoleIntegrationRouteImport
+      parentRoute: typeof AuthenticatedConsoleRouteRoute
     }
-    '/console/auth': {
-      id: '/console/auth'
+    '/_authenticated/console/auth': {
+      id: '/_authenticated/console/auth'
       path: '/auth'
       fullPath: '/console/auth'
-      preLoaderRoute: typeof ConsoleAuthRouteImport
-      parentRoute: typeof ConsoleRouteRoute
+      preLoaderRoute: typeof AuthenticatedConsoleAuthRouteImport
+      parentRoute: typeof AuthenticatedConsoleRouteRoute
     }
   }
 }
 
-interface ConsoleRouteRouteChildren {
-  ConsoleAuthRoute: typeof ConsoleAuthRoute
-  ConsoleIntegrationRoute: typeof ConsoleIntegrationRoute
-  ConsoleSiteRoute: typeof ConsoleSiteRoute
-  ConsoleThemeRoute: typeof ConsoleThemeRoute
-  ConsoleIndexRoute: typeof ConsoleIndexRoute
+interface AuthenticatedConsoleRouteRouteChildren {
+  AuthenticatedConsoleAuthRoute: typeof AuthenticatedConsoleAuthRoute
+  AuthenticatedConsoleIntegrationRoute: typeof AuthenticatedConsoleIntegrationRoute
+  AuthenticatedConsoleSiteRoute: typeof AuthenticatedConsoleSiteRoute
+  AuthenticatedConsoleThemeRoute: typeof AuthenticatedConsoleThemeRoute
+  AuthenticatedConsoleIndexRoute: typeof AuthenticatedConsoleIndexRoute
 }
 
-const ConsoleRouteRouteChildren: ConsoleRouteRouteChildren = {
-  ConsoleAuthRoute: ConsoleAuthRoute,
-  ConsoleIntegrationRoute: ConsoleIntegrationRoute,
-  ConsoleSiteRoute: ConsoleSiteRoute,
-  ConsoleThemeRoute: ConsoleThemeRoute,
-  ConsoleIndexRoute: ConsoleIndexRoute,
+const AuthenticatedConsoleRouteRouteChildren: AuthenticatedConsoleRouteRouteChildren =
+  {
+    AuthenticatedConsoleAuthRoute: AuthenticatedConsoleAuthRoute,
+    AuthenticatedConsoleIntegrationRoute: AuthenticatedConsoleIntegrationRoute,
+    AuthenticatedConsoleSiteRoute: AuthenticatedConsoleSiteRoute,
+    AuthenticatedConsoleThemeRoute: AuthenticatedConsoleThemeRoute,
+    AuthenticatedConsoleIndexRoute: AuthenticatedConsoleIndexRoute,
+  }
+
+const AuthenticatedConsoleRouteRouteWithChildren =
+  AuthenticatedConsoleRouteRoute._addFileChildren(
+    AuthenticatedConsoleRouteRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedConsoleRouteRoute: typeof AuthenticatedConsoleRouteRouteWithChildren
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedOauthConsentRoute: typeof AuthenticatedOauthConsentRoute
 }
 
-const ConsoleRouteRouteWithChildren = ConsoleRouteRoute._addFileChildren(
-  ConsoleRouteRouteChildren,
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedConsoleRouteRoute: AuthenticatedConsoleRouteRouteWithChildren,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedOauthConsentRoute: AuthenticatedOauthConsentRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface GuestRouteRouteChildren {
+  GuestCheckEmailRoute: typeof GuestCheckEmailRoute
+  GuestForgotPasswordRoute: typeof GuestForgotPasswordRoute
+  GuestSigninRoute: typeof GuestSigninRoute
+  GuestSignupRoute: typeof GuestSignupRoute
+  GuestVerifyOtpRoute: typeof GuestVerifyOtpRoute
+}
+
+const GuestRouteRouteChildren: GuestRouteRouteChildren = {
+  GuestCheckEmailRoute: GuestCheckEmailRoute,
+  GuestForgotPasswordRoute: GuestForgotPasswordRoute,
+  GuestSigninRoute: GuestSigninRoute,
+  GuestSignupRoute: GuestSignupRoute,
+  GuestVerifyOtpRoute: GuestVerifyOtpRoute,
+}
+
+const GuestRouteRouteWithChildren = GuestRouteRoute._addFileChildren(
+  GuestRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ConsoleRouteRoute: ConsoleRouteRouteWithChildren,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  GuestRouteRoute: GuestRouteRouteWithChildren,
   CallbackRoute: CallbackRoute,
-  CheckEmailRoute: CheckEmailRoute,
-  ForgotPasswordRoute: ForgotPasswordRoute,
-  SigninRoute: SigninRoute,
   SignoutRoute: SignoutRoute,
-  SignupRoute: SignupRoute,
-  VerifyOtpRoute: VerifyOtpRoute,
-  OauthConsentRoute: OauthConsentRoute,
   OauthSessionEndedRoute: OauthSessionEndedRoute,
 }
 export const routeTree = rootRouteImport

@@ -11,16 +11,12 @@ import { AdminLayout } from '@/components/console/AdminLayout'
 import { AdminContext } from '@/components/console/AdminContext'
 import { ConfigInitializer } from '@/components/console/ConfigInitializer'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { SiteConfig } from '../../../site.config.types'
+import type { SiteConfig } from '../../../../site.config.types'
 import { useAuth } from '@/lib/auth'
 import { toast } from 'sonner'
 import { usePreviewStore } from '@/lib/preview-store'
-import { requireAuth } from '@/lib/route-guards'
 
-export const Route = createFileRoute('/console')({
-  beforeLoad: ({ context }) => {
-    requireAuth(context, { redirectTo: '/console' })
-  },
+export const Route = createFileRoute('/_authenticated/console')({
   component: ConsoleRouteComponent,
 })
 
@@ -28,7 +24,7 @@ function ConsoleRouteComponent() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const setPreviewConfig = usePreviewStore(state => state.setPreviewConfig)
-  
+
   const isAdmin = isUserAdmin(user?.email)
 
   // Check if config exists
@@ -141,10 +137,10 @@ function ConsoleRouteComponent() {
   }
 
   return (
-    <AdminContext.Provider 
-      value={{ 
-        config, 
-        updateConfig: handleUpdateConfig, 
+    <AdminContext.Provider
+      value={{
+        config,
+        updateConfig: handleUpdateConfig,
         isLoading: updating || loadingConfig,
         isAdmin
       }}

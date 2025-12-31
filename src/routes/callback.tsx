@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useAuth } from '@/lib/auth'
-import { performPostLoginRedirect } from '@/lib/redirect'
+import { executePostLoginRedirect } from '@/lib/redirect-manager'
 import { ErrorPage } from '@/components/ErrorPage'
 
 export const Route = createFileRoute('/callback')({
@@ -18,25 +18,34 @@ export const Route = createFileRoute('/callback')({
  */
 function OAuthCallbackPage() {
   const navigate = useNavigate()
-  const { user, loading } = useAuth()
+  const { user, loading, initError } = useAuth()
 
   useEffect(() => {
-    // Wait for auth state to be ready
     if (loading) return
 
     if (user) {
-      // Session is established, redirect to destination
-      performPostLoginRedirect(navigate)
+      executePostLoginRedirect(navigate)
     }
-    // If no user after loading completes, show error (handled in render)
   }, [user, loading, navigate])
+
+  // Show OAuth error if present
+  if (initError) {
+    return (
+      <ErrorPage
+        type="auth"
+        message={initError.message}
+        actionLabel="Return to sign in"
+        onAction={() => navigate({ to: '/signin' })}
+      />
+    )
+  }
 
   // Still loading auth state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
           <p className="mt-4 text-muted-foreground">
             Completing authentication...
           </p>

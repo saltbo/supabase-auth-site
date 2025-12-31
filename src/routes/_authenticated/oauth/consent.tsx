@@ -3,7 +3,6 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { oauthApi } from '@/lib/oauth-api'
-import { requireAuth } from '@/lib/route-guards'
 import {
   AuthorizationError,
   AuthorizationLoading,
@@ -12,22 +11,17 @@ import {
 } from '@/components/oauth'
 import { AuthLayout } from '@/layouts/AuthLayout'
 
-export const Route = createFileRoute('/oauth/consent')({
+export const Route = createFileRoute('/_authenticated/oauth/consent')({
   component: OAuthConsentPage,
   validateSearch: (search: Record<string, unknown>) => {
     return {
       authorization_id: search.authorization_id as string | undefined,
     }
   },
-  // Route guard: require authentication before loading
-  beforeLoad: ({ context, search }) => {
-    // Require authorization_id parameter
+  beforeLoad: ({ search }) => {
     if (!search.authorization_id) {
       throw new Error('Missing authorization_id parameter')
     }
-
-    const redirectTo = `/oauth/consent?authorization_id=${search.authorization_id}`
-    return requireAuth(context, { redirectTo })
   },
 })
 
@@ -78,16 +72,6 @@ function OAuthConsentPage() {
 
   // Render content based on state
   const renderContent = () => {
-    // Missing authorization ID
-    if (!authorization_id) {
-      return (
-        <AuthorizationError
-          error="Missing authorization ID parameter"
-          onSignOut={handleSignOut}
-        />
-      )
-    }
-
     // Loading state
     if (isLoading) {
       return <AuthorizationLoading message="Loading authorization details..." />

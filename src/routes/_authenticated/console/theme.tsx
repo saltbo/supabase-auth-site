@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useAdmin } from '@/components/console/AdminContext'
 import { ThemeForm } from '@/components/console/ThemeForm'
 
-export const Route = createFileRoute('/console/theme')({
+export const Route = createFileRoute('/_authenticated/console/theme')({
   component: AdminThemePage,
 })
 
@@ -11,9 +11,9 @@ function AdminThemePage() {
 
   return (
     <div className="max-w-2xl">
-      <ThemeForm 
+      <ThemeForm
         key={config.revision}
-        initialData={config.theme} 
+        initialData={config.theme}
         onSave={(data) => updateConfig({ theme: data })}
         isLoading={isLoading}
       />

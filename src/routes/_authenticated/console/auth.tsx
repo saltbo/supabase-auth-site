@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useAdmin } from '@/components/console/AdminContext'
 import { AuthConfigForm } from '@/components/console/AuthConfigForm'
 
-export const Route = createFileRoute('/console/auth')({
+export const Route = createFileRoute('/_authenticated/console/auth')({
   component: AdminAuthPage,
 })
 
@@ -11,9 +11,9 @@ function AdminAuthPage() {
 
   return (
     <div className="max-w-4xl">
-      <AuthConfigForm 
+      <AuthConfigForm
         key={config.revision}
-        initialData={config.auth} 
+        initialData={config.auth}
         onSave={(data) => updateConfig({ auth: data })}
         isLoading={isLoading}
       />

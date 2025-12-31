@@ -11,10 +11,20 @@
 import { supabase } from './supabase'
 import type { Session, User } from '@supabase/supabase-js'
 
+/**
+ * Auth error from OAuth flow or session initialization
+ */
+export interface AuthError {
+  code: string
+  message: string
+}
+
 export interface AuthState {
   user: User | null
   session: Session | null
   isAuthenticated: boolean
+  /** OAuth error (e.g., user denied access) */
+  error?: AuthError
 }
 
 /**
@@ -31,7 +41,6 @@ export async function initializeAuth(): Promise<AuthState> {
   const oauthError = url.searchParams.get('error')
   const oauthErrorDescription = url.searchParams.get('error_description')
   if (oauthError) {
-    console.error('[auth-init] OAuth error:', oauthError, oauthErrorDescription)
     // Clear error params from URL
     url.searchParams.delete('error')
     url.searchParams.delete('error_description')
@@ -41,6 +50,10 @@ export async function initializeAuth(): Promise<AuthState> {
       user: null,
       session: null,
       isAuthenticated: false,
+      error: {
+        code: oauthError,
+        message: oauthErrorDescription || 'Authentication failed',
+      },
     }
   }
 
@@ -61,11 +74,14 @@ export async function initializeAuth(): Promise<AuthState> {
       window.history.replaceState({}, '', url.pathname + url.search)
 
       if (error) {
-        console.error('[auth-init] Set session from hash failed:', error.message)
         return {
           user: null,
           session: null,
           isAuthenticated: false,
+          error: {
+            code: 'session_error',
+            message: error.message,
+          },
         }
       }
 
@@ -86,7 +102,6 @@ export async function initializeAuth(): Promise<AuthState> {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (error) {
-      console.error('[auth-init] Code exchange failed:', error.message)
       // Clear the code from URL to prevent retry loops
       url.searchParams.delete('code')
       window.history.replaceState({}, '', url.toString())
@@ -95,6 +110,10 @@ export async function initializeAuth(): Promise<AuthState> {
         user: null,
         session: null,
         isAuthenticated: false,
+        error: {
+          code: 'code_exchange_error',
+          message: error.message,
+        },
       }
     }
 

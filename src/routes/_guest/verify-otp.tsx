@@ -4,28 +4,25 @@ import { ArrowLeft } from 'lucide-react'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { useAuth } from '@/lib/auth'
 import { useSiteConfig, isTurnstileEnabled } from '@/lib/config'
-import { performPostLoginRedirect } from '@/lib/redirect'
+import { executePostLoginRedirect } from '@/lib/redirect-manager'
 import { TurnstileWidget, type TurnstileWidgetRef } from '@/components/auth/TurnstileWidget'
 import { ErrorAlert } from '@/components/ErrorAlert'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp'
-import { requireGuest } from '@/lib/route-guards'
 
-export const Route = createFileRoute('/verify-otp')({
+export const Route = createFileRoute('/_guest/verify-otp')({
   component: VerifyOtpPage,
   validateSearch: (search: Record<string, unknown>) => {
     return {
       email: search.email as string | undefined,
     }
   },
-  beforeLoad: ({ context, search }) => {
-    requireGuest(context)
+  beforeLoad: ({ search }) => {
+    // Email is required for this page
     if (!search.email) {
-      throw redirect({
-        to: '/signin',
-      })
+      throw redirect({ to: '/signin' })
     }
   },
 })
@@ -61,8 +58,6 @@ function VerifyOtpPage() {
     navigate({ to: '/signin' })
   }
 
-  // Guards are handled in beforeLoad
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -92,7 +87,7 @@ function VerifyOtpPage() {
       turnstileRef.current?.reset()
     } else {
       // Verification successful, redirect to destination
-      performPostLoginRedirect(navigate)
+      executePostLoginRedirect(navigate)
     }
   }
 

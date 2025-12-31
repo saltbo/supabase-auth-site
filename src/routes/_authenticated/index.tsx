@@ -20,12 +20,8 @@ import {
   Cpu,
   Mail
 } from 'lucide-react'
-import { requireAuth } from '@/lib/route-guards'
 
-export const Route = createFileRoute('/')({
-  beforeLoad: ({ context }) => {
-    requireAuth(context)
-  },
+export const Route = createFileRoute('/_authenticated/')({
   component: HomePage,
 })
 
@@ -61,7 +57,7 @@ function HomePage() {
 
   const getSystemInfo = () => {
     if (typeof navigator === 'undefined') return { os: 'Unknown', browser: 'Unknown' }
-    
+
     const ua = navigator.userAgent
     let os = 'Unknown OS'
     if (ua.indexOf('Win') !== -1) os = 'Windows'
@@ -88,9 +84,9 @@ function HomePage() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] dark:bg-[radial-gradient(#1f2937_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50 -z-10" />
-      
+
       <div className="container max-w-5xl mx-auto px-4 py-12 md:py-20">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="space-y-2">
@@ -104,7 +100,7 @@ function HomePage() {
               Welcome to your personal identity hub.
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Button variant="outline" asChild className="gap-2">
               <Link to="/signout">
@@ -123,7 +119,7 @@ function HomePage() {
 
         {/* Bento Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          
+
           {/* Main Profile Card - Spans 2 cols */}
           <Card className="md:col-span-2 p-8 relative overflow-hidden group border-muted/60 bg-background/60 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -144,7 +140,7 @@ function HomePage() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="space-y-4 flex-1">
                   <div>
                     <h2 className="text-2xl font-bold text-foreground">
@@ -187,7 +183,7 @@ function HomePage() {
                <h3 className="font-semibold text-lg mb-1">Connection</h3>
                <p className="text-sm text-muted-foreground">Securely connected via</p>
              </div>
-             
+
              <div className="mt-4">
                <div className="flex items-center justify-between bg-muted/50 p-3 rounded-lg border border-muted">
                  <span className="font-medium capitalize flex items-center gap-2">
@@ -246,9 +242,9 @@ function HomePage() {
                 <Terminal className="h-4 w-4" />
                 Developer Mode
               </h3>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setShowDevInfo(!showDevInfo)}
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
@@ -256,7 +252,7 @@ function HomePage() {
                 {showDevInfo ? <ChevronUp className="ml-2 h-3 w-3" /> : <ChevronDown className="ml-2 h-3 w-3" />}
               </Button>
            </div>
-           
+
            {showDevInfo && (
              <div className="grid md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-4 duration-300">
                 <Card className="bg-slate-950 border-slate-800 text-slate-300 overflow-hidden shadow-2xl">

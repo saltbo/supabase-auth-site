@@ -3,19 +3,15 @@ import { useEffect } from 'react'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { SignUpForm } from '@/components/auth/SignUpForm'
 import { useSiteConfig, isSignupAllowed } from '@/lib/config'
-import { requireGuest } from '@/lib/route-guards'
 
-export const Route = createFileRoute('/signup')({
-  beforeLoad: ({ context }) => {
-    requireGuest(context)
-  },
+export const Route = createFileRoute('/_guest/signup')({
   component: SignupPage,
 })
 
 function SignupPage() {
   const config = useSiteConfig()
   const navigate = useNavigate()
-  
+
   const signupAllowed = isSignupAllowed(config)
 
   useEffect(() => {

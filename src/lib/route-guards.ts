@@ -1,35 +1,29 @@
+/**
+ * Route Guards - Pure authentication checks
+ *
+ * Design principle: Guards only check and throw redirects.
+ * They don't handle redirect targets or storage - that's the page's job.
+ */
+
 import { redirect } from '@tanstack/react-router'
 import type { RouterContext } from './auth-init'
-import { getAuthRedirect, clearAuthRedirect, isValidRedirect } from './redirect'
+import { isValidRedirectUrl } from './redirect-manager'
 
 /**
- * Route Guard: Require Authentication
+ * Require Authentication
  *
- * Use this in TanStack Router's `beforeLoad` to protect routes that require authentication.
- * Redirects unauthenticated users to the signin page with a redirect parameter.
- *
- * This guard uses the router context which is initialized before routing starts,
- * ensuring the auth state is always stable and consistent.
- *
- * @param context - Router context containing auth state
- * @param options - Configuration options
- * @param options.redirectTo - The current path to return to after signin (optional)
- * @returns Session object if authenticated
- * @throws Redirect to signin page if not authenticated
+ * Use in beforeLoad to protect routes that require login.
+ * Redirects to /signin with the current path as redirect parameter.
  *
  * @example
- * ```ts
- * export const Route = createFileRoute('/dashboard')({
- *   beforeLoad: ({ context, location }) => {
- *     return requireAuth(context, { redirectTo: location.pathname })
- *   },
- * })
- * ```
+ * beforeLoad: ({ context, location }) => {
+ *   requireAuth(context, { redirectTo: location.pathname })
+ * }
  */
 export function requireAuth(
   context: RouterContext,
   options?: { redirectTo?: string }
-): { session: typeof context.auth.session } {
+): { session: NonNullable<typeof context.auth.session> } {
   if (!context.auth.isAuthenticated || !context.auth.session) {
     const signInUrl = options?.redirectTo
       ? `/signin?redirect=${encodeURIComponent(options.redirectTo)}`
@@ -42,36 +36,31 @@ export function requireAuth(
 }
 
 /**
- * Route Guard: Require Guest (Not Authenticated)
+ * Require Guest (Not Authenticated)
  *
- * Use this to redirect authenticated users away from guest-only pages (e.g., signin).
- * When a stored redirect URL exists in sessionStorage, it will be used instead of
- * the default redirect target. This enables the unified redirect flow where:
- * 1. User visits a protected page → redirected to /signin with redirect param
- * 2. Redirect URL is saved to sessionStorage
- * 3. After login, requireGuest detects auth and redirects to stored URL
- *
- * @param context - Router context containing auth state
- * @param defaultRedirectTo - Fallback redirect target if no stored redirect (default: '/')
- * @throws Redirect if user is authenticated
+ * Use in beforeLoad to redirect authenticated users away.
+ * Reads redirect target from URL search params if present.
  *
  * @example
- * ```ts
- * export const Route = createFileRoute('/signin')({
- *   beforeLoad: ({ context }) => {
- *     return requireGuest(context)
- *   },
- * })
- * ```
+ * beforeLoad: ({ context, location }) => {
+ *   requireGuest(context, location)
+ * }
  */
-export function requireGuest(context: RouterContext, defaultRedirectTo: string = '/'): void {
+export function requireGuest(
+  context: RouterContext,
+  location: { search: { redirect?: string } },
+  fallbackRedirect: string = '/'
+): void {
   if (context.auth.isAuthenticated) {
-    // Check for stored redirect URL (set by resolveRedirect on signin page)
-    const storedRedirect = getAuthRedirect()
-    if (storedRedirect && isValidRedirect(storedRedirect)) {
-      clearAuthRedirect()
-      throw redirect({ to: storedRedirect })
+    // Read redirect param from parsed search object
+    const redirectParam = location.search.redirect
+
+    // Use redirect param if valid, otherwise fallback
+    let redirectTo = fallbackRedirect
+    if (redirectParam && isValidRedirectUrl(redirectParam)) {
+      redirectTo = redirectParam
     }
-    throw redirect({ to: defaultRedirectTo })
+
+    throw redirect({ to: redirectTo })
   }
 }

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useAuth } from '@/lib/auth'
-import { isValidRedirect } from '@/lib/redirect'
+import { executePostLogoutRedirect } from '@/lib/redirect-manager'
 
 export const Route = createFileRoute('/signout')({
   component: SignOutPage,
@@ -10,32 +10,22 @@ export const Route = createFileRoute('/signout')({
 function SignOutPage() {
   const { signOut, loading: authLoading } = useAuth()
   const search: { redirect?: string } = Route.useSearch()
-  const { redirect: redirectUrl } = search
 
   useEffect(() => {
-    async function performSignOut() {
-      // Wait for initial auth state if it's still loading
-      if (authLoading) return
+    if (authLoading) return
 
+    async function performSignOut() {
       try {
         await signOut()
       } catch (error) {
         console.error('Error during sign out:', error)
       }
 
-      // After sign out, force a full page reload to reset router context
-      // This ensures the auth state is re-initialized properly
-      if (redirectUrl && isValidRedirect(redirectUrl)) {
-        window.location.href = redirectUrl.startsWith('/')
-          ? window.location.origin + redirectUrl
-          : redirectUrl
-      } else {
-        window.location.href = window.location.origin + '/signin'
-      }
+      executePostLogoutRedirect(search.redirect)
     }
 
     performSignOut()
-  }, [signOut, authLoading, redirectUrl])
+  }, [signOut, authLoading, search.redirect])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

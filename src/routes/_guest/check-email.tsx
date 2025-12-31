@@ -1,22 +1,13 @@
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Mail, ArrowLeft } from 'lucide-react'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { Button } from '@/components/ui/button'
-import { supabase } from '@/lib/supabase'
 
-export const Route = createFileRoute('/check-email')({
+export const Route = createFileRoute('/_guest/check-email')({
   component: CheckEmailPage,
   validateSearch: (search: Record<string, unknown>) => {
     return {
       email: search.email as string | undefined,
-    }
-  },
-  beforeLoad: async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
-      throw redirect({
-        to: '/',
-      })
     }
   },
 })
