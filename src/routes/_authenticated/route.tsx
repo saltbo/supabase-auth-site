@@ -10,7 +10,8 @@ import { requireAuth } from '@/lib/route-guards'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context, location }) => {
-    requireAuth(context, { redirectTo: location.pathname })
+    // location.href contains full path: pathname + search + hash
+    requireAuth(context, { redirectTo: location.href })
   },
   component: () => <Outlet />,
 })
